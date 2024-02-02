@@ -1,0 +1,29 @@
+name: swatp_pst_wf
+channels:
+  - conda-forge
+dependencies:
+  - python
+  - pandas
+  - numpy 
+  - matplotlib 
+  - jupyter 
+  - pip
+  - notebook 
+  - scipy 
+  - shapely
+  - rtree
+  - pyproj
+  - pyshp
+  - psutil
+  - git
+  - nbconvert
+  - pip:
+    - -e ./dependencies/swatp_pst
+    - -e ./dependencies/flopy
+    - -e ./dependencies/pyemu
+    # - flopy
+    # - git+https://github.com/modflowpy/flopy.git
+    # - pyemu
+    # - git+https://github.com/pypest/pyemu.git@develop
+    - termcolor
+    - tqdm

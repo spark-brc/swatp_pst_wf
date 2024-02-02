@@ -1,0 +1,6 @@
+par_name,min,max,chgtype
+cn2,-20,20,pctchg
+awc,-20,20,pctchg
+surlag,0.1,24,absval
+alpha,0,1,absval
+esco,0,1,absval
