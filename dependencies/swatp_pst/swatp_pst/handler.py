@@ -19,6 +19,11 @@ foward_path = os.path.dirname(os.path.abspath( __file__ ))
 
 
 
+
+
+
+
+
 def init_setup(prj_dir, swatp_wd):
     filesToCopy = [
         "i64pwtadj1.exe",
@@ -34,12 +39,27 @@ def init_setup(prj_dir, swatp_wd):
 
     if not os.path.isdir(main_opt_path):
         os.makedirs(main_opt_path)
-    filelist = [f for f in os.listdir(swatp_wd) if os.path.isfile(os.path.join(swatp_wd, f))]
-    for i in tqdm(filelist):
+        filelist = [f for f in os.listdir(swatp_wd) if os.path.isfile(os.path.join(swatp_wd, f))]
+        for i in tqdm(filelist):
         # print(i)
         # if os.path.getsize(os.path.join(swatwd, i)) != 0:
-        shutil.copy2(os.path.join(swatp_wd, i), main_opt_path)
-    print(" Creating 'main_opt' folder ..." + colored(suffix, 'green'))
+            shutil.copy2(os.path.join(swatp_wd, i), main_opt_path)
+        print(" Creating 'main_opt' folder ..." + colored(suffix, 'green'))
+
+        # copy files from opt_files folder
+        for j in filesToCopy:
+            if not os.path.isfile(os.path.join(main_opt_path, j)):
+                shutil.copy2(os.path.join(opt_files_path, j), os.path.join(main_opt_path, j))
+                print(" '{}' file copied ...".format(j) + colored(suffix, 'green'))
+        # copy forward_run.py
+        if not os.path.isfile(os.path.join(main_opt_path, 'forward_run.py')):
+            shutil.copy2(os.path.join(foward_path, 'forward_run.py'), os.path.join(main_opt_path, 'forward_run.py'))
+            print(" '{}' file copied ...".format('forward_run.py') + colored(suffix, 'green'))
+        os.chdir(main_opt_path)       
+    else:
+        print("failed to create 'main_opt' folder, folder already exists ..." )
+    os.chdir(main_opt_path)
+    print(f"path to main_opt folder: {main_opt_path}")
 
     # # create backup
     # print(" Creating 'backup' folder ...",  end='\r', flush=True)
@@ -65,14 +85,7 @@ def init_setup(prj_dir, swatp_wd):
     #     os.makedirs(os.path.join(main_opt_path, 'sufi2.in'))
     # print(" Creating 'sufi2.in' folder ..."  + colored(suffix, 'green'))
 
-    for j in filesToCopy:
-        if not os.path.isfile(os.path.join(main_opt_path, j)):
-            shutil.copy2(os.path.join(opt_files_path, j), os.path.join(main_opt_path, j))
-            print(" '{}' file copied ...".format(j) + colored(suffix, 'green'))
-    if not os.path.isfile(os.path.join(main_opt_path, 'forward_run.py')):
-        shutil.copy2(os.path.join(foward_path, 'forward_run.py'), os.path.join(main_opt_path, 'forward_run.py'))
-        print(" '{}' file copied ...".format('forward_run.py') + colored(suffix, 'green'))
-    os.chdir(main_opt_path)       
+
 
 
 def read_time_sim():
@@ -117,7 +130,7 @@ class SWATpOut(object):
 
     def __init__(self, wd):
         os.chdir(wd)
-        if os.path.isfile("file.cio"):
+        if os.path.isfile("time.sim"):
             self.stdate, self.enddate, self.stdate_warmup = define_sim_period()
 
     def read_cha_morph_mon(self):
@@ -136,20 +149,20 @@ class SWATpOut(object):
             parse_dates=True,
         )
 
-    # def extract_mon_stf(self, channels, cali_start_day, cali_end_day):
-    #     sim_stf_f = self.read_cha_morph_mon()
-    #     start_day = self.stdate
-    #     for i in channels:
-    #         sim_stf_f = self.read_cha_morph_mon()
-    #         sim_stf_f = sim_stf_f.loc[sim_stf_f["gis_id"] == i]
-    #         sim_stf_f = sim_stf_f.drop(['gis_id'], axis=1)
-    #         sim_stf_f.index = pd.date_range(start_day, periods=len(sim_stf_f.flo_out), freq='ME')
-    #         sim_stf_f = sim_stf_f[cali_start_day:cali_end_day]
-    #         sim_stf_f.to_csv(
-    #             'stf_{:03d}.txt'.format(i), sep='\t', encoding='utf-8', index=True, header=False,
-    #             float_format='%.7e')
-    #         print('stf_{:03d}.txt file has been created...'.format(i))
-    #     print('Finished ...')
+    def extract_mon_stf(self, channels, cali_start_day, cali_end_day):
+        sim_stf_f = self.read_cha_morph_mon()
+        start_day = self.stdate
+        for i in channels:
+            sim_stf_f = self.read_cha_morph_mon()
+            sim_stf_f = sim_stf_f.loc[sim_stf_f["gis_id"] == i]
+            sim_stf_f = sim_stf_f.drop(['gis_id'], axis=1)
+            sim_stf_f.index = pd.date_range(start_day, periods=len(sim_stf_f.flo_out), freq='ME')
+            sim_stf_f = sim_stf_f[cali_start_day:cali_end_day]
+            sim_stf_f.to_csv(
+                'stf_{:03d}.txt'.format(i), sep='\t', encoding='utf-8', index=True, header=False,
+                float_format='%.7e')
+            print('stf_{:03d}.txt file has been created...'.format(i))
+        print('Finished ...')
 
     # def stf_obd_to_ins(self, cha_extract_file, obd_file, col_name, cal_start, cal_end, time_step=None):
     #     """extract a simulated streamflow from the output.rch file,

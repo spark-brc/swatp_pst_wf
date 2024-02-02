@@ -1,0 +1,7 @@
+README.rst
+setup.py
+swatp_pst.egg-info/PKG-INFO
+swatp_pst.egg-info/SOURCES.txt
+swatp_pst.egg-info/dependency_links.txt
+swatp_pst.egg-info/requires.txt
+swatp_pst.egg-info/top_level.txt

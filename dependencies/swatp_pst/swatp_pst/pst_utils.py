@@ -1,7 +1,13 @@
 import pandas as pd
-from handler import SWATpOut
+from .handler import SWATpOut
 import calendar
 import numpy as np
+import os
+
+
+
+
+
 
 
 class CreateIns(SWATpOut):
@@ -72,7 +78,12 @@ class CreateIns(SWATpOut):
             result['{}_ins'.format(col_name)].to_csv(f, sep='\t', encoding='utf-8', index=False, header=False)
         print('{}.ins file has been created...'.format(cha_extract_file))
         return result['{}_ins'.format(col_name)]
-    
+
+class CreateTpl(SWATpOut):
+    def __init__(self, wd):
+        super().__init__(wd)
+        os.chdir(wd)
+
     def cal_to_tpl_file(self, tpl_file=None):
         """write a template file for a SWAT+ parameter value file (calibration.cal).
 
