@@ -178,7 +178,7 @@ if __name__ == '__main__':
     wd = "/Users/seonggyu.park/Documents/projects/tools/swatp-pest_wf/models/TxtInOut_Imsil_rye_rot_r1"
     # wd = "D:\\Projects\\Watersheds\\Koksilah\\analysis\\koksilah_swatmf\\SWAT-MODFLOW"
 
-    m1 = SWATpOut(wd)
+    m1 = SWATp(wd)
     cns =  [1]
     cali_start_day = "1/1/2013"
     cali_end_day = "12/31/2023"
