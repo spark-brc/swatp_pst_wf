@@ -10,7 +10,6 @@ import subprocess
 # sys.path.insert(1, path)
 
 from swatp_pst.handler import SWATp
-from swatmf import swatmf_pst_utils
 
 wd = os.getcwd()
 os.chdir(wd)
@@ -30,14 +29,9 @@ def execute_swatp():
     pyemu.os_utils.run('swatplus.exe', cwd='.')
 
 def extract_stf_results(subs, sim_start, warmup, cal_start, cal_end):
-    if time_step == 'day':
-        des = "simulation successfully completed | extracting daily simulated streamflow"
-        time_stamp(des)
-        swatmf_pst_utils.extract_mon_stf(subs, sim_start, warmup, cal_start, cal_end)
-    elif time_step == 'month':
-        des = "simulation successfully completed | extracting monthly simulated streamflow"
-        time_stamp(des)
-        SWATp(wd).extract_month_stf(subs, sim_start, warmup, cal_start, cal_end)
+    des = "simulation successfully completed | extracting monthly simulated streamflow"
+    time_stamp(des)
+    SWATp(wd).extract_mon_stf(subs, sim_start, warmup, cal_start, cal_end)
 
 
 
@@ -65,7 +59,10 @@ if __name__ == '__main__':
     # if swatmf_con.loc['subs', 'vals'] != 'n':
     #     subs = swatmf_con.loc['subs','vals'].strip('][').split(', ')
     #     subs = [int(i) for i in subs]
-    extract_stf_results(subs, sim_start, warmup, cal_start, cal_end)
+    subs = [1]
+    cal_start = '1/1/2013'
+    cal_end = '12/31/2023'
+    extract_stf_results(subs, cal_start, cal_end)
     print(wd)
 
 

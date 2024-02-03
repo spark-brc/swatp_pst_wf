@@ -1,5 +1,5 @@
 import pandas as pd
-from .handler import SWATpOut
+from swatp_pst.handler import SWATp
 import calendar
 import numpy as np
 import os
@@ -10,7 +10,7 @@ import os
 
 
 
-class CreateIns(SWATpOut):
+class PstUtil(SWATp):
     def __init__(self, wd):
         super().__init__(wd)
 
@@ -79,11 +79,6 @@ class CreateIns(SWATpOut):
         print('{}.ins file has been created...'.format(cha_extract_file))
         return result['{}_ins'.format(col_name)]
 
-class CreateTpl(SWATpOut):
-    def __init__(self, wd):
-        super().__init__(wd)
-        os.chdir(wd)
-
     def cal_to_tpl_file(self, tpl_file=None):
         """write a template file for a SWAT+ parameter value file (calibration.cal).
 
@@ -134,6 +129,8 @@ class CreateTpl(SWATpOut):
         return cal_df
 
 
+
+
 def get_last_day_of_month(df):
     for i in range(len(df)):
         res = calendar.monthrange(df.index[i].year, df.index[i].month)
@@ -148,10 +145,8 @@ def get_last_day_of_month(df):
 
 
 if __name__ == '__main__':
-    wd = "/Users/seonggyu.park/Documents/projects/tools/swatp-pest_wf/models/TxtInOut_Imsil_rye_rot_r1"
-    # wd = "D:\\Projects\\Watersheds\\Koksilah\\analysis\\koksilah_swatmf\\SWAT-MODFLOW"
-
-    m1 = CreateIns(wd)
+    # wd = "/Users/seonggyu.park/Documents/projects/tools/swatp-pest_wf/models/TxtInOut_Imsil_rye_rot_r1"
+    wd = "D:\\jj\\main_opt"
     cns =  [1]
     cali_start_day = "1/1/2013"
     cali_end_day = "12/31/2023"
@@ -159,6 +154,9 @@ if __name__ == '__main__':
     obd_colnam = "cha01"
     cha_ext_file = "stf_001.txt"
 
+    m1 = PstUtil(wd)
+    df =  m1.read_cha_obd(obd_file)
+    df = df[cali_start_day:cali_end_day]
     # m1.stf_obd_to_ins(cha_ext_file, obd_file, obd_colnam, cali_start_day, cali_end_day, time_step="month")
-    df = m1.cal_to_tpl_file()
+    # df = m1.cal_to_tpl_file()
     print(df)
