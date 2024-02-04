@@ -10,7 +10,7 @@ docs/templates/
 .ipynb_checkpoints
 .pytest_cache
 .vscode
-swatmf.egg-info
+swatp_pst.egg-info
 flopy.egg-info
 pyemu.egg-info
 build

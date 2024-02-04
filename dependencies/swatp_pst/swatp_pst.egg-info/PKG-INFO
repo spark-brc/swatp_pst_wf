@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
-Name: swatp-pst
-Version: 0.0.1
+Name: swatp_pst
+Version: 0.0.0
 Summary: swatp_pst is a set of python modules for SWAT+ model evaluation and parameter estimation.
 Download-URL: https://pypi.org/project/swatp_pst
 Author: Seonggyu Park
@@ -16,6 +16,16 @@ Classifier: Programming Language :: Python :: 3.10
 Classifier: Operating System :: Microsoft :: Windows
 Classifier: License :: OSI Approved :: BSD License
 Description-Content-Type: text/x-rst
+Requires-Dist: pandas
+Requires-Dist: numpy
+Requires-Dist: pyemu
+Requires-Dist: flopy
+Requires-Dist: scipy
+Requires-Dist: matplotlib
+Requires-Dist: openpyxl
+Requires-Dist: tqdm
+Requires-Dist: termcolor
+Requires-Dist: pyshp
 
 ======
 swatp_pst

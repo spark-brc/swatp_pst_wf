@@ -1,5 +1,11 @@
 README.rst
 setup.py
+swatp_pst/__init__.py
+swatp_pst/forward_run.py
+swatp_pst/forward_run_jj.py
+swatp_pst/handler.py
+swatp_pst/pst_utils.py
+swatp_pst/version.py
 swatp_pst.egg-info/PKG-INFO
 swatp_pst.egg-info/SOURCES.txt
 swatp_pst.egg-info/dependency_links.txt
