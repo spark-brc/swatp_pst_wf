@@ -34,40 +34,24 @@ def extract_stf_results(subs, cal_start, cal_end, tstep=None):
     if time_step == 'month':
         des = "simulation successfully completed | extracting monthly simulated streamflow"
         time_stamp(des)
-        m1.extract_mon_stf(subs, sim_start, warmup, cal_start, cal_end)
+        m1.extract_mon_stf(subs, cal_start, cal_end)
     elif time_step == 'day':
         des = "simulation successfully completed | extracting daily simulated streamflow"
         time_stamp(des)
-        m1.extract_day_stf(subs, sim_start, warmup, cal_start, cal_end)
-
-
-
+        m1.extract_day_stf(subs, cal_start, cal_end)
 
 
 if __name__ == '__main__':
     os.chdir(wd)
-    swatmf_con = pd.read_csv('swatp_pst.con', sep='\t', names=['names', 'vals'], index_col=0, comment="#")
-    # get default vals
-    # wd = swatmf_con.loc['wd', 'vals']
-    sim_start = swatmf_con.loc['sim_start', 'vals']
-    warmup = swatmf_con.loc['warm-up', 'vals']
-    cal_start = swatmf_con.loc['cal_start', 'vals']
-    cal_end = swatmf_con.loc['cal_end', 'vals']
-    cha_act = swatmf_con.loc['subs','vals']
-    grid_act = swatmf_con.loc['grids','vals']
-    riv_parm = swatmf_con.loc['riv_parm', 'vals']
-    baseflow_act = swatmf_con.loc['baseflow', 'vals']
-    time_step = swatmf_con.loc['time_step','vals']
-    pp_act = swatmf_con.loc['pp_included', 'vals']
-
-    
+    swatp_pst_con = pd.read_csv('swatp_pst.con', sep='\t', names=['names', 'vals'], index_col=0, comment="#")
+    cal_start = swatp_pst_con.loc['cal_start', 'vals']
+    cal_end = swatp_pst_con.loc['cal_end', 'vals']
+    time_step = swatp_pst_con.loc['time_step','vals']
     execute_swatp()
-    # extract sims
-    # if swatmf_con.loc['cha_file', 'vals'] != 'n' and swatmf_con.loc['fdc', 'vals'] != 'n':
-    # if swatmf_con.loc['subs', 'vals'] != 'n':
-    #     subs = swatmf_con.loc['subs','vals'].strip('][').split(', ')
-    #     subs = [int(i) for i in subs]
-    extract_stf_results(subs, sim_start, warmup, cal_start, cal_end)
+    if swatp_pst_con.loc['subs', 'vals'] != 'n':
+        subs = swatp_pst_con.loc['subs','vals'].strip('][').split(', ')
+        subs = [int(i) for i in subs]
+    extract_stf_results(subs, cal_start, cal_end)
     print(wd)
 
 
