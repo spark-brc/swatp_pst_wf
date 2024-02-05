@@ -1,10 +1,12 @@
 import matplotlib.pyplot as plt
 import math
 import numpy as np
+import pandas as pd
 import pyemu
 import os
+import matplotlib.dates as mdates
 
-
+# uncertainty
 def single_plot_tseries_ensembles(
                     pst, pr_oe, pt_oe, width=10, height=4, dot=True,
 #                     onames=["hds","sfr"]
@@ -17,8 +19,6 @@ def single_plot_tseries_ensembles(
     for i in range(len(obs)):
         time_col.append(obs.iloc[i, 0][-6:])
     obs['time'] = time_col
-    print(obs)
-
 #     # onames provided in oname argument
 #     obs = obs.loc[obs.oname.apply(lambda x: x in onames)]
     # only non-zero observations
@@ -142,6 +142,114 @@ def plot_prior_posterior_par_hist(prior_df, post_df, sel_pars, width=7, height=5
 
 
 
+
+# data comes from hanlder module and SWATMFout class
+    
+def create_stf_opt_df(pst, pt_oe, opt_idx=None):
+    if opt_idx is None:
+        opt_idx = -1
+    obs = pst.observation_data.copy()
+    time_col = []
+    for i in range(len(obs)):
+        time_col.append(obs.iloc[i, 0][-6:])
+    obs['time'] = time_col
+    pt_ut = pt_oe.iloc[opt_idx].T
+    opt_df = pd.DataFrame()
+    opt_df = pd.concat([pt_ut, obs], axis=1)
+    return opt_df
+
+
+def plot_observed_data(ax, df3, obd_col='obsval'):
+    size = 10
+    ax.plot(
+        df3.time.values, df3[obd_col].values, c='m', lw=1.5, alpha=0.5,
+        label="Observed", zorder=3
+    )
+    # ax.scatter(
+    #     df3.index.values, df3[obd_col].values, c='m', lw=1, alpha=0.5, s=size, marker='x',
+    #     label="Observed", zorder=3
+    # )
+    ax.xaxis.set_major_formatter(mdates.DateFormatter('%b-%d\n%Y'))
+    if len(df3[obd_col]) > 1:
+        calculate_metrics(ax, df3, obd_col)
+    else:
+        display_no_data_message(ax)
+
+def plot_stf_sim_obd(ax, stf_obd_df, obd_col):
+    ax.plot(stf_obd_df.time.values, stf_obd_df.base.values, c='limegreen', lw=1, label="Simulated")
+    plot_observed_data(ax, stf_obd_df, obd_col)
+    # except Exception as e:
+    #     handle_exception(ax, str(e))
+
+def plot_stf_sim(ax, stf_df):
+    try:
+        ax.plot(stf_df.index.values, stf_df.base.values, c='limegreen', lw=1, label="Simulated")
+        ax.xaxis.set_major_formatter(mdates.DateFormatter('%b-%d\n%Y'))
+    except Exception as e:
+        handle_exception(ax, str(e)) 
+
+
+
+
+
+# NOTE: metrics =======================================================================================
+def calculate_metrics(ax, df3, obd_col):
+    r_squared = ((sum((df3[obd_col] - df3[obd_col].mean()) * (df3.base - df3.base.mean())))**2) / (
+            (sum((df3[obd_col] - df3[obd_col].mean())**2) * (sum((df3.base - df3.base.mean())**2)))
+    )
+    dNS = 1 - (sum((df3.base - df3[obd_col])**2) / sum((df3[obd_col] - (df3[obd_col]).mean())**2))
+    PBIAS = 100 * (sum(df3[obd_col] - df3.base) / sum(df3[obd_col]))
+    display_metrics(ax, dNS, r_squared, PBIAS)
+
+def calculate_metrics_gw(ax, df3, grid_id, obd_col):
+    r_squared = ((sum((df3[obd_col] - df3[obd_col].mean()) * (df3[str(grid_id)] - df3[str(grid_id)].mean())))**2) / (
+            (sum((df3[obd_col] - df3[obd_col].mean())**2) * (sum((df3[str(grid_id)] - df3[str(grid_id)].mean())**2)))
+    )
+    dNS = 1 - (sum((df3[str(grid_id)] - df3[obd_col])**2) / sum((df3[obd_col] - (df3[obd_col]).mean())**2))
+    PBIAS = 100 * (sum(df3[obd_col] - df3[str(grid_id)]) / sum(df3[obd_col]))
+    display_metrics(ax, dNS, r_squared, PBIAS)
+
+def display_metrics(ax, dNS, r_squared, PBIAS):
+    ax.text(
+        .01, 0.95, f'Nash-Sutcliffe: {dNS:.4f}',
+        fontsize=8, horizontalalignment='left', color='limegreen', transform=ax.transAxes
+    )
+    ax.text(
+        .01, 0.90, f'$R^2$: {r_squared:.4f}',
+        fontsize=8, horizontalalignment='left', color='limegreen', transform=ax.transAxes
+    )
+    ax.text(
+        .99, 0.95, f'PBIAS: {PBIAS:.4f}',
+        fontsize=8, horizontalalignment='right', color='limegreen', transform=ax.transAxes
+    )
+
+def display_no_data_message(ax):
+    ax.text(
+        .01, .95, 'Nash-Sutcliffe: ---',
+        fontsize=8, horizontalalignment='left', transform=ax.transAxes
+    )
+    ax.text(
+        .01, 0.90, '$R^2$: ---',
+        fontsize=8, horizontalalignment='left', color='limegreen', transform=ax.transAxes
+    )
+    ax.text(
+        .99, 0.95, 'PBIAS: ---',
+        fontsize=8, horizontalalignment='right', color='limegreen', transform=ax.transAxes
+    )
+
+def handle_exception(ax, exception_message):
+    ax.text(
+        .5, .5, exception_message,
+        fontsize=12, horizontalalignment='center', weight='extra bold', color='y', transform=ax.transAxes
+    )
+
+def format_axes(fig):
+    for i, ax in enumerate(fig.axes):
+        ax.text(0.5, 0.5, "ax%d" % (i+1), va="center", ha="center")
+        ax.tick_params(labelbottom=False, labelleft=False)
+
+
+
 if __name__ == '__main__':
     # wd = "/Users/seonggyu.park/Documents/projects/tools/swatp-pest_wf/models/TxtInOut_Imsil_rye_rot_r1"
     wd = "/Users/seonggyu.park/Documents/projects/jj_test/main_opt"
@@ -168,5 +276,12 @@ if __name__ == '__main__':
         )
     # load posterior simulation
     pt_oe = pyemu.ObservationEnsemble.from_csv(
-        pst=pst,filename=os.path.join(m_d,"swatp_nw_ies.{0}.obs.csv".format(2)))
-    single_plot_tseries_ensembles(pst, pr_oe, pt_oe, width=10, height=4, dot=False)
+        pst=pst,filename=os.path.join(m_d,"swatp_nw_ies.{0}.obs.csv".format(4)))
+    
+
+    df = create_stf_opt_df(pst, pt_oe)
+    obd_col = "obsval"
+    fig, ax = plt.subplots()
+    plot_stf_sim_obd(ax, df, obd_col)
+    plt.show()
+    # single_plot_tseries_ensembles(pst, pr_oe, pt_oe, width=10, height=4, dot=False)
