@@ -27,13 +27,13 @@ def create_swatp_pst_con(
     col01 = [
         'prj_dir',
         'swatp_wd', 'cal_start', 'cal_end',
-        'channels',
+        'chs',
         'time_step',
         ]
     col02 = [
         prj_dir,
         swatp_wd, cal_start, cal_end, 
-        chans,
+        chs,
         time_step,
         ]
     df = pd.DataFrame({'names': col01, 'vals': col02})

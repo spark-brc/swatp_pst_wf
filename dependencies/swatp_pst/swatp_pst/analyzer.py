@@ -5,6 +5,7 @@ import pandas as pd
 import pyemu
 import os
 import matplotlib.dates as mdates
+from swatp_pst.handler import SWATp
 
 # uncertainty
 def single_plot_tseries_ensembles(
@@ -145,6 +146,27 @@ def plot_prior_posterior_par_hist(prior_df, post_df, sel_pars, width=7, height=5
 
 # data comes from hanlder module and SWATMFout class
     
+def create_stf_sim_obd_df(wd, cha_id, obd_file, obd_col):
+    m1 = SWATp(wd)
+    start_day = m1.stdate_warmup
+    sim = m1.read_cha_morph_mon()
+    sim = sim.loc[sim["gis_id"] == cha_id]
+    sim = sim.drop(['gis_id'], axis=1)
+    sim.index = pd.date_range(start_day, periods=len(sim.flo_out), freq='ME')
+    obd = m1.read_cha_obd(obd_file)
+    obd = obd.loc[:, obd_col]
+    opt_df = pd.DataFrame()
+    opt_df = pd.concat([sim, obd], axis=1)
+    opt_df["time"] = opt_df.index
+    opt_df = opt_df.rename({obd_col: 'obsval'}, axis=1)
+    opt_df.dropna(inplace=True)
+    return opt_df
+
+
+
+
+
+    
 def create_stf_opt_df(pst, pt_oe, opt_idx=None):
     if opt_idx is None:
         opt_idx = -1
@@ -159,32 +181,32 @@ def create_stf_opt_df(pst, pt_oe, opt_idx=None):
     return opt_df
 
 
-def plot_observed_data(ax, df3, obd_col='obsval'):
+def plot_observed_data(ax, df3):
     size = 10
     ax.plot(
-        df3.time.values, df3[obd_col].values, c='m', lw=1.5, alpha=0.5,
+        df3.loc[:, 'time'].values, df3.loc[:, "obsval"].values, c='m', lw=1.5, alpha=0.5,
         label="Observed", zorder=3
     )
     # ax.scatter(
-    #     df3.index.values, df3[obd_col].values, c='m', lw=1, alpha=0.5, s=size, marker='x',
+    #     df3.index.values, df3.loc[:, "obsval"].values, c='m', lw=1, alpha=0.5, s=size, marker='x',
     #     label="Observed", zorder=3
     # )
-    ax.xaxis.set_major_formatter(mdates.DateFormatter('%b-%d\n%Y'))
-    if len(df3[obd_col]) > 1:
-        calculate_metrics(ax, df3, obd_col)
+    # ax.xaxis.set_major_formatter(mdates.DateFormatter('%b-%d\n%Y'))
+    if len(df3.loc[:, "obsval"]) > 1:
+        calculate_metrics(ax, df3)
     else:
         display_no_data_message(ax)
 
-def plot_stf_sim_obd(ax, stf_obd_df, obd_col):
-    ax.plot(stf_obd_df.time.values, stf_obd_df.base.values, c='limegreen', lw=1, label="Simulated")
-    plot_observed_data(ax, stf_obd_df, obd_col)
+def plot_stf_sim_obd(ax, opt_df):
+    ax.plot(opt_df.loc[:, 'time'].values, opt_df.iloc[:, 0].values, c='limegreen', lw=1, label="Simulated")
+    plot_observed_data(ax, opt_df)
     # except Exception as e:
     #     handle_exception(ax, str(e))
 
 def plot_stf_sim(ax, stf_df):
     try:
         ax.plot(stf_df.index.values, stf_df.base.values, c='limegreen', lw=1, label="Simulated")
-        ax.xaxis.set_major_formatter(mdates.DateFormatter('%b-%d\n%Y'))
+        # ax.xaxis.set_major_formatter(mdates.DateFormatter('%b-%d\n%Y'))
     except Exception as e:
         handle_exception(ax, str(e)) 
 
@@ -193,20 +215,20 @@ def plot_stf_sim(ax, stf_df):
 
 
 # NOTE: metrics =======================================================================================
-def calculate_metrics(ax, df3, obd_col):
-    r_squared = ((sum((df3[obd_col] - df3[obd_col].mean()) * (df3.base - df3.base.mean())))**2) / (
-            (sum((df3[obd_col] - df3[obd_col].mean())**2) * (sum((df3.base - df3.base.mean())**2)))
+def calculate_metrics(ax, df3):
+    r_squared = ((sum((df3.loc[:, "obsval"] - df3.loc[:, "obsval"].mean()) * (df3.iloc[:, 0] - df3.iloc[:, 0].mean())))**2) / (
+            (sum((df3.loc[:, "obsval"] - df3.loc[:, "obsval"].mean())**2) * (sum((df3.iloc[:, 0] - df3.iloc[:, 0].mean())**2)))
     )
-    dNS = 1 - (sum((df3.base - df3[obd_col])**2) / sum((df3[obd_col] - (df3[obd_col]).mean())**2))
-    PBIAS = 100 * (sum(df3[obd_col] - df3.base) / sum(df3[obd_col]))
+    dNS = 1 - (sum((df3.iloc[:, 0] - df3.loc[:, "obsval"])**2) / sum((df3.loc[:, "obsval"] - (df3.loc[:, "obsval"]).mean())**2))
+    PBIAS = 100 * (sum(df3.loc[:, "obsval"] - df3.iloc[:, 0]) / sum(df3.loc[:, "obsval"]))
     display_metrics(ax, dNS, r_squared, PBIAS)
 
-def calculate_metrics_gw(ax, df3, grid_id, obd_col):
-    r_squared = ((sum((df3[obd_col] - df3[obd_col].mean()) * (df3[str(grid_id)] - df3[str(grid_id)].mean())))**2) / (
-            (sum((df3[obd_col] - df3[obd_col].mean())**2) * (sum((df3[str(grid_id)] - df3[str(grid_id)].mean())**2)))
+def calculate_metrics_gw(ax, df3, grid_id):
+    r_squared = ((sum((df3.loc[:, "obsval"] - df3.loc[:, "obsval"].mean()) * (df3[str(grid_id)] - df3[str(grid_id)].mean())))**2) / (
+            (sum((df3.loc[:, "obsval"] - df3.loc[:, "obsval"].mean())**2) * (sum((df3[str(grid_id)] - df3[str(grid_id)].mean())**2)))
     )
-    dNS = 1 - (sum((df3[str(grid_id)] - df3[obd_col])**2) / sum((df3[obd_col] - (df3[obd_col]).mean())**2))
-    PBIAS = 100 * (sum(df3[obd_col] - df3[str(grid_id)]) / sum(df3[obd_col]))
+    dNS = 1 - (sum((df3[str(grid_id)] - df3.loc[:, "obsval"])**2) / sum((df3.loc[:, "obsval"] - (df3.loc[:, "obsval"]).mean())**2))
+    PBIAS = 100 * (sum(df3.loc[:, "obsval"] - df3[str(grid_id)]) / sum(df3.loc[:, "obsval"]))
     display_metrics(ax, dNS, r_squared, PBIAS)
 
 def display_metrics(ax, dNS, r_squared, PBIAS):
@@ -252,7 +274,8 @@ def format_axes(fig):
 
 if __name__ == '__main__':
     # wd = "/Users/seonggyu.park/Documents/projects/tools/swatp-pest_wf/models/TxtInOut_Imsil_rye_rot_r1"
-    wd = "/Users/seonggyu.park/Documents/projects/jj_test/main_opt"
+    # wd = "/Users/seonggyu.park/Documents/projects/jj_test/main_opt"
+    wd = "D:\\jj\\jj\\swatp_nw_ies"
     # cns =  [1]
     # cali_start_day = "1/1/2013"
     # cali_end_day = "12/31/2023"
@@ -265,23 +288,27 @@ if __name__ == '__main__':
     # pst = pyemu.Pst.from_io_files(*io_files)
     # par = pst.parameter_data
     # m1.update_par_initials_ranges(par)
-
-    # print(par)
-    m_d = '/Users/seonggyu.park/Documents/projects/jj/swatp_nw_ies'
-    pst_file = "swatp_nw_ies.pst"
-    pst = pyemu.Pst(os.path.join(m_d, pst_file))
-    # load prior simulation
-    pr_oe = pyemu.ObservationEnsemble.from_csv(
-        pst=pst,filename=os.path.join(m_d,"swatp_nw_ies.0.obs.csv")
-        )
-    # load posterior simulation
-    pt_oe = pyemu.ObservationEnsemble.from_csv(
-        pst=pst,filename=os.path.join(m_d,"swatp_nw_ies.{0}.obs.csv".format(4)))
+    cha_id =  1
+    obd_file = "singi_obs_q1_colnam.csv"
+    obd_col = "cha01"
+    df = create_stf_sim_obd_df(wd, cha_id, obd_file, obd_col)
+    print(df)    
+    # # print(par)
+    # m_d = '/Users/seonggyu.park/Documents/projects/jj/swatp_nw_ies'
+    # pst_file = "swatp_nw_ies.pst"
+    # pst = pyemu.Pst(os.path.join(m_d, pst_file))
+    # # load prior simulation
+    # pr_oe = pyemu.ObservationEnsemble.from_csv(
+    #     pst=pst,filename=os.path.join(m_d,"swatp_nw_ies.0.obs.csv")
+    #     )
+    # # load posterior simulation
+    # pt_oe = pyemu.ObservationEnsemble.from_csv(
+    #     pst=pst,filename=os.path.join(m_d,"swatp_nw_ies.{0}.obs.csv".format(4)))
     
 
-    df = create_stf_opt_df(pst, pt_oe)
-    obd_col = "obsval"
-    fig, ax = plt.subplots()
-    plot_stf_sim_obd(ax, df, obd_col)
-    plt.show()
+    # df = create_stf_opt_df(pst, pt_oe)
+    # obd_col = "obsval"
+    # fig, ax = plt.subplots()
+    # plot_stf_sim_obd(ax, df, obd_col)
+    # plt.show()
     # single_plot_tseries_ensembles(pst, pr_oe, pt_oe, width=10, height=4, dot=False)
