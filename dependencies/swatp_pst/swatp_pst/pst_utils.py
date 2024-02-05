@@ -3,11 +3,7 @@ from swatp_pst.handler import SWATp
 import calendar
 import numpy as np
 import os
-
-
-
-
-
+import pyemu
 
 
 class PstUtil(SWATp):
@@ -79,6 +75,13 @@ class PstUtil(SWATp):
         print('{}.ins file has been created...'.format(cha_extract_file))
         return result['{}_ins'.format(col_name)]
 
+    def read_cal(self):
+        return pd.read_csv(
+                        'calibration.cal',
+                        sep=r'\s+',
+                        skiprows=2,
+                        )        
+
     def cal_to_tpl_file(self, tpl_file=None):
         """write a template file for a SWAT+ parameter value file (calibration.cal).
 
@@ -103,11 +106,7 @@ class PstUtil(SWATp):
 
         if tpl_file is None:
             tpl_file = cal_file + ".tpl"
-        cal_df = pd.read_csv(
-                            cal_file,
-                            sep=r'\s+',
-                            skiprows=2,
-                            )
+        cal_df = self.read_cal()
         cal_df.index = cal_df.cal_parm
         cal_df.loc[:, "chg_val"] = cal_df.cal_parm.apply(lambda x: " ~   {0:15s}   ~".format(x))
 
@@ -129,6 +128,28 @@ class PstUtil(SWATp):
         return cal_df
 
 
+    def read_cal_parms(self):
+        return pd.read_csv(
+                        'cal_parms.cal',
+                        sep=r'\s+',
+                        skiprows=2,
+                        )     
+
+    def update_par_initials_ranges(self, precal_df):
+        
+        cal_adj = self.read_cal()
+        cal_db = self.read_cal_parms()
+        for i in cal_adj.index:
+            par = cal_adj.loc[i, "cal_parm"]
+            abs_min = cal_db.loc[cal_db["name"]==par, "abs_min"]
+            print(abs_min)
+            
+        
+
+        # df_par = self.read_cal()
+
+
+
 
 
 def get_last_day_of_month(df):
@@ -146,7 +167,7 @@ def get_last_day_of_month(df):
 
 if __name__ == '__main__':
     # wd = "/Users/seonggyu.park/Documents/projects/tools/swatp-pest_wf/models/TxtInOut_Imsil_rye_rot_r1"
-    wd = "D:\\jj\\main_opt"
+    wd = "/Users/seonggyu.park/Documents/projects/jj_test/main_opt"
     cns =  [1]
     cali_start_day = "1/1/2013"
     cali_end_day = "12/31/2023"
@@ -155,8 +176,10 @@ if __name__ == '__main__':
     cha_ext_file = "stf_001.txt"
 
     m1 = PstUtil(wd)
-    df =  m1.read_cha_obd(obd_file)
-    df = df[cali_start_day:cali_end_day]
-    # m1.stf_obd_to_ins(cha_ext_file, obd_file, obd_colnam, cali_start_day, cali_end_day, time_step="month")
-    # df = m1.cal_to_tpl_file()
-    print(df)
+    io_files = pyemu.helpers.parse_dir_for_io_files('.')
+    pst = pyemu.Pst.from_io_files(*io_files)
+    par = pst.parameter_data
+    m1.update_par_initials_ranges(par)
+
+    print(par)
+
