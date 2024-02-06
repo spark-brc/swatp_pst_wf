@@ -18,7 +18,7 @@ foward_path = os.path.dirname(os.path.abspath( __file__ ))
 
 
 def create_swatp_pst_con(
-    prj_dir, swatp_wd, cal_start, cal_end, chans, time_step=None
+    prj_dir, swatp_wd, cal_start, cal_end, chs, time_step=None
     ):
 
     if time_step is None:
