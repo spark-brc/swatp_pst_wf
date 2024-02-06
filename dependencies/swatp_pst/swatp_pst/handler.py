@@ -143,10 +143,10 @@ class SWATp(object):
             parse_dates=True,
         )
 
-    def extract_mon_stf(self, channels, cali_start_day, cali_end_day):
+    def extract_mon_stf(self, chs, cali_start_day, cali_end_day):
         sim_stf_f = self.read_cha_morph_mon()
         start_day = self.stdate_warmup
-        for i in channels:
+        for i in chs:
             sim_stf_f = self.read_cha_morph_mon()
             sim_stf_f = sim_stf_f.loc[sim_stf_f["gis_id"] == i]
             sim_stf_f = sim_stf_f.drop(['gis_id'], axis=1)

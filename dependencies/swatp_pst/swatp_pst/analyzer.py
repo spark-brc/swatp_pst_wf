@@ -181,25 +181,35 @@ def create_stf_opt_df(pst, pt_oe, opt_idx=None):
     return opt_df
 
 
-def plot_observed_data(ax, df3):
-    size = 10
-    ax.plot(
-        df3.loc[:, 'time'].values, df3.loc[:, "obsval"].values, c='m', lw=1.5, alpha=0.5,
-        label="Observed", zorder=3
-    )
-    # ax.scatter(
-    #     df3.index.values, df3.loc[:, "obsval"].values, c='m', lw=1, alpha=0.5, s=size, marker='x',
-    #     label="Observed", zorder=3
-    # )
+def plot_observed_data(ax, df3, size=None, dot=False):
+    if size is None:
+        size = 10
+    if dot is False:
+        ax.plot(
+            df3.loc[:, 'time'].values, df3.loc[:, "obsval"].values, c='m', lw=1.5, alpha=0.5,
+            label="Observed", zorder=3
+        )
+    if dot is True:
+        ax.scatter(
+            df3.loc[:, 'time'].values, df3.loc[:, "obsval"].values, c='m', lw=1, alpha=0.5, s=size, marker='x',
+            label="Observed", zorder=3
+        )
     # ax.xaxis.set_major_formatter(mdates.DateFormatter('%b-%d\n%Y'))
     if len(df3.loc[:, "obsval"]) > 1:
         calculate_metrics(ax, df3)
     else:
         display_no_data_message(ax)
 
-def plot_stf_sim_obd(ax, opt_df):
+def plot_stf_sim_obd(ax, opt_df, size=None, dot=False):
+    if size is None:
+        size = 10    
     ax.plot(opt_df.loc[:, 'time'].values, opt_df.iloc[:, 0].values, c='limegreen', lw=1, label="Simulated")
-    plot_observed_data(ax, opt_df)
+    if dot is False:
+        dot = False
+    if dot is True:
+        dot = True
+    # size=10
+    plot_observed_data(ax, opt_df, size=size, dot=dot)
     # except Exception as e:
     #     handle_exception(ax, str(e))
 

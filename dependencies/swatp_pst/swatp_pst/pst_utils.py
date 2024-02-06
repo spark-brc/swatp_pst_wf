@@ -135,7 +135,7 @@ class PstUtil(SWATp):
                         skiprows=2,
                         )     
 
-    def update_par_initials_ranges(self, precal_df):
+    def update_par_inits_rgs(self, precal_df):
         
         cal_adj = self.read_cal()
         cal_db = self.read_cal_parms()
