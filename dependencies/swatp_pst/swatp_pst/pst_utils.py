@@ -79,7 +79,8 @@ class PstUtil(SWATp):
         return pd.read_csv(
                         'calibration.cal',
                         sep=r'\s+',
-                        skiprows=2,
+                        skiprows=3,
+                        header=None
                         )        
 
     def cal_to_tpl_file(self, tpl_file=None):
@@ -103,12 +104,13 @@ class PstUtil(SWATp):
         with open(cal_file, 'r') as f:
             line1 = f.readline()
             line2 = f.readline()
+            line3 = f.readline()
 
         if tpl_file is None:
             tpl_file = cal_file + ".tpl"
         cal_df = self.read_cal()
-        cal_df.index = cal_df.cal_parm
-        cal_df.loc[:, "chg_val"] = cal_df.cal_parm.apply(lambda x: " ~   {0:15s}   ~".format(x))
+        cal_df.index = cal_df.iloc[:, 0]
+        cal_df.iloc[:, 2] = cal_df.iloc[:, 0].apply(lambda x: " ~   {0:15s}   ~".format(x))
 
         # # cal_df.loc[:, "tpl"] = cal_df.parnme.apply(lambda x: " ~   {0:15s}   ~".format(x[3:7]))
 
@@ -116,13 +118,14 @@ class PstUtil(SWATp):
             f.write("ptf ~\n")
             f.write(line1)
             f.write(line2)
+            f.write(line3)
             # f.write("{0:10d} #NP\n".format(cal_df.shape[0]))
             SFMT_LONG = lambda x: "{0:<10s} ".format(str(x))
             f.write(cal_df.loc[:, :].to_string(
                                     col_space=0,
                                     formatters=[SFMT_LONG]*len(cal_df.columns),
                                     index=False,
-                                    header=True,
+                                    header=False,
                                     justify="left"))
         # '''
         return cal_df
