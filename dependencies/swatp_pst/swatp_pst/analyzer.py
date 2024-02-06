@@ -6,6 +6,7 @@ import pyemu
 import os
 import matplotlib.dates as mdates
 from swatp_pst.handler import SWATp
+from swatp_pst import objfns
 
 # uncertainty
 def single_plot_tseries_ensembles(
@@ -162,10 +163,6 @@ def create_stf_sim_obd_df(wd, cha_id, obd_file, obd_col):
     opt_df.dropna(inplace=True)
     return opt_df
 
-
-
-
-
     
 def create_stf_opt_df(pst, pt_oe, opt_idx=None):
     if opt_idx is None:
@@ -175,10 +172,78 @@ def create_stf_opt_df(pst, pt_oe, opt_idx=None):
     for i in range(len(obs)):
         time_col.append(obs.iloc[i, 0][-6:])
     obs['time'] = time_col
-    pt_ut = pt_oe.iloc[opt_idx].T
+    pt_ut = pt_oe.loc[opt_idx].T
     opt_df = pd.DataFrame()
     opt_df = pd.concat([pt_ut, obs], axis=1)
     return opt_df
+
+
+def get_rels_objs(wd, pst_file, iter_idx=None, opt_idx=None):
+    pst = pyemu.Pst(os.path.join(wd, pst_file))
+    if iter_idx is None:
+        iter_idx = pst.control_data.noptmax
+    if opt_idx is None:
+        opt_idx = -1
+    
+    # load observation data
+    obs = pst.observation_data.copy()
+    pst_nam = pst_file[:-4]
+    # load posterior simulation
+    pt_oe = pyemu.ObservationEnsemble.from_csv(
+        pst=pst,filename=os.path.join(wd,"{0}.{1}.obs.csv".format(pst_nam, iter_idx)))
+
+    pt_ut = pt_oe.loc[opt_idx].T
+    opt_df = pd.DataFrame()
+    opt_df = pd.concat([pt_ut, obs], axis=1)
+    sims = opt_df.iloc[:, 0].tolist()
+    obds = opt_df.iloc[:, 2].tolist()
+    pbias = objfns.pbias(obds, sims)
+    ns = objfns.nashsutcliffe(obds, sims)
+    rsq = objfns.rsquared(obds, sims)
+    rmse = objfns.rmse(obds, sims)
+    mse = objfns.mse(obds, sims)
+    return ns, pbias, rsq, rmse
+    
+def create_rels_objs(wd, pst_file, iter_idx):
+    pst = pyemu.Pst(os.path.join(wd, pst_file))
+    # load observation data
+    # obs = pst.observation_data.copy()
+    pst_nam = pst_file[:-4]
+    # load posterior simulation
+    pt_oe = pyemu.ObservationEnsemble.from_csv(
+        pst=pst,filename=os.path.join(wd,"{0}.{1}.obs.csv".format(pst_nam, iter_idx)))
+    pt_par = pyemu.ParameterEnsemble.from_csv(
+        pst=pst,filename=os.path.join(wd,"{0}.{1}.par.csv".format(pst_nam, iter_idx)))
+    pt_oe_df = pd.DataFrame(pt_oe, index=pt_oe.index, columns=pt_oe.columns)
+    pt_par_df = pd.DataFrame(pt_par, index=pt_oe.index, columns=pt_par.columns)
+    nss = []
+    pbiass = []
+    rsqs = []
+    rmses = []
+    # for i in range(np.shape(pt_oe)[0]):
+    for i in pt_oe.index:
+        ns, pbias, rsq, rmse = get_rels_objs(wd, pst_file, iter_idx=iter_idx, opt_idx=i)
+        nss.append(ns)
+        pbiass.append(pbias)
+        rsqs.append(rsq)
+        rmses.append(rmse)
+    objs_df = pd.DataFrame({"ns": nss, "pbias": pbiass, "rsq": rsqs, "rmse": rmses}, index=pt_oe.index)
+    pt_oe_df = pd.concat([pt_oe_df, objs_df], axis=1)
+    pt_par_df = pd.concat([pt_par_df, objs_df], axis=1)
+    pt_oe_df.to_csv(os.path.join(wd, "{0}.{1}.obs.objs.csv".format(pst_nam, iter_idx)))
+    pt_par_df.to_csv(os.path.join(wd, "{0}.{1}.par.objs.csv".format(pst_nam, iter_idx)))
+    
+
+    
+
+
+
+    
+
+    # ns, pbias, rsq, rmse = get_rels_objs(wd, pst_file, iter_idx=iter_idx, opt_idx=opt_idx)
+
+
+
 
 
 def plot_observed_data(ax, df3, size=None, dot=False):
@@ -225,6 +290,17 @@ def plot_stf_sim(ax, stf_df):
 
 
 # NOTE: metrics =======================================================================================
+def calculate_metrics_opt(opt_df):
+    r_squared = ((sum((opt_df.loc[:, "obsval"] - opt_df.loc[:, "obsval"].mean()) * (opt_df.iloc[:, 0] - opt_df.iloc[:, 0].mean())))**2) / (
+            (sum((opt_df.loc[:, "obsval"] - opt_df.loc[:, "obsval"].mean())**2) * (sum((opt_df.iloc[:, 0] - opt_df.iloc[:, 0].mean())**2)))
+    )
+    dNS = 1 - (sum((opt_df.iloc[:, 0] - opt_df.loc[:, "obsval"])**2) / sum((opt_df.loc[:, "obsval"] - (opt_df.loc[:, "obsval"]).mean())**2))
+    pbias = 100 * (sum(opt_df.loc[:, "obsval"] - opt_df.iloc[:, 0]) / sum(opt_df.loc[:, "obsval"]))
+
+
+
+
+
 def calculate_metrics(ax, df3):
     r_squared = ((sum((df3.loc[:, "obsval"] - df3.loc[:, "obsval"].mean()) * (df3.iloc[:, 0] - df3.iloc[:, 0].mean())))**2) / (
             (sum((df3.loc[:, "obsval"] - df3.loc[:, "obsval"].mean())**2) * (sum((df3.iloc[:, 0] - df3.iloc[:, 0].mean())**2)))
@@ -285,7 +361,7 @@ def format_axes(fig):
 if __name__ == '__main__':
     # wd = "/Users/seonggyu.park/Documents/projects/tools/swatp-pest_wf/models/TxtInOut_Imsil_rye_rot_r1"
     # wd = "/Users/seonggyu.park/Documents/projects/jj_test/main_opt"
-    wd = "D:\\jj\\jj\\swatp_nw_ies"
+    # wd = "D:\\jj\\jj\\swatp_nw_ies"
     # cns =  [1]
     # cali_start_day = "1/1/2013"
     # cali_end_day = "12/31/2023"
@@ -298,27 +374,33 @@ if __name__ == '__main__':
     # pst = pyemu.Pst.from_io_files(*io_files)
     # par = pst.parameter_data
     # m1.update_par_initials_ranges(par)
-    cha_id =  1
-    obd_file = "singi_obs_q1_colnam.csv"
-    obd_col = "cha01"
-    df = create_stf_sim_obd_df(wd, cha_id, obd_file, obd_col)
-    print(df)    
+    # cha_id =  1
+    # obd_file = "singi_obs_q1_colnam.csv"
+    # obd_col = "cha01"
+    # df = create_stf_sim_obd_df(wd, cha_id, obd_file, obd_col)
+    # print(df)    
     # # print(par)
     # m_d = '/Users/seonggyu.park/Documents/projects/jj/swatp_nw_ies'
-    # pst_file = "swatp_nw_ies.pst"
-    # pst = pyemu.Pst(os.path.join(m_d, pst_file))
-    # # load prior simulation
-    # pr_oe = pyemu.ObservationEnsemble.from_csv(
-    #     pst=pst,filename=os.path.join(m_d,"swatp_nw_ies.0.obs.csv")
-    #     )
-    # # load posterior simulation
-    # pt_oe = pyemu.ObservationEnsemble.from_csv(
-    #     pst=pst,filename=os.path.join(m_d,"swatp_nw_ies.{0}.obs.csv".format(4)))
+    wd = 'D:\\jj\\opt_2nd\\swatp_nw_ies'
+    pst_file = "swatp_nw_ies.pst"
+    '''
+    pst = pyemu.Pst(os.path.join(m_d, pst_file))
+    # load prior simulation
+    pr_oe = pyemu.ObservationEnsemble.from_csv(
+        pst=pst,filename=os.path.join(m_d,"swatp_nw_ies.0.obs.csv")
+        )
+    # load posterior simulation
+    pt_oe = pyemu.ObservationEnsemble.from_csv(
+        pst=pst,filename=os.path.join(m_d,"swatp_nw_ies.{0}.obs.csv".format(9)))
     
 
-    # df = create_stf_opt_df(pst, pt_oe)
+    df = create_stf_opt_df(pst, pt_oe)
+    print(df)
+    '''
     # obd_col = "obsval"
     # fig, ax = plt.subplots()
     # plot_stf_sim_obd(ax, df, obd_col)
     # plt.show()
     # single_plot_tseries_ensembles(pst, pr_oe, pt_oe, width=10, height=4, dot=False)
+
+    create_rels_objs(wd, pst_file, 9)
