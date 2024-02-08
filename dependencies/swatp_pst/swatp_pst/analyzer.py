@@ -187,8 +187,6 @@ def convert_fdc_data(data):
     return data, exd
 
 
-
-
 def plot_tseries_ensembles(
                     pst, pr_oe, pt_oe, width=10, height=4, dot=True,
 #                     onames=["hds","sfr"]
@@ -376,7 +374,11 @@ def get_par_offset(pst):
 
 
 
-def plot_par_obj(wd, pst,  par_obj_file, objf=None, width=7, height=3, ncols=3):
+def plot_par_obj(
+        wd, pst,  par_obj_file, 
+        objf=None, width=7, height=3, ncols=3,
+        bstcs=None, orgsim=None,
+        save_fig=False):
     if objf is None:
         objf = "NS"
     po_df = pd.read_csv(os.path.join(wd, par_obj_file))
@@ -393,13 +395,28 @@ def plot_par_obj(wd, pst,  par_obj_file, objf=None, width=7, height=3, ncols=3):
             offset = pars_info.iloc[i, 1]
             ax.scatter(pars_df.iloc[:, i] + offset ,objs,s=30,alpha=0.2)
             ax.set_title(par_cols[i])
+            if bstcs is not None:
+                for bstc, colr in zip(bstcs, ["orange", "blue"]):
+                    x = po_df.loc[po_df["real_name"]==bstc, par_cols[i]].values + offset
+                    print(x)
+                    ax.axvline(x=x, color=colr, linestyle="--", alpha=0.5)
+        # if bstcs is not None:
             # ax.set_yticks([])
         else:
             ax.axis('off')
             ax.tick_params(labelcolor='none', top=False, bottom=False, left=False, right=False)   
+        if orgsim is not None:
+            orgsim = orgsim
     plt.xlabel("Parameter relative change (%)")
     plt.tight_layout()
+
+
+    if save_fig is True:
+        plt.savefig(
+            os.path.join(wd, f'par_obj_{objf}.png'), 
+            bbox_inches='tight', dpi=300)
     plt.show()
+    print(pars_df)
 
 def plot_observed_data(ax, df3, size=None, dot=False):
     if size is None:
@@ -551,6 +568,7 @@ if __name__ == '__main__':
     org_sim = create_stf_sim_obd_df(m_d2, 1, "singi_obs_q1_colnam.csv", "cha01")
 
     par_obj_file = "swatp_nw_ies.9.par.objs.csv"
+    bstcs=["56", "171"]
     '''
 
     df = create_stf_opt_df(pst, pt_oe)
@@ -560,8 +578,14 @@ if __name__ == '__main__':
     # fig, ax = plt.subplots()
     # plot_stf_sim_obd(ax, df, obd_col)
     # plt.show()
-    # single_plot_tseries_ensembles(pst, pr_oe, pt_oe, width=10, height=4, dot=False)
+    # single_plot_tseries_ensembles_plots_added(
+    #     pst, pr_oe, pt_oe, width=10, height=4, dot=False,
+    #     orgsim=org_sim, bstcs=["171", "56"])
 
-    # single_plot_fdc_added(pst, pr_oe, pt_oe, orgsim=org_sim, bstcs=["56", "171"])
-    plot_par_obj(wd, pst, par_obj_file, objf="rsq", height=9)
-    get_par_offset(pst)
+    single_plot_fdc_added(pst, pr_oe, pt_oe, orgsim=org_sim, bstcs=["171", "56"])
+    
+    # for i in ['ns', 'rsq', 'rmse', 'pbias']:
+    #     plot_par_obj(
+    #         wd, pst, par_obj_file, 
+    #         objf=i, height=7, bstcs=bstcs, save_fig=True)
+    # get_par_offset(pst)
