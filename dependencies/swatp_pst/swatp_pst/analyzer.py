@@ -62,6 +62,133 @@ def single_plot_tseries_ensembles(
     plt.show()
     # '''
 
+def single_plot_tseries_ensembles_plots_added(
+                    pst, pr_oe, pt_oe, 
+                    width=10, height=4, dot=True,
+                    size=None, bstcs=None,
+                    orgsim=None
+                    ):
+    if size is None:
+        size = 30
+    # pst.try_parse_name_metadata()
+    # get the observation data from the control file and select 
+    obs = pst.observation_data.copy()
+    obs = obs.loc[obs.obgnme.apply(lambda x: x in pst.nnz_obs_groups),:]
+    time_col = []
+    for i in range(len(obs)):
+        time_col.append(obs.iloc[i, 0][-6:])
+    obs['time'] = time_col
+#     # onames provided in oname argument
+#     obs = obs.loc[obs.oname.apply(lambda x: x in onames)]
+    # only non-zero observations
+#     obs = obs.loc[obs.obgnme.apply(lambda x: x in pst.nnz_obs_groups),:]
+    # make a plot
+    ogs = obs.obgnme.unique()
+    fig, ax = plt.subplots(figsize=(width,height))
+
+    oobs = obs
+    oobs.loc[:,"time"] = oobs.loc[:,"time"].astype(str)
+#         oobs.sort_values(by="time",inplace=True)
+    tvals = oobs.time.values
+    onames = oobs.obsnme.values
+    # '''
+    if dot is True:
+        # plot prior
+        [ax.scatter(tvals,pr_oe.loc[i,onames].values,color="gray",s=30, alpha=0.5) for i in pr_oe.index]
+        # plot posterior
+        [ax.scatter(tvals,pt_oe.loc[i,onames].values,color='b',s=30,alpha=0.2) for i in pt_oe.index]
+        # plot measured+noise 
+        oobs = oobs.loc[oobs.weight>0,:]
+        tvals = oobs.time.values
+        onames = oobs.obsnme.values
+        ax.scatter(oobs.time,oobs.obsval,color='red',s=30).set_facecolor("none")
+    if dot is False:
+        # plot prior
+        [ax.plot(tvals,pr_oe.loc[i,onames].values,"0.5",lw=0.5,alpha=0.5) for i in pr_oe.index]
+        # plot posterior
+        [ax.plot(tvals,pt_oe.loc[i,onames].values,"b",lw=0.5,alpha=0.5) for i in pt_oe.index]
+
+
+        # plot measured+noise 
+        oobs = oobs.loc[oobs.weight>0,:]
+        tvals = oobs.time.values
+        onames = oobs.obsnme.values
+        # ax.plot(oobs.time,oobs.obsval,"r-",lw=2)
+        ax.scatter(oobs.time,oobs.obsval,color='red',s=size, zorder=10, label="Observed").set_facecolor("none")
+        if bstcs is not None:
+            [ax.plot(tvals,pt_oe.loc[i,onames].values, lw=1, label=i) for i in bstcs]
+        if orgsim is not None:
+            orgsim = orgsim
+            ax.plot(tvals, orgsim.iloc[:, 0].values, c='limegreen', lw=1, label="Original")
+
+    
+    ax.tick_params(axis='x', labelrotation=90)
+    ax.margins(x=0.01)
+    plt.legend()
+    # ax.set_title(og,loc="left")
+    # fig.tight_layout()
+    plt.show()
+
+
+def single_plot_fdc_added(
+                    pst, pr_oe, pt_oe, 
+                    width=10, height=8, dot=True,
+                    size=None, bstcs=None,
+                    orgsim=None
+                    ):
+    if size is None:
+        size = 30
+    # pst.try_parse_name_metadata()
+    # get the observation data from the control file and select 
+    obs = pst.observation_data.copy()
+    obs = obs.loc[obs.obgnme.apply(lambda x: x in pst.nnz_obs_groups),:]
+    time_col = []
+    for i in range(len(obs)):
+        time_col.append(obs.iloc[i, 0][-6:])
+    obs['time'] = time_col
+    onames = obs.obsnme.values
+
+    obs_d, obd_exd = convert_fdc_data(obs.obsval.values)
+    pr_min_d, pr_min_exd = convert_fdc_data(pr_oe.min().values)
+    pr_max_d, pr_max_exd = convert_fdc_data(pr_oe.max().values)
+    pt_min_d, pt_min_exd = convert_fdc_data(pt_oe.min().values)
+    pt_max_d, pt_max_exd = convert_fdc_data(pt_oe.max().values)
+
+    fig, ax = plt.subplots(figsize=(width,height))
+    ax.fill_between(pr_min_exd*100, pr_min_d, pr_max_d, interpolate=False, facecolor="0.5", alpha=0.4)
+    ax.fill_between(pt_min_exd*100, pt_min_d, pt_max_d, interpolate=False, facecolor="b", alpha=0.4)
+    ax.scatter(obd_exd*100, obs_d, color='red',s=size, zorder=10, label="Observed").set_facecolor("none")
+    if orgsim is not None:
+        orgsim = orgsim
+        org_d, org_exd = convert_fdc_data(orgsim.iloc[:, 0].values)
+        ax.plot(org_exd*100, org_d, c='limegreen', lw=2, label="Original")
+    if bstcs is not None:
+        for bstc in bstcs:
+            dd, eexd = convert_fdc_data(pt_oe.loc[bstc,onames].values)
+            ax.plot(eexd*100, dd, lw=2, label=bstc)
+
+    ax.set_yscale('log')
+    ax.set_xlabel(r"Exceedence [%]", fontsize=12)
+    ax.set_ylabel(r"Flow rate $[m^3/s]$", fontsize=12)
+    ax.margins(0.01)
+    ax.tick_params(axis='both', labelsize=12)
+    plt.legend(fontsize=12, loc="lower left")
+    plt.tight_layout()
+    plt.savefig('fdc.png', bbox_inches='tight', dpi=300)
+    plt.show()
+    print(os.getcwd())
+
+    # return pr_oe_min
+
+
+def convert_fdc_data(data):
+    data = np.sort(data)[::-1]
+    exd = np.arange(1.,len(data)+1) / len(data)
+    return data, exd
+
+
+
+
 def plot_tseries_ensembles(
                     pst, pr_oe, pt_oe, width=10, height=4, dot=True,
 #                     onames=["hds","sfr"]
@@ -116,29 +243,35 @@ def plot_tseries_ensembles(
     # fig.tight_layout()
     plt.show()
 
-def plot_prior_posterior_par_hist(prior_df, post_df, sel_pars, width=7, height=5, ncols=3):
+def plot_prior_posterior_par_hist(pst, prior_df, post_df, sel_pars, width=7, height=5, ncols=3):
     nrows = math.ceil(len(sel_pars)/ncols)
+    pars_info = get_par_offset(pst)
     fig, axes = plt.subplots(figsize=(width, height), nrows=nrows, ncols=ncols)
     ax1 = fig.add_subplot(111, frameon=False)
     ax1 = plt.tick_params(labelcolor='none', top=False, bottom=False, left=False, right=False)
     for i, ax in enumerate(axes.flat):
         if i<len(sel_pars):
             colnam = sel_pars['parnme'].tolist()[i]
-            ax.hist(prior_df.loc[:, colnam].values,
+            offset = pars_info.loc[colnam, "offset"]
+            
+            ax.hist(prior_df.loc[:, colnam].values + offset,
                     bins=np.linspace(
-                        sel_pars.loc[sel_pars["parnme"]==colnam, 'parlbnd'].values[0], 
-                        sel_pars.loc[sel_pars["parnme"]==colnam, 'parubnd'].values[0], 20),
+                        sel_pars.loc[sel_pars["parnme"]==colnam, 'parlbnd'].values[0]+ offset, 
+                        sel_pars.loc[sel_pars["parnme"]==colnam, 'parubnd'].values[0]+ offset, 20),
                     color = "gray", alpha=0.5, density=True,
                     label="Prior"
             )
-            y, x, _ = ax.hist(post_df.loc[:, colnam].values,
+            y, x, _ = ax.hist(post_df.loc[:, colnam].values + offset,
                     bins=np.linspace(
-                        sel_pars.loc[sel_pars["parnme"]==colnam, 'parlbnd'].values[0], 
-                        sel_pars.loc[sel_pars["parnme"]==colnam, 'parubnd'].values[0], 20), 
+                        sel_pars.loc[sel_pars["parnme"]==colnam, 'parlbnd'].values[0]+ offset, 
+                        sel_pars.loc[sel_pars["parnme"]==colnam, 'parubnd'].values[0]+ offset, 20), 
                      alpha=0.5, density=True, label="Posterior"
             )
             ax.set_ylabel(colnam)
             ax.set_yticks([])
+        else:
+            ax.axis('off')
+            ax.tick_params(labelcolor='none', top=False, bottom=False, left=False, right=False)            
     plt.xlabel("Parameter range")
     plt.show()
 
@@ -232,19 +365,41 @@ def create_rels_objs(wd, pst_file, iter_idx):
     pt_par_df = pd.concat([pt_par_df, objs_df], axis=1)
     pt_oe_df.to_csv(os.path.join(wd, "{0}.{1}.obs.objs.csv".format(pst_nam, iter_idx)))
     pt_par_df.to_csv(os.path.join(wd, "{0}.{1}.par.objs.csv".format(pst_nam, iter_idx)))
+
+
+def get_par_offset(pst):
+    pars = pst.parameter_data.copy()
+    pars = pars.loc[:, ["parnme", "offset"]]
+    return pars
+    
     
 
-    
 
 
-
-    
-
-    # ns, pbias, rsq, rmse = get_rels_objs(wd, pst_file, iter_idx=iter_idx, opt_idx=opt_idx)
-
-
-
-
+def plot_par_obj(wd, pst,  par_obj_file, objf=None, width=7, height=3, ncols=3):
+    if objf is None:
+        objf = "NS"
+    po_df = pd.read_csv(os.path.join(wd, par_obj_file))
+    pars_df = po_df.iloc[:, 1:-4]
+    par_cols = pars_df.columns.values
+    objs = po_df.loc[:, objf.lower()].values
+    pars_info = get_par_offset(pst)
+    nrows = math.ceil(len(par_cols)/ncols)
+    fig, axes = plt.subplots(figsize=(width, height), nrows=nrows, ncols=ncols)
+    ax1 = fig.add_subplot(111, frameon=False)
+    ax1 = plt.tick_params(labelcolor='none', top=False, bottom=False, left=False, right=False)
+    for i, ax in enumerate(axes.flat):
+        if i<len(par_cols):
+            offset = pars_info.iloc[i, 1]
+            ax.scatter(pars_df.iloc[:, i] + offset ,objs,s=30,alpha=0.2)
+            ax.set_title(par_cols[i])
+            # ax.set_yticks([])
+        else:
+            ax.axis('off')
+            ax.tick_params(labelcolor='none', top=False, bottom=False, left=False, right=False)   
+    plt.xlabel("Parameter relative change (%)")
+    plt.tight_layout()
+    plt.show()
 
 def plot_observed_data(ax, df3, size=None, dot=False):
     if size is None:
@@ -383,16 +538,20 @@ if __name__ == '__main__':
     # m_d = '/Users/seonggyu.park/Documents/projects/jj/swatp_nw_ies'
     wd = 'D:\\jj\\opt_2nd\\swatp_nw_ies'
     pst_file = "swatp_nw_ies.pst"
-    '''
-    pst = pyemu.Pst(os.path.join(m_d, pst_file))
+    pst = pyemu.Pst(os.path.join(wd, pst_file))
     # load prior simulation
     pr_oe = pyemu.ObservationEnsemble.from_csv(
-        pst=pst,filename=os.path.join(m_d,"swatp_nw_ies.0.obs.csv")
+        pst=pst,filename=os.path.join(wd,"swatp_nw_ies.0.obs.csv")
         )
     # load posterior simulation
     pt_oe = pyemu.ObservationEnsemble.from_csv(
-        pst=pst,filename=os.path.join(m_d,"swatp_nw_ies.{0}.obs.csv".format(9)))
+        pst=pst,filename=os.path.join(wd,"swatp_nw_ies.{0}.obs.csv".format(9)))
     
+    m_d2 = 'D:\\jj\\TxtInOut_Imsil_rye_rot_r2'
+    org_sim = create_stf_sim_obd_df(m_d2, 1, "singi_obs_q1_colnam.csv", "cha01")
+
+    par_obj_file = "swatp_nw_ies.9.par.objs.csv"
+    '''
 
     df = create_stf_opt_df(pst, pt_oe)
     print(df)
@@ -403,4 +562,6 @@ if __name__ == '__main__':
     # plt.show()
     # single_plot_tseries_ensembles(pst, pr_oe, pt_oe, width=10, height=4, dot=False)
 
-    create_rels_objs(wd, pst_file, 9)
+    # single_plot_fdc_added(pst, pr_oe, pt_oe, orgsim=org_sim, bstcs=["56", "171"])
+    plot_par_obj(wd, pst, par_obj_file, objf="rsq", height=9)
+    get_par_offset(pst)
