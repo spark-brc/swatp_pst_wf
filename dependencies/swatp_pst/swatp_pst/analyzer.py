@@ -371,7 +371,6 @@ def get_rels_cal_val_objs(wd, pst_file, iter_idx=None, opt_idx=None, calval=Fals
 
 def get_p_factor(pst, pt_oe, perc_obd_nz=None, cal_val=False):
     obs = pst.observation_data.copy()
-    print(obs)
     if perc_obd_nz is None:
         perc_obd_nz=10
     perc = perc_obd_nz*0.01
@@ -414,7 +413,36 @@ def get_p_factor(pst, pt_oe, perc_obd_nz=None, cal_val=False):
             )
         pfactor = df.loc[:, 'pfactor'].value_counts()[1] / len(df.loc[:, 'pfactor'])
         print(pfactor)
+        df.to_csv('testpfactor.csv')
         return pfactor
+    
+
+def get_d_factor(pst, pt_oe, cal_val=False):
+    obs = pst.observation_data.copy()
+    time_col = []
+    for i in range(len(obs)):
+        time_col.append(obs.iloc[i, 0][-8:])
+    obs['time'] = time_col
+    obs['time'] = pd.to_datetime(obs['time'])    
+    df = pd.DataFrame(
+        {'date':obs['time'],
+        'obd':obs["obsval"],
+        'weight':obs["weight"],
+        'obgnme':obs["obgnme"],
+        'pt_min': pt_oe.min(),
+        'pt_max': pt_oe.max(),
+        }
+        )
+    if cal_val is True:
+        dfactors = []
+        for i in ["cal", "val"]:
+            cvdf = df.loc[df["obgnme"]==i]
+            std_obd = np.std(cvdf['obd'])
+            dist_pts = (cvdf['pt_max'] - cvdf['pt_min']).mean()
+            dfactor = dist_pts/std_obd
+            dfactors.append(dfactor)
+        print(dfactors)
+        return dfactors
 
 
 def create_rels_objs(wd, pst_file, iter_idx):
@@ -783,4 +811,5 @@ if __name__ == '__main__':
     #     size=20
     #     )
     # print(pcp_df)
-    get_p_factor(pst, pt_oe, perc_obd_nz=None, cal_val=True)
+    # get_p_factor(pst, pt_oe, perc_obd_nz=None, cal_val=True)
+    get_d_factor(pst, pt_oe, cal_val=True)
