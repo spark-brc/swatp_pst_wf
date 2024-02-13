@@ -142,6 +142,14 @@ class SWATp(object):
             index_col=0,
             parse_dates=True,
         )
+    
+    def read_pcp_data(self):
+        return pd.read_csv(
+            "channel_sd_mon.txt",
+            sep=r'\s+',
+            skiprows=[0,2],
+            usecols=["gis_id", "area", "precip", ]
+            )        
 
     def extract_mon_stf(self, chs, cali_start_day, cali_end_day):
         sim_stf_f = self.read_cha_morph_mon()
