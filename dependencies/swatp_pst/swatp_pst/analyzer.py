@@ -8,6 +8,7 @@ import matplotlib.dates as mdates
 from swatp_pst.handler import SWATp
 from swatp_pst import objfns
 import datetime
+import scipy.stats as st
 
 # uncertainty
 def single_plot_tseries_ensembles(
@@ -340,7 +341,7 @@ def get_rels_objs(wd, pst_file, iter_idx=None, opt_idx=None):
     mse = objfns.mse(obds, sims)
     return ns, pbias, rsq, rmse
 
-def get_rels_cal_val_objs(wd, pst_file, iter_idx=None, opt_idx=None, calval=False):
+def get_rels_cal_val_objs(wd, pst_file, iter_idx=None, opt_idx=None, calval=None):
     pst = pyemu.Pst(os.path.join(wd, pst_file))
     if iter_idx is None:
         iter_idx = pst.control_data.noptmax
@@ -357,9 +358,9 @@ def get_rels_cal_val_objs(wd, pst_file, iter_idx=None, opt_idx=None, calval=Fals
     opt_df = pd.DataFrame()
     opt_df = pd.concat([pt_ut, obs], axis=1)
 
-    if calval is True:
-        opt_df = opt_df.loc[opt_df["obgnme"]=="cal"]
-
+    if calval is None:
+        calval = "cal"
+    opt_df = opt_df.loc[opt_df["obgnme"]==calval]
     sims = opt_df.iloc[:, 0].tolist()
     obds = opt_df.iloc[:, 2].tolist()
     pbias = objfns.pbias(obds, sims)
@@ -370,6 +371,19 @@ def get_rels_cal_val_objs(wd, pst_file, iter_idx=None, opt_idx=None, calval=Fals
     return ns, pbias, rsq, rmse
 
 def get_p_factor(pst, pt_oe, perc_obd_nz=None, cal_val=False):
+    """calculate p-factor
+
+    :param pst: pst object
+    :type pst: class
+    :param pt_oe: posterior ensamble
+    :type pt_oe: dataframe
+    :param perc_obd_nz: percentage of observation noise, defaults to None
+    :type perc_obd_nz: real, optional
+    :param cal_val: option to separate calibration and validation, defaults to False
+    :type cal_val: bool, optional
+    :return: p-factor value
+    :rtype: real
+    """
     obs = pst.observation_data.copy()
     if perc_obd_nz is None:
         perc_obd_nz=10
@@ -495,6 +509,7 @@ def filter_candidates(
         po_df = po_df.loc[(po_df["rmse"]>=rmsebds[0]) & (po_df["rmse"]<=rmsebds[1])]
     if savefile is True:
         po_df.to_csv(os.path.join(wd, "{}.filter.csv".format(pst_nam)), index=False)
+    print(po_df)
     return po_df
 
 
@@ -527,7 +542,7 @@ def plot_par_obj(
             ax.scatter(pars_df.iloc[:, i] + offset ,objs,s=30,alpha=0.2)
             ax.set_title(par_cols[i])
             if bstcs is not None:
-                for bstc, colr in zip(bstcs, ["orange", "blue"]):
+                for bstc, colr in zip(bstcs, ["blue"]):
                     x = po_df.loc[po_df["real_name"]==bstc, par_cols[i]].values + offset
                     print(x)
                     ax.axvline(x=x, color=colr, linestyle="--", alpha=0.5)
@@ -546,7 +561,7 @@ def plot_par_obj(
             os.path.join(wd, f'par_obj_{objf}.png'), 
             bbox_inches='tight', dpi=300)
     plt.show()
-    print(pars_df)
+
 
 def plot_observed_data(ax, df3, size=None, dot=False):
     if size is None:
@@ -683,7 +698,6 @@ def get_pr_pt_df(pst, pr_oe, pt_oe, bestrel_idx=None):
     df.set_index('date', inplace=True)
     return df
 
-
 def plot_fill_between_ensembles(
         df, 
         width=12, height=4,
@@ -746,17 +760,12 @@ def plot_fill_between_ensembles(
     ax.set_ylim(0, df.max().max()*1.5)
 
     # ask matplotlib for the plotted objects and their labels
-    
-
-
     lines, labels = ax.get_legend_handles_labels()
     lines2, labels2 = ax2.get_legend_handles_labels()
     order = [0,1,2,3,4,6,5]
 
     tlables = labels2 + labels
     tlines = lines2 + lines
-
-
     # plt.legend([handles[idx] for idx in order],[labels[idx] for idx in order])
 
     fig.legend(
@@ -765,21 +774,16 @@ def plot_fill_between_ensembles(
         loc = 'upper center',
         bbox_to_anchor=(0.5, 1.07),
         ncols=7)
-
-
-
-
     # fig.legend(fontsize=12, loc="lower left")
     plt.tight_layout()
     plt.savefig('cal_val.png', bbox_inches='tight', dpi=300)
     plt.show()
 
-if __name__ == '__main__':
+
+
+def result_ies():
+    # info
     wd = 'D:\\jj\\opt_3rd\\swatp_nw_ies'
-
-
-
-
     pst_file = "swatp_nw_ies.pst"
     pst = pyemu.Pst(os.path.join(wd, pst_file))
     # load prior simulation
@@ -788,20 +792,41 @@ if __name__ == '__main__':
         )
     # load posterior simulation
     pt_oe = pyemu.ObservationEnsemble.from_csv(
-        pst=pst,filename=os.path.join(wd,"swatp_nw_ies.{0}.obs.csv".format(6)))
+        pst=pst,filename=os.path.join(wd,"swatp_nw_ies.{0}.obs.csv".format(5)))
     
-    m_d2 = 'D:\\jj\\TxtInOut_Imsil_rye_rot_r2'
-    org_sim = create_stf_sim_obd_df(m_d2, 1, "singi_obs_q1_colnam.csv", "cha01")
 
-    # par_obj_file = "swatp_nw_ies.6.par.objs.csv"
-    # bstcs=["56", "171"]
-    # parbds = [10, 190]
-    # nsbds = [0.70, 1]
-    # pbiasbds = [-10, 10]
+    # --------
+    # RESULT01
+    #---------
+    iter_idx = 5
+    par_obj_file = f"swatp_nw_ies.{iter_idx}.par.objs.csv"
+    bstcs=["46"]
+    parbds = [20, 180]
+    nsbds = [0.70, 1]
+    pbiasbds = [-15, 15]
+    # # check best realization
+    # fter = filter_candidates(
+    #     wd, pst, par_obj_file, parbds=parbds,
+    #     nsbds=None, pbiasbds=None,
+    #     rsqbds=None, rmsebds=None,
+    #     savefile=False)
+    # for rel_idx in fter.loc[:, "real_name"]:
+    #     print(f"cal:{rel_idx}",
+    #         get_rels_cal_val_objs(
+    #         wd, pst_file, 
+    #         iter_idx=iter_idx, 
+    #         opt_idx=rel_idx, 
+    #         calval="cal")
+    #         )
+    #     print(f"val:{rel_idx}",
+    #         get_rels_cal_val_objs(
+    #         wd, pst_file, 
+    #         iter_idx=iter_idx, 
+    #         opt_idx=rel_idx, 
+    #         calval="val")
+    #         )
 
-    # pcp_df = create_pcp_df(wd, 1)
-    # df = get_pr_pt_df(pst, pr_oe, pt_oe, bestrel_idx="4")
-    # print(df)
+    # df = get_pr_pt_df(pst, pr_oe, pt_oe, bestrel_idx="46")
     # pcp_df = create_pcp_df(wd, 1)
     # plot_fill_between_ensembles(
     #     df, 
@@ -810,6 +835,97 @@ if __name__ == '__main__':
     #     valdates=['1/1/2013','12/31/2016'],
     #     size=20
     #     )
-    # print(pcp_df)
     # get_p_factor(pst, pt_oe, perc_obd_nz=None, cal_val=True)
-    get_d_factor(pst, pt_oe, cal_val=True)
+    # get_d_factor(pst, pt_oe, cal_val=True)
+
+    objs = ['ns', 'pbias', 'rsq', 'rmse']
+    # plot par obj
+    for obj in objs:
+        plot_par_obj(wd, pst,  par_obj_file, 
+            objf=obj, width=7, height=8, ncols=3,
+            bstcs=bstcs, orgsim=None,
+            save_fig=True)
+
+
+    # iter_idx = 5
+    # # create_rels_objs(wd, pst_file, iter_idx)
+    # filter_candidates(
+    #     wd, pst, par_obj_file, parbds=parbds,
+    #     nsbds=None, pbiasbds=None,
+    #     rsqbds=None, rmsebds=None,
+    #     savefile=True)
+
+
+# sensitivity
+def read_sobol_sti(wd, pst_file):
+    return pd.read_csv(
+        os.path.join(wd, f"{pst_file[:-4]}.sobol.sti.csv")
+        )
+
+def read_sobol_sfi(wd, pst_file):
+    return pd.read_csv(
+        os.path.join(wd, f"{pst_file[:-4]}.sobol.si.csv")
+        )
+
+def confidence_interval(data):
+    cfi = st.t.interval(0.95, len(data)-1, loc=np.mean(data), scale=st.sem(data))
+    error = cfi[1] - cfi[0]
+    return error
+
+def plot_sen_sobol():
+    stdf = read_sobol_sti(wd, pst_file)
+    stphi = stdf.loc[stdf["output"]=="phi"]
+    stts = stdf.iloc[1:, :]
+    sfdf = read_sobol_sfi(wd, pst_file)
+    sfphi = sfdf.loc[sfdf["output"]=="phi"]
+    sfts = sfdf.iloc[1:, :]
+
+    sfts_cfis = []
+    for par in sfphi.columns[1:]:
+        sfts_cfis.append(confidence_interval(sfts.loc[:, par].abs().values))
+
+    stts_cfis = []
+    for par in sfphi.columns[1:]:
+        stts_cfis.append(confidence_interval(stts.loc[:, par].abs().values))    
+
+    print(stphi.iloc[0, 1:].values)
+
+    N = len(sfphi.columns[1:])
+
+    ind = np.arange(N)  # the x locations for the groups
+    width = 0.4
+
+    fig, ax = plt.subplots(figsize=(12,4))
+    # Width of a bar 
+    error_kw=dict(lw=1, capsize=2, capthick=1)
+      
+    ax.bar(ind, sfphi.iloc[0, 1:].abs().values, width, color='C1', yerr=sfts_cfis, label="First order", error_kw=error_kw)
+    ax.bar(ind + width, stphi.iloc[0, 1:].abs().values, width, color='C0', yerr=stts_cfis, label="Total order", error_kw=error_kw)
+    ax.set_ylim(0, 1)
+    ax.set_xticks(ind + width / 2)
+    ax.set_xticklabels(sfphi.columns[1:])
+    ax.tick_params(axis='both', labelsize=12)
+    ax.set_ylabel(r"Sensitivity index", fontsize=12)
+    ax.set_xlabel(r"Parameter", fontsize=12)
+    ax.legend(fontsize=10, loc="upper left")
+    plt.tight_layout()
+    plt.savefig(os.path.join(wd, 'sen_sobol.png'), bbox_inches='tight', dpi=300)
+    plt.show()
+    # '''
+
+
+if __name__ == '__main__':
+    # info
+    wd = 'D:\\jj\\opt_3rd\\calibrated'
+    pst_file = "swatp_nw_sen_sobol.pst"
+    m_d2 = 'D:\\jj\\TxtInOut_Imsil_rye_rot_r2'
+    org_sim = create_stf_sim_obd_df(m_d2, 1, "singi_obs_q1_colnam.csv", "cha01")
+    cal_sim = create_stf_sim_obd_df(wd, 1, "singi_obs_q1_colnam.csv", "cha01")
+    print(cal_sim)
+    # plot progress comparison pre and post
+    fig, axes = plt.subplots(2, 1, figsize=(10, 8))
+    plot_stf_sim_obd(axes[0], org_sim, dot=True)
+    plot_stf_sim_obd(axes[1], cal_sim, dot=True)
+    axes[0].set_title('pre')
+    axes[1].set_title('post')
+    plt.show()
