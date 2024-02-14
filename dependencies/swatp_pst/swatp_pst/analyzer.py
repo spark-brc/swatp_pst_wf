@@ -747,18 +747,18 @@ def plot_fill_between_ensembles(
             align='center', 
             alpha=0.5
             )
-        ax2.set_ylabel("Precipitation $(mm)$",color="blue",fontsize=12, alpha=0.5)
+        ax2.set_ylabel("Precipitation $(mm/month)$",fontsize=12)
         ax2.invert_yaxis()
         ax2.set_ylim(pcp_df.loc[:, "pcpmm"].max()*3, 0)
         # ax.set_ylabel("Stream Discharge $(m^3/day)$",fontsize=14)
         ax2.tick_params(axis='y', labelsize=12)
     ax.axvline(datetime.datetime(2016,12,31), linestyle="--", color='k', alpha=0.3)
     # ax.set_xlabel(r"Exceedence [%]", fontsize=12)
-    ax.set_ylabel(r"Flow rate $[m^3/s]$", fontsize=12)
+    ax.set_ylabel(r"Monthly streamflow $(m^3/s)$", fontsize=12)
     ax.margins(0.01)
     ax.tick_params(axis='both', labelsize=12)
     ax.set_ylim(0, df.max().max()*1.5)
-
+    ax.xaxis.set_major_locator(mdates.YearLocator(1))
     # ask matplotlib for the plotted objects and their labels
     lines, labels = ax.get_legend_handles_labels()
     lines2, labels2 = ax2.get_legend_handles_labels()
@@ -771,8 +771,8 @@ def plot_fill_between_ensembles(
     fig.legend(
         [tlines[idx] for idx in order],[tlables[idx] for idx in order],
         fontsize=10,
-        loc = 'upper center',
-        bbox_to_anchor=(0.5, 1.07),
+        loc = 'lower center',
+        bbox_to_anchor=(0.5, -0.08),
         ncols=7)
     # fig.legend(fontsize=12, loc="lower left")
     plt.tight_layout()
@@ -826,25 +826,25 @@ def result_ies():
     #         calval="val")
     #         )
 
-    # df = get_pr_pt_df(pst, pr_oe, pt_oe, bestrel_idx="46")
-    # pcp_df = create_pcp_df(wd, 1)
-    # plot_fill_between_ensembles(
-    #     df, 
-    #     pcp_df=pcp_df,
-    #     caldates=['1/1/2017','12/31/2023'],
-    #     valdates=['1/1/2013','12/31/2016'],
-    #     size=20
-    #     )
+    df = get_pr_pt_df(pst, pr_oe, pt_oe, bestrel_idx="46")
+    pcp_df = create_pcp_df(wd, 1)
+    plot_fill_between_ensembles(
+        df, 
+        pcp_df=pcp_df,
+        caldates=['1/1/2017','12/31/2023'],
+        valdates=['1/1/2013','12/31/2016'],
+        size=20
+        )
     # get_p_factor(pst, pt_oe, perc_obd_nz=None, cal_val=True)
     # get_d_factor(pst, pt_oe, cal_val=True)
 
-    objs = ['ns', 'pbias', 'rsq', 'rmse']
-    # plot par obj
-    for obj in objs:
-        plot_par_obj(wd, pst,  par_obj_file, 
-            objf=obj, width=7, height=8, ncols=3,
-            bstcs=bstcs, orgsim=None,
-            save_fig=True)
+    # objs = ['ns', 'pbias', 'rsq', 'rmse']
+    # # plot par obj
+    # for obj in objs:
+    #     plot_par_obj(wd, pst,  par_obj_file, 
+    #         objf=obj, width=7, height=8, ncols=3,
+    #         bstcs=bstcs, orgsim=None,
+    #         save_fig=True)
 
 
     # iter_idx = 5
@@ -872,7 +872,7 @@ def confidence_interval(data):
     error = cfi[1] - cfi[0]
     return error
 
-def plot_sen_sobol():
+def plot_sen_sobol(wd, pst_file):
     stdf = read_sobol_sti(wd, pst_file)
     stphi = stdf.loc[stdf["output"]=="phi"]
     stts = stdf.iloc[1:, :]
@@ -908,6 +908,15 @@ def plot_sen_sobol():
     ax.set_ylabel(r"Sensitivity index", fontsize=12)
     ax.set_xlabel(r"Parameter", fontsize=12)
     ax.legend(fontsize=10, loc="upper left")
+    # ax.yaxis.get_ticklocs(minor=True)
+    ax.minorticks_on()
+    ax.xaxis.set_tick_params(which='minor', bottom=False)
+    ax.tick_params(
+        which="both",
+        axis="y",direction="in", 
+        # pad=-22
+        )
+    # ax.grid('True')
     plt.tight_layout()
     plt.savefig(os.path.join(wd, 'sen_sobol.png'), bbox_inches='tight', dpi=300)
     plt.show()
@@ -916,16 +925,19 @@ def plot_sen_sobol():
 
 if __name__ == '__main__':
     # info
-    wd = 'D:\\jj\\opt_3rd\\calibrated'
+    wd = 'D:\\jj\\opt_3rd\\swatp_nw_sen_sobol'
     pst_file = "swatp_nw_sen_sobol.pst"
-    m_d2 = 'D:\\jj\\TxtInOut_Imsil_rye_rot_r2'
-    org_sim = create_stf_sim_obd_df(m_d2, 1, "singi_obs_q1_colnam.csv", "cha01")
-    cal_sim = create_stf_sim_obd_df(wd, 1, "singi_obs_q1_colnam.csv", "cha01")
-    print(cal_sim)
-    # plot progress comparison pre and post
-    fig, axes = plt.subplots(2, 1, figsize=(10, 8))
-    plot_stf_sim_obd(axes[0], org_sim, dot=True)
-    plot_stf_sim_obd(axes[1], cal_sim, dot=True)
-    axes[0].set_title('pre')
-    axes[1].set_title('post')
-    plt.show()
+    # m_d2 = 'D:\\jj\\TxtInOut_Imsil_rye_rot_r2'
+    # org_sim = create_stf_sim_obd_df(m_d2, 1, "singi_obs_q1_colnam.csv", "cha01")
+    # cal_sim = create_stf_sim_obd_df(wd, 1, "singi_obs_q1_colnam.csv", "cha01")
+    # print(cal_sim)
+    # # plot progress comparison pre and post
+    # fig, axes = plt.subplots(2, 1, figsize=(10, 8))
+    # plot_stf_sim_obd(axes[0], org_sim, dot=True)
+    # plot_stf_sim_obd(axes[1], cal_sim, dot=True)
+    # axes[0].set_title('pre')
+    # axes[1].set_title('post')
+    # plt.show()
+
+    # result_ies()
+    plot_sen_sobol(wd, pst_file)
