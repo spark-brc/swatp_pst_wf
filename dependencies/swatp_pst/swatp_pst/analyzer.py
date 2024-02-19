@@ -879,22 +879,16 @@ def plot_sen_sobol(wd, pst_file):
     sfdf = read_sobol_sfi(wd, pst_file)
     sfphi = sfdf.loc[sfdf["output"]=="phi"]
     sfts = sfdf.iloc[1:, :]
-
     sfts_cfis = []
     for par in sfphi.columns[1:]:
         sfts_cfis.append(confidence_interval(sfts.loc[:, par].abs().values))
-
     stts_cfis = []
     for par in sfphi.columns[1:]:
         stts_cfis.append(confidence_interval(stts.loc[:, par].abs().values))    
-
     print(stphi.iloc[0, 1:].values)
-
     N = len(sfphi.columns[1:])
-
     ind = np.arange(N)  # the x locations for the groups
     width = 0.4
-
     fig, ax = plt.subplots(figsize=(12,4))
     # Width of a bar 
     error_kw=dict(lw=1, capsize=2, capthick=1)
@@ -922,10 +916,89 @@ def plot_sen_sobol(wd, pst_file):
     plt.show()
     # '''
 
+def plot_sen_sobol2(wd, pst_file):
+    # let's get zero for negative values
+    # st
+    sfdf = read_sobol_sfi(wd, pst_file)
+    sfphi = sfdf.loc[sfdf["output"]=="phi"]
+    sfphi[sfphi.iloc[:, 1:]<0] = 0
+    sfdf[sfdf.iloc[:, 1:]<0] = 0
+    sfts = sfdf.iloc[1:, 1:]
+    sftsm = sfts.mean()
+    stdf = read_sobol_sti(wd, pst_file)
+    stphi = stdf.loc[stdf["output"]=="phi"] # phi value
+    stphi[stphi.iloc[:, 1:]<0] = 0 # get zero for negative values
+    stdf[stdf.iloc[:, 1:]<0] = 0 # get zero for negative values
+    stts = stdf.iloc[1:, 1:]
+    sttsm = stts.mean()
+    sfts_cfis = []
+    for par in sfphi.columns[1:]:
+        sfts_cfis.append(confidence_interval(sfts.loc[:, par].values))
+    stts_cfis = []
+    for par in stphi.columns[1:]:
+        stts_cfis.append(confidence_interval(stts.loc[:, par].values))    
+    N = len(sfphi.columns[1:])
+    ind = np.arange(N)  # the x locations for the groups
+    width = 0.4
+    phiwidth = 0.2
+    
+
+    fig, ax = plt.subplots(figsize=(12,4))
+    # Width of a bar 
+    error_kw=dict(lw=1, capsize=2, capthick=1, alpha=0.5)
+
+    tcolor = sftsm + sttsm
+    colors = plt.cm.rainbow(tcolor/max(tcolor))
+    tphicolor = sfphi.iloc[0, 1:].values + stphi.iloc[0, 1:].values
+    # phico = plt.cm.rainbow(tphicolor/max(tphicolor))
+
+    ax.bar(
+        ind, sftsm, width, 
+        color=colors, yerr=sfts_cfis, label="First order", error_kw=error_kw
+        )
+    ax.bar(
+        ind, sttsm, width, bottom=sftsm,
+        color=colors, yerr=sfts_cfis, label="Total order", error_kw=error_kw,
+        alpha=0.5
+        )
+    ax.bar(
+        ind + 0.3, sfphi.iloc[0, 1:].values, phiwidth, 
+        color='k', label="First order (Phi)",alpha=0.7
+        )
+    ax.bar(
+        ind + 0.3, stphi.iloc[0, 1:].values, phiwidth, 
+        bottom=sfphi.iloc[0, 1:].values,
+        color='k', label="Total order (Phi)", alpha=0.3
+        )
+
+
+    # ax.bar(ind + width, stphi.iloc[0, 1:].abs().values, width, color='C0', yerr=stts_cfis, label="Total order", error_kw=error_kw)
+    # ax.set_ylim(0, 1)
+    ax.set_xticks(ind + width / 2)
+    ax.set_xticklabels(sfphi.columns[1:])
+    ax.tick_params(axis='both', labelsize=12)
+    ax.set_ylabel(r"Sensitivity index", fontsize=12)
+    ax.set_xlabel(r"Parameter", fontsize=12)
+    ax.legend(fontsize=10, loc="upper left")
+    # ax.yaxis.get_ticklocs(minor=True)
+    ax.minorticks_on()
+    ax.xaxis.set_tick_params(which='minor', bottom=False)
+    ax.tick_params(
+        which="both",
+        axis="y",direction="in", 
+        # pad=-22
+        )
+    # ax.grid('True')
+    plt.margins(y=0.1) 
+    plt.tight_layout()
+    plt.savefig(os.path.join(wd, 'sen_sobol.png'), bbox_inches='tight', dpi=300)
+    plt.show()
+
 
 if __name__ == '__main__':
     # info
-    wd = 'D:\\jj\\opt_3rd\\swatp_nw_sen_sobol'
+    wd = '/Users/seonggyu.park/Documents/projects/jj/swatp_nw_sen_sobol_1500'
+    # wd = 'D:\\jj\\opt_3rd\\swatp_nw_sen_sobol'
     pst_file = "swatp_nw_sen_sobol.pst"
     # m_d2 = 'D:\\jj\\TxtInOut_Imsil_rye_rot_r2'
     # org_sim = create_stf_sim_obd_df(m_d2, 1, "singi_obs_q1_colnam.csv", "cha01")
@@ -940,4 +1013,4 @@ if __name__ == '__main__':
     # plt.show()
 
     # result_ies()
-    plot_sen_sobol(wd, pst_file)
+    plot_sen_sobol2(wd, pst_file)
