@@ -951,26 +951,28 @@ def plot_sen_sobol2(wd, pst_file):
     colors = plt.cm.rainbow(tcolor/max(tcolor))
     tphicolor = sfphi.iloc[0, 1:].values + stphi.iloc[0, 1:].values
     # phico = plt.cm.rainbow(tphicolor/max(tphicolor))
+    ax.plot(np.NaN, np.NaN, '-', color='none', label='Variance based')
 
     ax.bar(
         ind, sftsm, width, 
-        color=colors, yerr=sfts_cfis, label="First order", error_kw=error_kw
+        color="C0", yerr=sfts_cfis, label=r"First order $S_i$", 
+        error_kw=error_kw
         )
     ax.bar(
         ind, sttsm, width, bottom=sftsm,
-        color=colors, yerr=sfts_cfis, label="Total order", error_kw=error_kw,
+        color="C0", yerr=sfts_cfis, label=r"Total order $S_{Ti}$", error_kw=error_kw,
         alpha=0.5
         )
+    ax.plot(np.NaN, np.NaN, '-', color='none', label=r'Objective function $(phi)$')
     ax.bar(
         ind + 0.3, sfphi.iloc[0, 1:].values, phiwidth, 
-        color='k', label="First order (Phi)",alpha=0.7
+        color="C1", label=r"First order $S_i$",
         )
     ax.bar(
         ind + 0.3, stphi.iloc[0, 1:].values, phiwidth, 
         bottom=sfphi.iloc[0, 1:].values,
-        color='k', label="Total order (Phi)", alpha=0.3
+        color='C1', label=r"Total order $S_{Ti}$", alpha=0.5
         )
-
 
     # ax.bar(ind + width, stphi.iloc[0, 1:].abs().values, width, color='C0', yerr=stts_cfis, label="Total order", error_kw=error_kw)
     # ax.set_ylim(0, 1)
@@ -997,8 +999,8 @@ def plot_sen_sobol2(wd, pst_file):
 
 if __name__ == '__main__':
     # info
-    wd = '/Users/seonggyu.park/Documents/projects/jj/swatp_nw_sen_sobol_1500'
-    # wd = 'D:\\jj\\opt_3rd\\swatp_nw_sen_sobol'
+    # wd = '/Users/seonggyu.park/Documents/projects/jj/swatp_nw_sen_sobol_1500'
+    wd = 'D:\\jj\\opt_3rd\\swatp_nw_sen_sobol_1500'
     pst_file = "swatp_nw_sen_sobol.pst"
     # m_d2 = 'D:\\jj\\TxtInOut_Imsil_rye_rot_r2'
     # org_sim = create_stf_sim_obd_df(m_d2, 1, "singi_obs_q1_colnam.csv", "cha01")
