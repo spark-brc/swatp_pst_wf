@@ -781,7 +781,7 @@ def plot_fill_between_ensembles(
 
 
 
-def result_ies():
+def result_ies_tot():
     # info
     wd = 'D:\\jj\\opt_3rd\\swatp_nw_ies'
     pst_file = "swatp_nw_ies.pst"
@@ -873,29 +873,64 @@ def confidence_interval(data):
     return error
 
 def plot_sen_sobol(wd, pst_file):
-    stdf = read_sobol_sti(wd, pst_file)
-    stphi = stdf.loc[stdf["output"]=="phi"]
-    stts = stdf.iloc[1:, :]
+    # let's get zero for negative values
+    # st
     sfdf = read_sobol_sfi(wd, pst_file)
     sfphi = sfdf.loc[sfdf["output"]=="phi"]
-    sfts = sfdf.iloc[1:, :]
+    sfphi[sfphi.iloc[:, 1:]<0] = 0
+    sfdf[sfdf.iloc[:, 1:]<0] = 0
+    sfts = sfdf.iloc[1:, 1:]
+    sftsm = sfts.mean()
+    stdf = read_sobol_sti(wd, pst_file)
+    stphi = stdf.loc[stdf["output"]=="phi"] # phi value
+    stphi[stphi.iloc[:, 1:]<0] = 0 # get zero for negative values
+    stdf[stdf.iloc[:, 1:]<0] = 0 # get zero for negative values
+    stts = stdf.iloc[1:, 1:]
+    sttsm = stts.mean()
     sfts_cfis = []
     for par in sfphi.columns[1:]:
-        sfts_cfis.append(confidence_interval(sfts.loc[:, par].abs().values))
+        sfts_cfis.append(confidence_interval(sfts.loc[:, par].values))
     stts_cfis = []
-    for par in sfphi.columns[1:]:
-        stts_cfis.append(confidence_interval(stts.loc[:, par].abs().values))    
-    print(stphi.iloc[0, 1:].values)
+    for par in stphi.columns[1:]:
+        stts_cfis.append(confidence_interval(stts.loc[:, par].values))    
     N = len(sfphi.columns[1:])
     ind = np.arange(N)  # the x locations for the groups
     width = 0.4
+    # phiwidth = 0.2
+    
+
     fig, ax = plt.subplots(figsize=(12,4))
     # Width of a bar 
-    error_kw=dict(lw=1, capsize=2, capthick=1)
-      
-    ax.bar(ind, sfphi.iloc[0, 1:].abs().values, width, color='C1', yerr=sfts_cfis, label="First order", error_kw=error_kw)
-    ax.bar(ind + width, stphi.iloc[0, 1:].abs().values, width, color='C0', yerr=stts_cfis, label="Total order", error_kw=error_kw)
-    ax.set_ylim(0, 1)
+    error_kw=dict(lw=1, capsize=2, capthick=1, alpha=0.5)
+
+    tcolor = sftsm + sttsm
+    colors = plt.cm.rainbow(tcolor/max(tcolor))
+    tphicolor = sfphi.iloc[0, 1:].values + stphi.iloc[0, 1:].values
+    # phico = plt.cm.rainbow(tphicolor/max(tphicolor))
+    # ax.plot(np.NaN, np.NaN, '-', color='none', label='Variance based')
+
+    ax.bar(
+        ind, sftsm, width, 
+        color="C0", yerr=sfts_cfis, label=r"First order $S_i$", 
+        error_kw=error_kw
+        )
+    ax.bar(
+        ind + width, sttsm, width,
+        color="C1", yerr=sfts_cfis, label=r"Total order $S_{Ti}$", error_kw=error_kw,
+        )
+    # ax.plot(np.NaN, np.NaN, '-', color='none', label=r'Objective function $(phi)$')
+    # ax.bar(
+    #     ind + width, sfphi.iloc[0, 1:].values, width, 
+    #     color="C1", label=r"First order $S_i$ - objective function",
+    #     )
+    # ax.bar(
+    #     ind + width, stphi.iloc[0, 1:].values, width, 
+    #     bottom=sfphi.iloc[0, 1:].values,
+    #     color='C1', label=r"Total order $S_{Ti} - objective function$", alpha=0.5
+    #     )
+
+    # ax.bar(ind + width, stphi.iloc[0, 1:].abs().values, width, color='C0', yerr=stts_cfis, label="Total order", error_kw=error_kw)
+    # ax.set_ylim(0, 1)
     ax.set_xticks(ind + width / 2)
     ax.set_xticklabels(sfphi.columns[1:])
     ax.tick_params(axis='both', labelsize=12)
@@ -911,9 +946,11 @@ def plot_sen_sobol(wd, pst_file):
         # pad=-22
         )
     # ax.grid('True')
+    plt.margins(y=0.1) 
     plt.tight_layout()
     plt.savefig(os.path.join(wd, 'sen_sobol.png'), bbox_inches='tight', dpi=300)
     plt.show()
+
     # '''
 
 def plot_sen_sobol2(wd, pst_file):
@@ -951,27 +988,27 @@ def plot_sen_sobol2(wd, pst_file):
     colors = plt.cm.rainbow(tcolor/max(tcolor))
     tphicolor = sfphi.iloc[0, 1:].values + stphi.iloc[0, 1:].values
     # phico = plt.cm.rainbow(tphicolor/max(tphicolor))
-    ax.plot(np.NaN, np.NaN, '-', color='none', label='Variance based')
+    # ax.plot(np.NaN, np.NaN, '-', color='none', label='Variance based')
 
     ax.bar(
         ind, sftsm, width, 
-        color="C0", yerr=sfts_cfis, label=r"First order $S_i$", 
+        color="C0", yerr=sfts_cfis, label=r"First order $S_i - variance$", 
         error_kw=error_kw
         )
     ax.bar(
         ind, sttsm, width, bottom=sftsm,
-        color="C0", yerr=sfts_cfis, label=r"Total order $S_{Ti}$", error_kw=error_kw,
+        color="C0", yerr=sfts_cfis, label=r"Total order $S_{Ti} - variance$", error_kw=error_kw,
         alpha=0.5
         )
-    ax.plot(np.NaN, np.NaN, '-', color='none', label=r'Objective function $(phi)$')
+    # ax.plot(np.NaN, np.NaN, '-', color='none', label=r'Objective function $(phi)$')
     ax.bar(
         ind + 0.3, sfphi.iloc[0, 1:].values, phiwidth, 
-        color="C1", label=r"First order $S_i$",
+        color="C1", label=r"First order $S_i$ - objective function",
         )
     ax.bar(
         ind + 0.3, stphi.iloc[0, 1:].values, phiwidth, 
         bottom=sfphi.iloc[0, 1:].values,
-        color='C1', label=r"Total order $S_{Ti}$", alpha=0.5
+        color='C1', label=r"Total order $S_{Ti} - objective function$", alpha=0.5
         )
 
     # ax.bar(ind + width, stphi.iloc[0, 1:].abs().values, width, color='C0', yerr=stts_cfis, label="Total order", error_kw=error_kw)
@@ -1015,4 +1052,4 @@ if __name__ == '__main__':
     # plt.show()
 
     # result_ies()
-    plot_sen_sobol2(wd, pst_file)
+    plot_sen_sobol(wd, pst_file)
