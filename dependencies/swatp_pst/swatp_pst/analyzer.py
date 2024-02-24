@@ -241,7 +241,9 @@ def plot_tseries_ensembles(
     # fig.tight_layout()
     plt.show()
 
-def plot_prior_posterior_par_hist(pst, prior_df, post_df, sel_pars, width=7, height=5, ncols=3):
+def plot_prior_posterior_par_hist(
+        pst, prior_df, post_df, sel_pars, 
+        width=7, height=5, ncols=3, bestcand=None, parobj_file=None):
     nrows = math.ceil(len(sel_pars)/ncols)
     pars_info = get_par_offset(pst)
     fig, axes = plt.subplots(figsize=(width, height), nrows=nrows, ncols=ncols)
@@ -263,15 +265,42 @@ def plot_prior_posterior_par_hist(pst, prior_df, post_df, sel_pars, width=7, hei
                     bins=np.linspace(
                         sel_pars.loc[sel_pars["parnme"]==colnam, 'parlbnd'].values[0]+ offset, 
                         sel_pars.loc[sel_pars["parnme"]==colnam, 'parubnd'].values[0]+ offset, 20), 
-                     alpha=0.5, density=True, label="Posterior"
+                        alpha=0.5, density=True, label="Posterior"
             )
-            ax.set_ylabel(colnam)
+            ax.set_title(colnam, fontsize=9, ha='left', x=0.07, y=0.93, backgroundcolor='white')
             ax.set_yticks([])
+            if parobj_file is not None:
+                po_df = pd.read_csv(os.path.join(wd, parobj_file))
+                x = po_df.loc[po_df["real_name"]==bestcand, colnam].values + offset
+                ax.axvline(x=x, color='r', linestyle="--", alpha=0.5)
         else:
             ax.axis('off')
-            ax.tick_params(labelcolor='none', top=False, bottom=False, left=False, right=False)            
-    plt.xlabel("Parameter range")
+            ax.tick_params(labelcolor='none', top=False, bottom=False, left=False, right=False)
+        # ax.set_xticks(ax.get_xticks()[::1])
+        
+        ax.tick_params(axis='x', labelsize=8)       
+    plt.ylabel(r"Density", fontsize=10)
+    plt.xlabel(r"Parameter relative change (%)", fontsize=10)
+    plt.tight_layout()
+    plt.savefig('par_hist.png', bbox_inches='tight', dpi=300)
     plt.show()
+
+def plot_cal_val_hist(ax, flow_df, calidates, validates):
+    cal_df = flow_df[calidates[0]:calidates[1]]
+    val_df = flow_df[validates[0]:validates[1]]
+    ax.hist(
+        cal_df.loc[:, "flo_out"].values,
+        bins=np.linspace(
+            min(cal_df.loc[:, "flo_out"].values), max(cal_df.loc[:, "flo_out"].values), 30
+        ), alpha=0.5, density=True,)
+    ax.hist(
+        val_df.loc[:, "flo_out"].values,
+        bins=np.linspace(
+            min(cal_df.loc[:, "flo_out"].values), max(cal_df.loc[:, "flo_out"].values), 30
+        ), alpha=0.5, density=True,)
+
+
+
 
 
 # data comes from hanlder module and SWATMFout class
@@ -707,6 +736,25 @@ def plot_fill_between_ensembles(
         pcp_df=None,
         bestrel_idx=None,
         ):
+    """plot time series of prior/posterior predictive uncertainties
+
+    :param df: dataframe of prior/posterior created by get_pr_pt_df function
+    :type df: dataframe
+    :param width: plot width, defaults to 12
+    :type width: int, optional
+    :param height: plot height, defaults to 4
+    :type height: int, optional
+    :param caldates: calibration start and end dates, defaults to None
+    :type caldates: list, optional
+    :param valdates: validation start and end dates, defaults to None
+    :type valdates: list, optional
+    :param size: symbol size, defaults to None
+    :type size: int, optional
+    :param pcp_df: dataframe of precipitation, defaults to None
+    :type pcp_df: dataframe, optional
+    :param bestrel_idx: realization index, defaults to None
+    :type bestrel_idx: string, optional
+    """
     if size is None:
         size = 30
     fig, ax = plt.subplots(figsize=(width,height))
@@ -1037,8 +1085,10 @@ def plot_sen_sobol2(wd, pst_file):
 if __name__ == '__main__':
     # info
     # wd = '/Users/seonggyu.park/Documents/projects/jj/swatp_nw_sen_sobol_1500'
-    wd = 'D:\\jj\\opt_3rd\\swatp_nw_sen_sobol_1500'
-    pst_file = "swatp_nw_sen_sobol.pst"
+    # wd = 'D:\\jj\\opt_3rd\\swatp_nw_ies'
+    # pst_file = "swatp_nw_ies.pst"
+    # pst = pyemu.Pst(os.path.join(wd, pst_file))
+
     # m_d2 = 'D:\\jj\\TxtInOut_Imsil_rye_rot_r2'
     # org_sim = create_stf_sim_obd_df(m_d2, 1, "singi_obs_q1_colnam.csv", "cha01")
     # cal_sim = create_stf_sim_obd_df(wd, 1, "singi_obs_q1_colnam.csv", "cha01")
@@ -1050,6 +1100,40 @@ if __name__ == '__main__':
     # axes[0].set_title('pre')
     # axes[1].set_title('post')
     # plt.show()
+    # plot_sen_sobol(wd, pst_file)
 
+
+    wd = 'D:\\jj\\opt_3rd\\calibrated_model'
+    obd_file = "singi_obs_q1_colnam.csv"
+    obd_colnam = "cha01"
+    cha_id = 1
+
+    df = create_stf_sim_obd_df(wd, cha_id, obd_file, obd_colnam)
+    print(df)
+    validates = ['1/1/2013', '12/31/2016']
+    calidates = ['1/1/2017', '12/31/2023']
+
+    fig, ax = plt.subplots()
+    plot_cal_val_hist(ax, df, calidates, validates)
+    plt.show()
+
+
+
+    '''
     # result_ies()
-    plot_sen_sobol(wd, pst_file)
+    iter_idx = 5
+    par_obj_file = f"swatp_nw_ies.{iter_idx}.par.objs.csv"
+    bstcs="46"
+
+    # result par
+    prior_df = pyemu.ParameterEnsemble.from_csv(
+        pst=pst,filename=os.path.join(wd,"swatp_nw_ies.{0}.par.csv".format(0)))
+    post_df = pyemu.ParameterEnsemble.from_csv(
+        pst=pst,filename=os.path.join(wd,"swatp_nw_ies.{0}.par.csv".format(5)))
+    df_pars = pd.read_csv(os.path.join(wd, "swatp_nw_ies.par_data.csv"))
+    sel_pars = df_pars.loc[df_pars["partrans"]=='log']
+    plot_prior_posterior_par_hist(
+                                pst, prior_df, post_df, sel_pars,
+                                width=9, height=5, ncols=5,
+                                bestcand=bstcs, parobj_file=par_obj_file)
+    '''
