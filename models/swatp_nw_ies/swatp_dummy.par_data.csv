@@ -1,0 +1,14 @@
+parnme,partrans,parchglim,parval1,parlbnd,parubnd,pargp,scale,offset,dercom
+alpha,log,factor,1.00000000000001E+02,1.00E+00,199,pargp,1,-100,1
+awc,log,factor,1.00000000000001E+02,1.00E+00,199,pargp,1,-100,1
+canmx,log,factor,1.00000000000001E+02,1.00E+00,199,pargp,1,-100,1
+cn2,log,factor,1.00000000000001E+02,1.00E+00,199,pargp,1,-100,1
+cn3_swf,log,factor,1.00000000000001E+02,1.00E+00,199,pargp,1,-100,1
+epco,log,factor,1.00000000000001E+02,1.00E+00,199,pargp,1,-100,1
+esco,log,factor,1.00000000000001E+02,1.00E+00,199,pargp,1,-100,1
+lat_len,log,factor,1.00000000000001E+02,1.00E+00,199,pargp,1,-100,1
+latq_co,log,factor,1.00000000000001E+02,1.00E+00,199,pargp,1,-100,1
+perco,log,factor,1.00000000000001E+02,1.00E+00,199,pargp,1,-100,1
+petco,log,factor,1.00000000000001E+02,1.00E+00,199,pargp,1,-100,1
+revap_co,log,factor,1.00000000000001E+02,1.00E+00,199,pargp,1,-100,1
+surlag,log,factor,1.00000000000001E+02,1.00E+00,199,pargp,1,-100,1

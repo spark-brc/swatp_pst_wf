@@ -1,0 +1,2 @@
+ Osu                       SWAT+ Apr 12 2023       MODULAR Rev 2023.60.5.6                                
+          hru       year         mon         day     operation   lu_before         lu_after

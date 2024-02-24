@@ -1,0 +1,22 @@
+pcf version=2
+* control data keyword
+pestmode                                 estimation
+noptmax                                 0
+svdmode                                 1
+maxsing                          10000000
+eigthresh                           1e-06
+eigwrite                                1
+gsa_method                     sobol
+gsa_sobol_samples              1500
+* parameter groups external
+swatp_nw_sen_sobol.pargp_data.csv
+* parameter data external
+swatp_nw_sen_sobol.par_data.csv
+* observation data external
+swatp_nw_sen_sobol.obs_data.csv
+* model command line
+python forward_run.py
+* model input external
+swatp_nw_sen_sobol.tplfile_data.csv
+* model output external
+swatp_nw_sen_sobol.insfile_data.csv
