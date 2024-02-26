@@ -285,19 +285,29 @@ def plot_prior_posterior_par_hist(
     plt.savefig('par_hist.png', bbox_inches='tight', dpi=300)
     plt.show()
 
-def plot_cal_val_hist(ax, flow_df, calidates, validates):
+def plot_flow_cal_val_hist(ax, flow_df, calidates, validates):
     cal_df = flow_df[calidates[0]:calidates[1]]
     val_df = flow_df[validates[0]:validates[1]]
+    bin_min = flow_df.loc[:, ["flo_out", "obsval"]].values.min()
+    bin_max = flow_df.loc[:, ["flo_out", "obsval"]].values.max()
     ax.hist(
         cal_df.loc[:, "flo_out"].values,
         bins=np.linspace(
-            min(cal_df.loc[:, "flo_out"].values), max(cal_df.loc[:, "flo_out"].values), 30
+            bin_min, bin_max, 30
         ), alpha=0.5, density=True,)
     ax.hist(
         val_df.loc[:, "flo_out"].values,
         bins=np.linspace(
-            min(cal_df.loc[:, "flo_out"].values), max(cal_df.loc[:, "flo_out"].values), 30
+            bin_min, bin_max, 30
         ), alpha=0.5, density=True,)
+
+def plot_wb_mon_cal_val_hist(wd, colnam, calidates, validates):
+    m1 = SWATp(wd)
+    df = m1.read_basin_wb_mon()
+    df = df.loc[:, colnam]
+    # cal_df = df[calidates[0]:calidates[1]]
+    # val_df = df[validates[0]:validates[1]]
+    print(df)    
 
 
 
@@ -1103,20 +1113,22 @@ if __name__ == '__main__':
     # plot_sen_sobol(wd, pst_file)
 
 
-    wd = 'D:\\jj\\opt_3rd\\calibrated_model'
+    # wd = 'D:\\jj\\opt_3rd\\calibrated_model'
+    wd = '/Users/seonggyu.park/Documents/projects/tools/swatp_pst_wf/models/calibrated_model'
     obd_file = "singi_obs_q1_colnam.csv"
     obd_colnam = "cha01"
     cha_id = 1
 
     df = create_stf_sim_obd_df(wd, cha_id, obd_file, obd_colnam)
-    print(df)
+    # print(df)
     validates = ['1/1/2013', '12/31/2016']
     calidates = ['1/1/2017', '12/31/2023']
 
-    fig, ax = plt.subplots()
-    plot_cal_val_hist(ax, df, calidates, validates)
-    plt.show()
-
+    # fig, ax = plt.subplots()
+    # plot_flow_cal_val_hist(ax, df, calidates, validates)
+    # plt.show()
+    colnam = "lagsurf"
+    plot_wb_mon_cal_val_hist(wd, colnam, calidates, validates)
 
 
     '''
