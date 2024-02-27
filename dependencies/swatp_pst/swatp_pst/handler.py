@@ -142,6 +142,13 @@ class SWATp(object):
             skiprows=[0,2]            
         )
 
+    def read_basin_wb_yr(self):
+        return pd.read_csv(
+            "basin_wb_yr.txt",
+            sep=r'\s+',
+            skiprows=[0,2]            
+        )   
+
     def read_cha_obd(self, obd_file):
         return pd.read_csv(
             obd_file,

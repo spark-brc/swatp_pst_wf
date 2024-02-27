@@ -9,6 +9,7 @@ from swatp_pst.handler import SWATp
 from swatp_pst import objfns
 import datetime
 import scipy.stats as st
+from scipy import stats
 
 # uncertainty
 def single_plot_tseries_ensembles(
@@ -293,24 +294,59 @@ def plot_flow_cal_val_hist(ax, flow_df, calidates, validates):
     ax.hist(
         cal_df.loc[:, "flo_out"].values,
         bins=np.linspace(
-            bin_min, bin_max, 30
-        ), alpha=0.5, density=True,)
+            bin_min, bin_max, 50
+        ), alpha=0.5, density=True,edgecolor='white')
     ax.hist(
         val_df.loc[:, "flo_out"].values,
         bins=np.linspace(
-            bin_min, bin_max, 30
-        ), alpha=0.5, density=True,)
+            bin_min, bin_max, 50
+        ), alpha=0.5, density=True,edgecolor='white')    
+    ax.hist(
+        cal_df.loc[:, "obsval"].values,
+        bins=np.linspace(
+            bin_min, bin_max, 50
+        ), alpha=0.5, density=True,edgecolor='white')
+    ax.hist(
+        val_df.loc[:, "obsval"].values,
+        bins=np.linspace(
+            bin_min, bin_max, 50
+        ), alpha=0.5, density=True,edgecolor='white')
 
-def plot_wb_mon_cal_val_hist(wd, colnam, calidates, validates):
+    print(val_df.mean())
+
+
+def plot_wb_mon_cal_val_hist(ax, wd, colnam, calidates, validates):
     m1 = SWATp(wd)
+    start_day = m1.stdate_warmup
     df = m1.read_basin_wb_mon()
     df = df.loc[:, colnam]
-    # cal_df = df[calidates[0]:calidates[1]]
-    # val_df = df[validates[0]:validates[1]]
-    print(df)    
+    df.index = pd.date_range(start_day, periods=len(df), freq='ME')
+    cal_df = df[calidates[0]:calidates[1]]
+    val_df = df[validates[0]:validates[1]]
+    bin_min = df.values.min()
+    bin_max = df.values.max()
 
+    ax.hist(
+        cal_df.values,
+        bins=np.linspace(
+            bin_min, bin_max, 20
+        ), alpha=0.5, density=True, edgecolor='white')
+    ax.hist(
+        val_df.values,
+        bins=np.linspace(
+            bin_min, bin_max, 20
+        ), alpha=0.5, density=True,edgecolor='white')
 
-
+def get_average_annual_wb(wd, colnam, calidates, validates):
+    m1 = SWATp(wd)
+    start_day = m1.stdate_warmup
+    df = m1.read_basin_wb_yr()
+    df = df.loc[:, colnam]
+    df.index = pd.date_range(start_day, periods=len(df), freq='YE')    
+    cal_df = df[calidates[0]:calidates[1]]
+    val_df = df[validates[0]:validates[1]]
+    print(cal_df.mean())
+    print(val_df.mean())
 
 
 # data comes from hanlder module and SWATMFout class
@@ -1113,8 +1149,8 @@ if __name__ == '__main__':
     # plot_sen_sobol(wd, pst_file)
 
 
-    # wd = 'D:\\jj\\opt_3rd\\calibrated_model'
-    wd = '/Users/seonggyu.park/Documents/projects/tools/swatp_pst_wf/models/calibrated_model'
+    wd = 'D:\\jj\\opt_3rd\\calibrated_model'
+    # wd = '/Users/seonggyu.park/Documents/projects/tools/swatp_pst_wf/models/calibrated_model'
     obd_file = "singi_obs_q1_colnam.csv"
     obd_colnam = "cha01"
     cha_id = 1
@@ -1124,13 +1160,13 @@ if __name__ == '__main__':
     validates = ['1/1/2013', '12/31/2016']
     calidates = ['1/1/2017', '12/31/2023']
 
+    colnam = "perc"
+
     # fig, ax = plt.subplots()
+    # # plot_wb_mon_cal_val_hist(ax, wd, colnam, calidates, validates)
     # plot_flow_cal_val_hist(ax, df, calidates, validates)
     # plt.show()
-    colnam = "lagsurf"
-    plot_wb_mon_cal_val_hist(wd, colnam, calidates, validates)
-
-
+    get_average_annual_wb(wd, colnam, calidates, validates)
     '''
     # result_ies()
     iter_idx = 5
