@@ -259,17 +259,17 @@ def plot_prior_posterior_par_hist(
                     bins=np.linspace(
                         sel_pars.loc[sel_pars["parnme"]==colnam, 'parlbnd'].values[0]+ offset, 
                         sel_pars.loc[sel_pars["parnme"]==colnam, 'parubnd'].values[0]+ offset, 20),
-                    color = "gray", alpha=0.5, density=True,
+                    color = "gray", alpha=0.5, density=False,
                     label="Prior"
             )
             y, x, _ = ax.hist(post_df.loc[:, colnam].values + offset,
                     bins=np.linspace(
                         sel_pars.loc[sel_pars["parnme"]==colnam, 'parlbnd'].values[0]+ offset, 
                         sel_pars.loc[sel_pars["parnme"]==colnam, 'parubnd'].values[0]+ offset, 20), 
-                        alpha=0.5, density=True, label="Posterior"
+                        alpha=0.5, density=False, label="Posterior"
             )
             ax.set_title(colnam, fontsize=9, ha='left', x=0.07, y=0.93, backgroundcolor='white')
-            ax.set_yticks([])
+            # ax.set_yticks([])
             if parobj_file is not None:
                 po_df = pd.read_csv(os.path.join(wd, parobj_file))
                 x = po_df.loc[po_df["real_name"]==bestcand, colnam].values + offset
@@ -280,11 +280,12 @@ def plot_prior_posterior_par_hist(
         # ax.set_xticks(ax.get_xticks()[::1])
         
         ax.tick_params(axis='x', labelsize=8)       
-    plt.ylabel(r"Density", fontsize=10)
+    plt.ylabel(r"Frequency", fontsize=10)
     plt.xlabel(r"Parameter relative change (%)", fontsize=10)
     plt.tight_layout()
     plt.savefig('par_hist.png', bbox_inches='tight', dpi=300)
     plt.show()
+    print(os.getcwd())
 
 def plot_flow_cal_val_hist(ax, flow_df, calidates, validates):
     cal_df = flow_df[calidates[0]:calidates[1]]
@@ -929,8 +930,8 @@ def result_ies_tot():
         valdates=['1/1/2013','12/31/2016'],
         size=20
         )
-    # get_p_factor(pst, pt_oe, perc_obd_nz=None, cal_val=True)
-    # get_d_factor(pst, pt_oe, cal_val=True)
+    get_p_factor(pst, pt_oe, perc_obd_nz=None, cal_val=True)
+    get_d_factor(pst, pt_oe, cal_val=True)
 
     # objs = ['ns', 'pbias', 'rsq', 'rmse']
     # # plot par obj
@@ -1131,9 +1132,9 @@ def plot_sen_sobol2(wd, pst_file):
 if __name__ == '__main__':
     # info
     # wd = '/Users/seonggyu.park/Documents/projects/jj/swatp_nw_sen_sobol_1500'
-    # wd = 'D:\\jj\\opt_3rd\\swatp_nw_ies'
-    # pst_file = "swatp_nw_ies.pst"
-    # pst = pyemu.Pst(os.path.join(wd, pst_file))
+    wd = 'D:\\jj\\opt_3rd\\swatp_nw_ies'
+    pst_file = "swatp_nw_ies.pst"
+    pst = pyemu.Pst(os.path.join(wd, pst_file))
 
     # m_d2 = 'D:\\jj\\TxtInOut_Imsil_rye_rot_r2'
     # org_sim = create_stf_sim_obd_df(m_d2, 1, "singi_obs_q1_colnam.csv", "cha01")
@@ -1149,7 +1150,7 @@ if __name__ == '__main__':
     # plot_sen_sobol(wd, pst_file)
 
 
-    wd = 'D:\\jj\\opt_3rd\\calibrated_model'
+    # wd = 'D:\\jj\\opt_3rd\\calibrated_model'
     # wd = '/Users/seonggyu.park/Documents/projects/tools/swatp_pst_wf/models/calibrated_model'
     obd_file = "singi_obs_q1_colnam.csv"
     obd_colnam = "cha01"
@@ -1160,13 +1161,15 @@ if __name__ == '__main__':
     validates = ['1/1/2013', '12/31/2016']
     calidates = ['1/1/2017', '12/31/2023']
 
-    colnam = "perc"
+    colnam = "wateryld"
 
     # fig, ax = plt.subplots()
     # # plot_wb_mon_cal_val_hist(ax, wd, colnam, calidates, validates)
     # plot_flow_cal_val_hist(ax, df, calidates, validates)
     # plt.show()
-    get_average_annual_wb(wd, colnam, calidates, validates)
+    
+    
+    # get_average_annual_wb(wd, colnam, calidates, validates)
     '''
     # result_ies()
     iter_idx = 5
@@ -1185,3 +1188,4 @@ if __name__ == '__main__':
                                 width=9, height=5, ncols=5,
                                 bestcand=bstcs, parobj_file=par_obj_file)
     '''
+    result_ies_tot()
