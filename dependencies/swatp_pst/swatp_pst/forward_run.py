@@ -52,7 +52,16 @@ if __name__ == '__main__':
         chs = swatp_pst_con.loc['chs','vals'].strip('][').split(', ')
         chs = [int(i) for i in chs]
     extract_stf_results(chs, cal_start, cal_end)
+    # if irrigation get targeted
+    # m1 = SWATp(wd)
+    # m1.get_mon_irr()
+
+    
+    
+    
     print(wd)
+
+
 
 
 

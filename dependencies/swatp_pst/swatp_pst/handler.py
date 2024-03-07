@@ -250,6 +250,7 @@ class SWATp(object):
                 "tot_irr_paddy.txt", sep='\t', encoding='utf-8', index=True, header=False,
                 float_format='%.7e'
                         )
+        print('tot_irr_paddy.txt file has been created...')
         return paddy_df
 
 

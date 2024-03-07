@@ -75,6 +75,58 @@ class PstUtil(SWATp):
         print('{}.ins file has been created...'.format(cha_extract_file))
         return result['{}_ins'.format(col_name)]
 
+
+    def irr_obd_to_ins(self, irr_extract_file, obd_file, col_name, cal_start, cal_end, time_step=None):
+        """extract a simulated streamflow from the output.rch file,
+            store it in each channel file.
+
+        Args:
+            - rch_file (`str`): the path and name of the existing output file
+            - channels (`list`): channel number in a list, e.g. [9, 60]
+            - start_day ('str'): simulation start day after warmup period, e.g. '1/1/1993'
+            - end_day ('str'): simulation end day e.g. '12/31/2000'
+            - time_step (`str`): day, month, year
+
+        Example:
+            pest_utils.extract_month_stf('path', [9, 60], '1/1/1993', '12/31/2000')
+        """ 
+        if time_step is None:
+            time_step = 'day'
+            stfobd_file = 'irr_paddy_day.obd.csv'
+        if time_step == 'month':
+            stfobd_file = 'irr_paddy_mon.obd.csv'
+        stf_obd = self.read_cha_obd(obd_file)
+        stf_obd = get_last_day_of_month(stf_obd)
+        stf_obd = stf_obd[cal_start:cal_end]
+        stf_sim = pd.read_csv(
+                            irr_extract_file,
+                            sep=r'\s+',
+                            names=["date", "irr_sim"],
+                            index_col=0,
+                            parse_dates=True)
+        result = pd.concat([stf_obd, stf_sim], axis=1)
+        result['tdate'] = pd.to_datetime(result.index)
+        result['month'] = result['tdate'].dt.month
+        result['year'] = result['tdate'].dt.year
+        result['day'] = result['tdate'].dt.day
+        if time_step == 'day':
+            result['ins'] = (
+                            'l1 w !{}_'.format(col_name) + result["year"].map(str) +
+                            result["month"].map('{:02d}'.format) +
+                            result["day"].map('{:02d}'.format) + '!'
+                            )
+        elif time_step == 'month':
+            result['ins'] = 'l1 w !{}_'.format(col_name) + result["year"].map(str) + result["month"].map('{:02d}'.format) + '!'
+        else:
+            print('are you performing a yearly calibration?')
+        result['{}_ins'.format(col_name)] = np.where(result[col_name].isnull(), 'l1', result['ins'])
+        with open(irr_extract_file+'.ins', "w", newline='') as f:
+            f.write("pif ~" + "\n")
+            result['{}_ins'.format(col_name)].to_csv(f, sep='\t', encoding='utf-8', index=False, header=False)
+        print('{}.ins file has been created...'.format(irr_extract_file))
+        return result['{}_ins'.format(col_name)]
+
+
     def read_cal(self):
         return pd.read_csv(
                         'calibration.cal',
