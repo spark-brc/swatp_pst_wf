@@ -1,0 +1,10 @@
+2024-02-10 10:36:44.700213 starting: opening Default_Loggger.log for logging
+2024-02-10 10:36:44.700213 starting: plot res_1to1
+2024-02-10 10:36:44.706214 starting: plotting 1to1 for cal
+2024-02-10 10:36:44.707301 using control file obsvals to calculate residuals
+2024-02-10 10:36:44.776998 finished: plotting 1to1 for cal took: 0:00:00.070784
+2024-02-10 10:36:44.776998 starting: plotting 1to1 for val
+2024-02-10 10:36:44.776998 using control file obsvals to calculate residuals
+2024-02-10 10:36:44.776998 no non-zero obs for group 'val'
+2024-02-10 10:36:44.776998 finished: plotting 1to1 for val took: 0:00:00
+2024-02-10 10:36:44.840837 finished: plot res_1to1 took: 0:00:00.140624

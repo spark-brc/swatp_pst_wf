@@ -127,6 +127,43 @@ class SWATp(object):
             skiprows=1
         )
 
+    def read_hru_data(self):
+        return pd.read_csv(
+            "hru-data.hru",
+            sep=r'\s+',
+            # skiprows=1
+        )        
+
+    def read_hru_con(self):
+        return pd.read_csv(
+            "hru.con",
+            sep=r'\s+',
+            skiprows=1
+        )
+    
+    def read_hru_wb_mon(self):
+        return pd.read_csv(
+            "hru_wb_mon.txt",
+            sep=r'\s+',
+            skiprows=[0,2]
+        )        
+    
+    def create_paddy_hru_id_database(self):
+        hru_area = self.read_hru_con()
+        hru_area = hru_area.loc[:, ["id", "area"]]
+        hru_area.set_index('id', inplace=True)
+        hru_paddy = self.read_hru_data()
+        hru_paddy.dropna(subset=['surf_stor'], inplace=True)
+        hru_paddy = hru_paddy[hru_paddy['surf_stor'].str.contains('paddy')]
+        hru_paddy.set_index('HRU_NUMB', inplace=True)
+        hru_paddy = pd.concat([hru_paddy, hru_area], axis=1)
+        hru_paddy['hruid'] = hru_paddy.index
+        hru_paddy.dropna(subset=['surf_stor'], axis=0, inplace=True)
+        # tot_area = hru_paddy.loc[:, "area"].sum()
+        # hru_paddy["area_weighted"] =hru_paddy.loc[:, "area"]/ tot_area
+        return hru_paddy
+
+
     def read_cha_morph_mon(self):
         return pd.read_csv(
             "channel_sdmorph_mon.txt",
@@ -135,6 +172,20 @@ class SWATp(object):
             usecols=["gis_id", "flo_out"]
             )
     
+    def read_basin_wb_mon(self):
+        return pd.read_csv(
+            "basin_wb_mon.txt",
+            sep=r'\s+',
+            skiprows=[0,2]            
+        )
+
+    def read_basin_wb_yr(self):
+        return pd.read_csv(
+            "basin_wb_yr.txt",
+            sep=r'\s+',
+            skiprows=[0,2]            
+        )   
+
     def read_cha_obd(self, obd_file):
         return pd.read_csv(
             obd_file,
@@ -142,6 +193,14 @@ class SWATp(object):
             index_col=0,
             parse_dates=True,
         )
+    
+    def read_pcp_data(self):
+        return pd.read_csv(
+            "channel_sd_mon.txt",
+            sep=r'\s+',
+            skiprows=[0,2],
+            usecols=["gis_id", "area", "precip", ]
+            )        
 
     def extract_mon_stf(self, chs, cali_start_day, cali_end_day):
         sim_stf_f = self.read_cha_morph_mon()
@@ -158,7 +217,40 @@ class SWATp(object):
             print('stf_{:03d}.txt file has been created...'.format(i))
         print('Finished ...')
 
+    def get_mon_irr(self):
+        paddy_df = pd.DataFrame()
+        paddy_hru_id = self.create_paddy_hru_id_database()
+        df = self.read_hru_wb_mon()
+        for hruid in paddy_hru_id.loc[:, "hruid"]:
+            paddy_df[f"hru_{hruid}"] = df.loc[df["unit"]==hruid, "irr"].values
+        paddy_df.index = pd.date_range(
+            self.stdate_warmup, periods=len(paddy_df), freq="ME")
+        # filter fallow paddy land
+        # paddy_df.drop(
+        #     [col for col, val in paddy_df.sum().iteritems() if val == 0], 
+        #     axis=1, inplace=True
+        #     )
+        paddy_df.drop(columns=paddy_df.columns[paddy_df.sum()==0], inplace=True)
+        paddy_ids = [int(f"{pid[4:]}") for pid in paddy_df.columns]
+        paddy_hru_id = paddy_hru_id.query('hruid in @paddy_ids')
+        tot_area = paddy_hru_id.loc[:, "area"].sum()
+        paddy_hru_id["area_weighted"] =paddy_hru_id.loc[:, "area"]/ tot_area
 
+        # make total based size weighted average
+        irr_ratio = pd.DataFrame()
+        for hruid in paddy_hru_id.loc[:, "hruid"]:
+            # if f"hru_{hruid}" in paddy_df.columns:
+            irr_ratio[f"irr_ratio_{hruid}"] = (
+                paddy_df.loc[:, f"hru_{hruid}"] * 
+                paddy_hru_id.loc[paddy_hru_id["hruid"]==hruid, 'area_weighted'].values
+            )
+        paddy_df['tot_irr'] = irr_ratio.sum(axis=1)
+        paddy_df.to_csv("irr_paddy_wb.csv")
+        paddy_df.loc[:, 'tot_irr'].to_csv(
+                "tot_irr_paddy.txt", sep='\t', encoding='utf-8', index=True, header=False,
+                float_format='%.7e'
+                        )
+        return paddy_df
 
 
 def get_last_day_of_month(df):
@@ -246,7 +338,7 @@ def init_setup(prj_dir, swatp_wd):
 
 
 if __name__ == '__main__':
-    wd = "/Users/seonggyu.park/Documents/projects/tools/swatp-pest_wf/models/TxtInOut_Imsil_rye_rot_r1"
+    wd = "D:\\jj\\Albufera\\TxtInOut_Albuferamanuscript"
     # wd = "D:\\Projects\\Watersheds\\Koksilah\\analysis\\koksilah_swatmf\\SWAT-MODFLOW"
 
     m1 = SWATp(wd)
@@ -257,6 +349,7 @@ if __name__ == '__main__':
     obd_colnam = "cha01"
     cha_ext_file = "stf_001.txt"
 
-    m1.stf_obd_to_ins(cha_ext_file, obd_file, obd_colnam, cali_start_day, cali_end_day, time_step="month")
+    df = m1.get_mon_irr()
+    print(df)
 
     # print(dff)

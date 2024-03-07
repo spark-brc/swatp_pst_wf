@@ -1,0 +1,23 @@
+pcf version=2
+* control data keyword
+pestmode                                 estimation
+noptmax                                 0
+svdmode                                 1
+maxsing                          10000000
+eigthresh                           1e-06
+eigwrite                                1
+gsa_method                     morris
+gsa_morris_r                   100
+gsa_morris_p                   100
+* parameter groups external
+swatp_nw_sen_morris.pargp_data.csv
+* parameter data external
+swatp_nw_sen_morris.par_data.csv
+* observation data external
+swatp_nw_sen_morris.obs_data.csv
+* model command line
+python forward_run.py
+* model input external
+swatp_nw_sen_morris.tplfile_data.csv
+* model output external
+swatp_nw_sen_morris.insfile_data.csv
