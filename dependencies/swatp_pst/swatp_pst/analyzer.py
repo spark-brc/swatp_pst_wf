@@ -1150,7 +1150,7 @@ if __name__ == '__main__':
     # plot_sen_sobol(wd, pst_file)
 
 
-    # wd = 'D:\\jj\\opt_3rd\\calibrated_model'
+    wd = 'D:\\jj\\opt_3rd\\calibrated_model'
     # wd = '/Users/seonggyu.park/Documents/projects/tools/swatp_pst_wf/models/calibrated_model'
     obd_file = "singi_obs_q1_colnam.csv"
     obd_colnam = "cha01"
@@ -1161,7 +1161,7 @@ if __name__ == '__main__':
     validates = ['1/1/2013', '12/31/2016']
     calidates = ['1/1/2017', '12/31/2023']
 
-    colnam = "wateryld"
+    colnam = "surq_cha"
 
     # fig, ax = plt.subplots()
     # # plot_wb_mon_cal_val_hist(ax, wd, colnam, calidates, validates)
@@ -1169,7 +1169,7 @@ if __name__ == '__main__':
     # plt.show()
     
     
-    # get_average_annual_wb(wd, colnam, calidates, validates)
+    get_average_annual_wb(wd, colnam, calidates, validates)
     '''
     # result_ies()
     iter_idx = 5
@@ -1188,4 +1188,4 @@ if __name__ == '__main__':
                                 width=9, height=5, ncols=5,
                                 bestcand=bstcs, parobj_file=par_obj_file)
     '''
-    result_ies_tot()
+    # result_ies_tot()
