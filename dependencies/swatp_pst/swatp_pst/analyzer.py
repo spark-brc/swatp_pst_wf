@@ -415,7 +415,8 @@ def get_rels_objs(wd, pst_file, iter_idx=None, opt_idx=None):
     rsq = objfns.rsquared(obds, sims)
     rmse = objfns.rmse(obds, sims)
     mse = objfns.mse(obds, sims)
-    return ns, pbias, rsq, rmse
+    pcc = objfns.correlationcoefficient(obds, sims)
+    return ns, pbias, rsq, rmse, mse, pcc
 
 def get_rels_cal_val_objs(wd, pst_file, iter_idx=None, opt_idx=None, calval=None):
     pst = pyemu.Pst(os.path.join(wd, pst_file))
@@ -551,14 +552,23 @@ def create_rels_objs(wd, pst_file, iter_idx):
     pbiass = []
     rsqs = []
     rmses = []
+    mses = []
+    pccs = []
     # for i in range(np.shape(pt_oe)[0]):
     for i in pt_oe.index:
-        ns, pbias, rsq, rmse = get_rels_objs(wd, pst_file, iter_idx=iter_idx, opt_idx=i)
+        ns, pbias, rsq, rmse, mse, pcc = get_rels_objs(wd, pst_file, iter_idx=iter_idx, opt_idx=i)
         nss.append(ns)
         pbiass.append(pbias)
         rsqs.append(rsq)
         rmses.append(rmse)
-    objs_df = pd.DataFrame({"ns": nss, "pbias": pbiass, "rsq": rsqs, "rmse": rmses}, index=pt_oe.index)
+        mses.append(mse)
+        pccs.append(pcc)
+    objs_df = pd.DataFrame(
+        {
+            "ns": nss, "pbias": pbiass, "rsq": rsqs, "rmse": rmses,
+            "mse": mses, "pcc":pccs
+            },
+        index=pt_oe.index)
     pt_oe_df = pd.concat([pt_oe_df, objs_df], axis=1)
     pt_par_df = pd.concat([pt_par_df, objs_df], axis=1)
     pt_oe_df.to_csv(os.path.join(wd, "{0}.{1}.obs.objs.csv".format(pst_nam, iter_idx)))
@@ -855,6 +865,7 @@ def plot_fill_between_ensembles(
     ax.set_ylim(0, df.max().max()*1.5)
     ax.xaxis.set_major_locator(mdates.YearLocator(1))
     # ask matplotlib for the plotted objects and their labels
+    '''
     lines, labels = ax.get_legend_handles_labels()
     lines2, labels2 = ax2.get_legend_handles_labels()
     order = [0,1,2,3,4,6,5]
@@ -869,32 +880,31 @@ def plot_fill_between_ensembles(
         loc = 'lower center',
         bbox_to_anchor=(0.5, -0.08),
         ncols=7)
+    '''
     # fig.legend(fontsize=12, loc="lower left")
     plt.tight_layout()
     plt.savefig('cal_val.png', bbox_inches='tight', dpi=300)
     plt.show()
 
-
-
 def result_ies_tot():
     # info
-    wd = 'D:\\jj\\opt_3rd\\swatp_nw_ies'
-    pst_file = "swatp_nw_ies.pst"
+    wd = 'D:\\jj\\Albufera\\alb_nw_ies'
+    pst_file = "alb_nw_ies.pst"
     pst = pyemu.Pst(os.path.join(wd, pst_file))
     # load prior simulation
     pr_oe = pyemu.ObservationEnsemble.from_csv(
-        pst=pst,filename=os.path.join(wd,"swatp_nw_ies.0.obs.csv")
+        pst=pst,filename=os.path.join(wd,"alb_nw_ies.0.obs.csv")
         )
     # load posterior simulation
     pt_oe = pyemu.ObservationEnsemble.from_csv(
-        pst=pst,filename=os.path.join(wd,"swatp_nw_ies.{0}.obs.csv".format(5)))
+        pst=pst,filename=os.path.join(wd,"alb_nw_ies.{0}.obs.csv".format(2)))
     
 
     # --------
     # RESULT01
     #---------
-    iter_idx = 5
-    par_obj_file = f"swatp_nw_ies.{iter_idx}.par.objs.csv"
+    iter_idx = 1
+    par_obj_file = f"alb_nw_ies.{iter_idx}.par.objs.csv"
     bstcs=["46"]
     parbds = [20, 180]
     nsbds = [0.70, 1]
@@ -921,17 +931,17 @@ def result_ies_tot():
     #         calval="val")
     #         )
 
-    df = get_pr_pt_df(pst, pr_oe, pt_oe, bestrel_idx="46")
+    df = get_pr_pt_df(pst, pr_oe, pt_oe)
     pcp_df = create_pcp_df(wd, 1)
     plot_fill_between_ensembles(
         df, 
-        pcp_df=pcp_df,
-        caldates=['1/1/2017','12/31/2023'],
-        valdates=['1/1/2013','12/31/2016'],
+        # pcp_df=pcp_df,
+        # caldates=['1/1/2017','12/31/2023'],
+        # valdates=['1/1/2013','12/31/2016'],
         size=20
         )
-    get_p_factor(pst, pt_oe, perc_obd_nz=None, cal_val=True)
-    get_d_factor(pst, pt_oe, cal_val=True)
+    # get_p_factor(pst, pt_oe, perc_obd_nz=None, cal_val=True)
+    # get_d_factor(pst, pt_oe, cal_val=True)
 
     # objs = ['ns', 'pbias', 'rsq', 'rmse']
     # # plot par obj
@@ -1011,7 +1021,7 @@ def plot_sen_sobol(wd, pst_file):
         )
     ax.bar(
         ind + width, sttsm, width,
-        color="C1", yerr=sfts_cfis, label=r"Total order $S_{Ti}$", error_kw=error_kw,
+        color="C1", yerr=stts_cfis, label=r"Total order $S_{Ti}$", error_kw=error_kw,
         )
     # ax.plot(np.NaN, np.NaN, '-', color='none', label=r'Objective function $(phi)$')
     # ax.bar(
@@ -1129,12 +1139,106 @@ def plot_sen_sobol2(wd, pst_file):
     plt.show()
 
 
+
+def get_sobol_results(wd, pstfile):
+    #first
+    sfdf = read_sobol_sfi(wd, pstfile)
+    sfdf[sfdf.iloc[:, 1:]<0] = 0
+    sfts = sfdf.iloc[1:, 1:]
+    sftsm = sfts.mean()
+    stdf = read_sobol_sti(wd, pstfile)
+    stdf[stdf.iloc[:, 1:]<0] = 0 # get zero for negative values
+    stts = stdf.iloc[1:, 1:]
+    sttsm = stts.mean()
+    sfts_cfis = []
+    for par in sftsm.index:
+        sfts_cfis.append(confidence_interval(sfts.loc[:, par].values))
+    stts_cfis = []
+    for par in sttsm.index:
+        stts_cfis.append(confidence_interval(stts.loc[:, par].values))    
+    return sftsm, sttsm, sfts_cfis, stts_cfis
+
+
+    # for par in sfphi.columns[1:]:
+    #     sfts_cfis.append(confidence_interval(sfts.loc[:, par].values))
+    # stts_cfis = []
+    # for par in stphi.columns[1:]:
+    #     stts_cfis.append(confidence_interval(stts.loc[:, par].values))  
+
+def plot_sen_sobol_jj(wd, pstfile, wd2, pstfile2):
+    sftsm, sttsm, sfts_cfis, stts_cfis = get_sobol_results(wd, pstfile)
+    sftsm2, sttsm2, sfts_cfis2, stts_cfis2 = get_sobol_results(wd2, pstfile2)
+
+
+    N = len(sttsm)
+    ind = np.arange(N)  # the x locations for the groups
+    width = 0.4
+    # phiwidth = 0.2
+    fig, ax = plt.subplots(figsize=(7,7))
+    # Width of a bar 
+    error_kw=dict(lw=1, capsize=2, capthick=1, alpha=0.5)
+    ax.barh(
+        ind, -sftsm, width, 
+        color="C0", xerr=sfts_cfis, label=r"First order $S_i$", 
+        error_kw=error_kw
+        )
+    ax.barh(
+        ind + width, -sttsm, width,
+        color="C1", xerr=stts_cfis, label=r"Total order $S_{Ti}$", error_kw=error_kw,
+        )
+    ax.barh(
+        ind, sftsm2, width, 
+        color="C0", xerr=sfts_cfis2, label=r"First order $S_i$", 
+        error_kw=error_kw
+        )
+    ax.barh(
+        ind + width, sttsm2, width,
+        color="C1", xerr=stts_cfis2, label=r"Total order $S_{Ti}$", error_kw=error_kw,
+        )
+    
+    ax.set_yticks(ind + width / 2)
+    ax.set_yticklabels(sftsm.index)
+    ax.tick_params(axis='both', labelsize=12)
+    ax.set_xlabel(r"Sensitivity index", fontsize=12)
+    ax.set_ylabel(r"Parameter", fontsize=12)
+    # ax.legend(fontsize=10, loc="upper left")
+    # ax.yaxis.get_ticklocs(minor=True)
+    ax.minorticks_on()
+    ax.yaxis.set_tick_params(which='minor', bottom=False)
+    ax.tick_params(
+        which="both",
+        axis="x",direction="in", 
+        # pad=-22
+        )
+    # ax.grid('True')
+    # plt.margins(y=0.1) 
+    ax.set_xlim(-1.2, 2.7)
+    plt.tight_layout()
+    # plt.savefig(os.path.join(wd, 'sen_sobol.png'), bbox_inches='tight', dpi=300)
+    plt.show()
+
+def jj_paper(wd1, wd2, pst_file1, pst_file2):
+    sfdf1 = read_sobol_sfi(wd1, pst_file1)
+    sfdf1[sfdf1.iloc[:, 1:]<0] = 0
+    sfts1 = sfdf1.iloc[1:, 1:]
+    sftsm1 = sfts1.mean()
+    stdf1 = read_sobol_sti(wd1, pst_file1)
+    stdf1[stdf1.iloc[:, 1:]<0] = 0 # get zero for negative values
+    stdf1[stdf1.iloc[:, 1:]<0] = 0 # get zero for negative values
+    stts1 = stdf1.iloc[1:, 1:]
+    sttsm1 = stts1.mean()
+
+
+
+
+    # sfdf2 = read_sobol_sfi(wd2, pst_file2)
+
 if __name__ == '__main__':
     # info
     # wd = '/Users/seonggyu.park/Documents/projects/jj/swatp_nw_sen_sobol_1500'
-    wd = 'D:\\jj\\opt_3rd\\swatp_nw_ies'
-    pst_file = "swatp_nw_ies.pst"
-    pst = pyemu.Pst(os.path.join(wd, pst_file))
+    # wd = 'D:\\jj\\opt_3rd\\swatp_nw_ies'
+    # pst_file = "swatp_nw_ies.pst"
+    # pst = pyemu.Pst(os.path.join(wd, pst_file))
 
     # m_d2 = 'D:\\jj\\TxtInOut_Imsil_rye_rot_r2'
     # org_sim = create_stf_sim_obd_df(m_d2, 1, "singi_obs_q1_colnam.csv", "cha01")
@@ -1169,14 +1273,25 @@ if __name__ == '__main__':
     # plt.show()
     
     
-    get_average_annual_wb(wd, colnam, calidates, validates)
-    '''
-    # result_ies()
-    iter_idx = 5
-    par_obj_file = f"swatp_nw_ies.{iter_idx}.par.objs.csv"
-    bstcs="46"
+    # get_average_annual_wb(wd, colnam, calidates, validates)
+    wd = 'D:\\jj\\opt_3rd\\swatp_nw_sen_sobol'
+    pstfile = "swatp_nw_sen_sobol.pst"
+    wd2 = 'D:\\jj\\Albufera\\alb_nw_sen_sobol'
+    pstfile2 = "alb_nw_sen_sobol.pst"
+    # sftsm, sttsm, sfts_cfis, stts_cfis = get_sobol_results(wd, pst_file)
 
+    plot_sen_sobol_jj(wd, pstfile, wd2, pstfile2)
+    # print(sftsm)
+    # print(sttsm)
+    # print(sfts_cfis)
+    
+    # result_ies()
+    # wd = 'D:\\jj\\Albufera\\alb_nw_ies'
+    # pst_file = "alb_nw_ies.pst"
+    # create_rels_objs(wd, pst_file, 4)
+    # result_ies_tot()
     # result par
+    '''
     prior_df = pyemu.ParameterEnsemble.from_csv(
         pst=pst,filename=os.path.join(wd,"swatp_nw_ies.{0}.par.csv".format(0)))
     post_df = pyemu.ParameterEnsemble.from_csv(
@@ -1188,4 +1303,5 @@ if __name__ == '__main__':
                                 width=9, height=5, ncols=5,
                                 bestcand=bstcs, parobj_file=par_obj_file)
     '''
+
     # result_ies_tot()
