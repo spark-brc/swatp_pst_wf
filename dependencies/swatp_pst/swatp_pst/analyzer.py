@@ -5,6 +5,7 @@ import pandas as pd
 import pyemu
 import os
 import matplotlib.dates as mdates
+from matplotlib.ticker import FormatStrFormatter, FixedLocator
 from swatp_pst.handler import SWATp
 from swatp_pst import objfns
 import datetime
@@ -1169,52 +1170,91 @@ def plot_sen_sobol_jj(wd, pstfile, wd2, pstfile2):
     sftsm, sttsm, sfts_cfis, stts_cfis = get_sobol_results(wd, pstfile)
     sftsm2, sttsm2, sfts_cfis2, stts_cfis2 = get_sobol_results(wd2, pstfile2)
 
-
     N = len(sttsm)
     ind = np.arange(N)  # the x locations for the groups
-    width = 0.4
+    width = 0.6
     # phiwidth = 0.2
-    fig, ax = plt.subplots(figsize=(7,7))
+    fig, axes = plt.subplots(ncols=2, figsize=(7,7), gridspec_kw={'width_ratios': [4, 1]})
+    # ax1 = fig.add_subplot(111, frameon=False)
+    # ax1.tick_params(labelcolor='none', top=False, bottom=False, left=False, right=False)
     # Width of a bar 
     error_kw=dict(lw=1, capsize=2, capthick=1, alpha=0.5)
-    ax.barh(
+    axes[0].barh(
         ind, -sftsm, width, 
         color="C0", xerr=sfts_cfis, label=r"First order $S_i$", 
         error_kw=error_kw
         )
-    ax.barh(
-        ind + width, -sttsm, width,
-        color="C1", xerr=stts_cfis, label=r"Total order $S_{Ti}$", error_kw=error_kw,
+    axes[0].barh(
+        ind, -sttsm, width,left=-sftsm,
+        color="C0", xerr=stts_cfis, label=r"Total order $S_{Ti}$", error_kw=error_kw,
+        alpha=0.5
         )
-    ax.barh(
+    axes[0].barh(
         ind, sftsm2, width, 
-        color="C0", xerr=sfts_cfis2, label=r"First order $S_i$", 
+        color="C1", xerr=sfts_cfis2, label=r"First order $S_i$", 
         error_kw=error_kw
         )
-    ax.barh(
-        ind + width, sttsm2, width,
+    axes[0].barh(
+        ind, sttsm2, width, left=sftsm2,
         color="C1", xerr=stts_cfis2, label=r"Total order $S_{Ti}$", error_kw=error_kw,
+        alpha=0.5
         )
-    
-    ax.set_yticks(ind + width / 2)
-    ax.set_yticklabels(sftsm.index)
-    ax.tick_params(axis='both', labelsize=12)
-    ax.set_xlabel(r"Sensitivity index", fontsize=12)
-    ax.set_ylabel(r"Parameter", fontsize=12)
-    # ax.legend(fontsize=10, loc="upper left")
-    # ax.yaxis.get_ticklocs(minor=True)
-    ax.minorticks_on()
-    ax.yaxis.set_tick_params(which='minor', bottom=False)
-    ax.tick_params(
-        which="both",
-        axis="x",direction="in", 
-        # pad=-22
+
+    axes[1].barh(
+        ind, sftsm2, width, 
+        color="C1", xerr=sfts_cfis2, label=r"First order $S_i$", 
+        error_kw=error_kw
         )
+    axes[1].barh(
+        ind, sttsm2, width, left=sftsm2,
+        color="C1", xerr=stts_cfis2, label=r"Total order $S_{Ti}$", error_kw=error_kw,
+        alpha=0.5
+        )
+    axes[0].set_yticks(ind)
+    axes[0].set_yticklabels(sftsm.index)
+    fig.supxlabel(r"Sensitivity index", fontsize=12)
+    # axes[0].set_xlabel(r"Sensitivity index1", fontsize=12)
+    axes[0].set_ylabel(r"Parameter", fontsize=12)
+
+    for ax in axes:
+        ax.tick_params(axis='both', labelsize=12)
+    # axes[0].legend(fontsize=10, loc="upper left")
+    # axes[0].yaxes[0]is.get_ticklocs(minor=True)
+        ax.minorticks_on()
+        ax.yaxis.set_tick_params(which='minor', bottom=False)
+        ax.tick_params(
+            which="both",
+            axis="x",direction="in", 
+            # pad=-22
+            )
     # ax.grid('True')
     # plt.margins(y=0.1) 
-    ax.set_xlim(-1.2, 2.7)
+    axes[1].set_xlim(0.7,3.7)
+    axes[1].get_yaxis().set_visible(False)
+    axes[0].spines[['top', 'right']].set_visible(False)
+    axes[1].spines[['left', 'top', 'right']].set_visible(False)
+    d = 1.3  # proportion of vertical to horizontal extent of the slanted line
+    kwargs = dict(marker=[(-1, -d), (1, d)], markersize=12,
+                linestyle="none", color='k', mec='k', mew=1, clip_on=False)
+    axes[0].plot(1, 0 , transform=axes[0].transAxes, **kwargs)
+    # axes[0].plot([1, 0], [1, 0], transform=axes[0].transAxes, **kwargs)
+    axes[1].plot(0, 0, transform=axes[1].transAxes, **kwargs)
+
+    # axes[0].xaxis.set_major_formatter(FormatStrFormatter('%.1f'))
+    # xtlabels = [range(-1)]
+
+    axes[0].set_xlim(-1.2, 0.7)
+    axes[0].xaxis.set_major_locator(FixedLocator([-1.0, -0.5, 0, 0.5]))
+    axes[0].set_xticklabels(abs(axes[0].get_xticks()))
+
+    # axes[0].set_xticklabels([f"{x}" for x in [1.0, 0.75, 0.5, 0.25, 0, 0.25, 0.5, 0.75, 1.0]])
+
+    # axes[1].xaxis.set_major_formatter(FormatStrFormatter('%.1f'))
+    axes[1].xaxis.set_tick_params(which='minor', bottom=False)
+
     plt.tight_layout()
-    # plt.savefig(os.path.join(wd, 'sen_sobol.png'), bbox_inches='tight', dpi=300)
+    plt.subplots_adjust(wspace=0.05)
+    plt.savefig(os.path.join(wd, 'sen_sobol_jj.png'), bbox_inches='tight', dpi=300)
     plt.show()
 
 def jj_paper(wd1, wd2, pst_file1, pst_file2):
