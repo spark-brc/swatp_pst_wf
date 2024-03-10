@@ -1,0 +1,4 @@
+ prueba                    SWAT+ Apr 12 2023       MODULAR Rev 2023.60.5.6                                
+   jday   mon   day    yr   unit  gis_id  name                 sedyld     sedorgn     sedorgp     surqno3     lat3no3    surqsolp        usle     sedminp     tileno3     lchlabp    tilelabp      satexn
+                                                                  tha        kgha        kgha        kgha        kgha        kgha        tons        kgha        kgha        kgha        kgha        kgha
+   365    12    31  2022       1       1  prueba                 0.001       0.000       0.000      12.275       0.000       0.989       0.000       0.016       0.000       0.010       0.000       0.000

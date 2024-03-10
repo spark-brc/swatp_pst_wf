@@ -1,0 +1,7 @@
+# swatp_pst.con created by swatp_pst
+prj_dir	D:\spark\jj\albufera\opt_01
+swatp_wd	D:\spark\jj\albufera\TxtInOut_Albuferamanuscript
+cal_start	1/1/2016
+cal_end	12/31/2022
+chs	[1]
+time_step	month

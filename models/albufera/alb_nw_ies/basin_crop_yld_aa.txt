@@ -1,0 +1,4 @@
+ prueba                    SWAT+ Apr 12 2023       MODULAR Rev 2023.60.5.6                                
+       year     plant_no   plant_name       harv_area(ha)    yld(t)         yld(t/ha)      
+        2022           1 wetm              0.0000000E+00  0.0000000E+00  0.0000000E+00
+        2022           2 rice               2047.574       6971.337       3.404680    

@@ -1,0 +1,4 @@
+ prueba                    SWAT+ Apr 12 2023       MODULAR Rev 2023.60.5.6                                
+   jday   mon   day    yr   unit  gis_id  name                    flo_in          geo_bf         flo_out           peakr         sed_in        sed_out         washld          bedld            dep        deg_btm       deg_bank         hc_sed          width          depth          slope        deg_btm       deg_bank         hc_len      flo_in_mm       aqu_in_mm      flo_out_mm        sed_stor 
+                                                                         m^3/s   
+   365    12    31  2022         1     1  prueba                0.1152E+04     0.0000E+00     0.1147E+04     0.1803E+04     0.1478E-02     0.1584E-02     0.7392E-03     0.0000E+00     0.7089E-03     0.8428E-03     0.2125E-05     0.0000E+00     0.4743E+01     0.3098E+00     0.1850E-02     0.1695E-04     0.6849E-06     0.0000E+00     0.8013E-01     0.0000E+00     0.7947E-01     0.1546E+04

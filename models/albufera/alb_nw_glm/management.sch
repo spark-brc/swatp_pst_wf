@@ -1,0 +1,652 @@
+management.sch: Management schedules
+    MGT_NAME    NUMB_OPS   NUMB_AUTO OP_TYPE   MON    DAY     HU_SCH 	OP1 	 	 OP2     	OP3
+     paddy2         28           0                  
+                                     pudl        2     10      0.000    puddle       med_eff     0   
+                                     till        3     20      0.000    fldcult      null        0   
+                                     till        4      5      0.000    fldcult      null        0   
+                                     till        4     10      0.000    leveler      null        0   
+                                     till        4     15      0.000    fldcult      null        0   
+                                     fert        5      5      0.000    40_10_00     broadcast   300 
+                                     till        5      6      0.000    rolpkrft     null        0   
+                                     weir        5      9      0.000    weir1        null        108 
+                                     irrp        5      9      0.000    ponding21    null        0   
+                                     plnt        5     10      0.000    rice140      tr_rice140  0   
+                                     weir        5     18      0.000    weir1        null        22  
+                                     irrp        5     18      0.000    ponding23    null        0   
+                                     weir        5     22      0.000    weir1        null        58  
+                                     irrp        5     22      0.000    ponding24    null        0   
+                                     irrp        6      5      0.000    ponding_off  null        0   
+                                     weir        6      5      0.000    weir1        null        0   
+                                     weir        6     11      0.000    weir1        null        108 
+                                     irrp        6     11      0.000    ponding21    null        0   
+                                     irrp        6     27      0.000    ponding_off  null        0   
+                                     weir        6     27      0.000    weir1        null        0   
+                                     weir        7      7      0.000    weir1        null        125 
+                                     irrp        7      7      0.000    ponding22    null        0   
+                                     irrp        9     10      0.000    ponding_off  null        0   
+                                     weir        9     11      0.000    weir1        null        0   
+                                     harv        9     26      0.000    rice140      grain       0   
+                                     harv        9     26      0.000    rice140      hay_cut_low 0   
+                                     kill        9     26      0.000    rice140      null        0   
+                                     skip        0      0      0.000    null         null        0   
+
+     paddy4         28           0                  
+                                     pudl        2     10      0.000    puddle       med_eff     0   
+                                     till        3     20      0.000    fldcult      null        0   
+                                     till        4      5      0.000    fldcult      null        0   
+                                     till        4     10      0.000    leveler      null        0   
+                                     till        4     15      0.000    fldcult      null        0   
+                                     fert        5      5      0.000    40_10_00     broadcast   300 
+                                     till        5      6      0.000    rolpkrft     null        0   
+                                     weir        5      9      0.000    weir1        null        103 
+                                     irrp        5      9      0.000    ponding41    null        0   
+                                     plnt        5     10      0.000    rice140      tr_rice140  0   
+                                     weir        5     18      0.000    weir1        null        24  
+                                     irrp        5     18      0.000    ponding43    null        0   
+                                     weir        5     22      0.000    weir1        null        55  
+                                     irrp        5     22      0.000    ponding44    null        0   
+                                     irrp        6      5      0.000    ponding_off  null        0   
+                                     weir        6      5      0.000    weir1        null        0   
+                                     weir        6     11      0.000    weir1        null        103 
+                                     irrp        6     11      0.000    ponding41    null        0   
+                                     irrp        6     27      0.000    ponding_off  null        0   
+                                     weir        6     27      0.000    weir1        null        0   
+                                     weir        7      7      0.000    weir1        null        123 
+                                     irrp        7      7      0.000    ponding42    null        0   
+                                     irrp        9     10      0.000    ponding_off  null        0   
+                                     weir        9     11      0.000    weir1        null        0   
+                                     harv        9     26      0.000    rice140      grain       0   
+                                     harv        9     26      0.000    rice140      hay_cut_low 0   
+                                     kill        9     26      0.000    rice140      null        0   
+                                     skip        0      0      0.000    null         null        0   
+
+     paddy6          28           0                  
+                                     pudl        2     10      0.000    puddle       med_eff     0   
+                                     till        3     20      0.000    fldcult      null        0   
+                                     till        4      5      0.000    fldcult      null        0   
+                                     till        4     10      0.000    leveler      null        0   
+                                     till        4     15      0.000    fldcult      null        0   
+                                     fert        5      5      0.000    40_10_00     broadcast   300 
+                                     till        5      6      0.000    rolpkrft     null        0   
+                                     weir        5      9      0.000    weir1        null        104 
+                                     irrp        5      9      0.000    ponding61    null        0   
+                                     plnt        5     10      0.000    rice140      tr_rice140  0   
+                                     weir        5     18      0.000    weir1        null        32  
+                                     irrp        5     18      0.000    ponding63    null        0   
+                                     weir        5     22      0.000    weir1        null        54  
+                                     irrp        5     22      0.000    ponding64    null        0   
+                                     irrp        6      5      0.000    ponding_off  null        0   
+                                     weir        6      5      0.000    weir1        null        0   
+                                     weir        6     11      0.000    weir1        null        104 
+                                     irrp        6     11      0.000    ponding61    null        0   
+                                     irrp        6     27      0.000    ponding_off  null        0   
+                                     weir        6     27      0.000    weir1        null        0   
+                                     weir        7      7      0.000    weir1        null        114 
+                                     irrp        7      7      0.000    ponding62    null        0   
+                                     irrp        9     10      0.000    ponding_off  null        0   
+                                     weir        9     11      0.000    weir1        null        0   
+                                     harv        9     26      0.000    rice140      grain       0   
+                                     harv        9     26      0.000    rice140      hay_cut_low 0   
+                                     kill        9     26      0.000    rice140      null        0   
+                                     skip        0      0      0.000    null         null        0   
+
+     paddy7          28           0                  
+                                     pudl        2     10      0.000    puddle       med_eff     0   
+                                     till        3     20      0.000    fldcult      null        0   
+                                     till        4      5      0.000    fldcult      null        0   
+                                     till        4     10      0.000    leveler      null        0   
+                                     till        4     15      0.000    fldcult      null        0   
+                                     fert        5      5      0.000    40_10_00     broadcast   300 
+                                     till        5      6      0.000    rolpkrft     null        0   
+                                     weir        5      9      0.000    weir1        null        108 
+                                     irrp        5      9      0.000    ponding71    null        0   
+                                     plnt        5     10      0.000    rice140      tr_rice140  0   
+                                     weir        5     18      0.000    weir1        null        22  
+                                     irrp        5     18      0.000    ponding73    null        0   
+                                     weir        5     22      0.000    weir1        null        58  
+                                     irrp        5     22      0.000    ponding74    null        0   
+                                     irrp        6      5      0.000    ponding_off  null        0   
+                                     weir        6      5      0.000    weir1        null        0   
+                                     weir        6     11      0.000    weir1        null        108 
+                                     irrp        6     11      0.000    ponding71    null        0   
+                                     irrp        6     27      0.000    ponding_off  null        0   
+                                     weir        6     27      0.000    weir1        null        0   
+                                     weir        7      7      0.000    weir1        null        125 
+                                     irrp        7      7      0.000    ponding72    null        0   
+                                     irrp        9     10      0.000    ponding_off  null        0   
+                                     weir        9     11      0.000    weir1        null        0   
+                                     harv        9     26      0.000    rice140      grain       0   
+                                     harv        9     26      0.000    rice140      hay_cut_low 0   
+                                     kill        9     26      0.000    rice140      null        0   
+                                     skip        0      0      0.000    null         null        0   
+
+     paddy12        28           0                  
+                                     pudl        2     10      0.000    puddle       med_eff     0   
+                                     till        3     20      0.000    fldcult      null        0   
+                                     till        4      5      0.000    fldcult      null        0   
+                                     till        4     10      0.000    leveler      null        0   
+                                     till        4     15      0.000    fldcult      null        0   
+                                     fert        5      5      0.000    40_10_00     broadcast   300 
+                                     till        5      6      0.000    rolpkrft     null        0   
+                                     weir        5      9      0.000    weir1        null        107 
+                                     irrp        5      9      0.000    ponding121   null        0   
+                                     plnt        5     10      0.000    rice140      tr_rice140  0   
+                                     weir        5     18      0.000    weir1        null        22  
+                                     irrp        5     18      0.000    ponding123   null        0   
+                                     weir        5     22      0.000    weir1        null        58  
+                                     irrp        5     22      0.000    ponding124   null        0   
+                                     irrp        6      5      0.000    ponding_off  null        0   
+                                     weir        6      5      0.000    weir1        null        0   
+                                     weir        6     11      0.000    weir1        null        107 
+                                     irrp        6     11      0.000    ponding121   null        0   
+                                     irrp        6     27      0.000    ponding_off  null        0   
+                                     weir        6     27      0.000    weir1        null        0   
+                                     weir        7      7      0.000    weir1        null        125 
+                                     irrp        7      7      0.000    ponding122   null        0   
+                                     irrp        9     10      0.000    ponding_off  null        0   
+                                     weir        9     11      0.000    weir1        null        0   
+                                     harv        9     26      0.000    rice140      grain       0   
+                                     harv        9     26      0.000    rice140      hay_cut_low 0   
+                                     kill        9     26      0.000    rice140      null        0   
+                                     skip        0      0      0.000    null         null        0   
+
+     paddy14        28           0                  
+                                     pudl        2     10      0.000    puddle       med_eff     0   
+                                     till        3     20      0.000    fldcult      null        0   
+                                     till        4      5      0.000    fldcult      null        0   
+                                     till        4     10      0.000    leveler      null        0   
+                                     till        4     15      0.000    fldcult      null        0   
+                                     fert        5      5      0.000    40_10_00     broadcast   300 
+                                     till        5      6      0.000    rolpkrft     null        0   
+                                     weir        5      9      0.000    weir1        null        106 
+                                     irrp        5      9      0.000    ponding141   null        0   
+                                     plnt        5     10      0.000    rice140      tr_rice140  0   
+                                     weir        5     18      0.000    weir1        null        24  
+                                     irrp        5     18      0.000    ponding143   null        0   
+                                     weir        5     22      0.000    weir1        null        58  
+                                     irrp        5     22      0.000    ponding144   null        0   
+                                     irrp        6      5      0.000    ponding_off  null        0   
+                                     weir        6      5      0.000    weir1        null        0   
+                                     weir        6     11      0.000    weir1        null        106 
+                                     irrp        6     11      0.000    ponding141   null        0   
+                                     irrp        6     27      0.000    ponding_off  null        0   
+                                     weir        6     27      0.000    weir1        null        0   
+                                     weir        7      7      0.000    weir1        null        123 
+                                     irrp        7      7      0.000    ponding142   null        0   
+                                     irrp        9     10      0.000    ponding_off  null        0   
+                                     weir        9     11      0.000    weir1        null        0   
+                                     harv        9     26      0.000    rice140      grain       0   
+                                     harv        9     26      0.000    rice140      hay_cut_low 0   
+                                     kill        9     26      0.000    rice140      null        0   
+                                     skip        0      0      0.000    null         null        0   
+
+     paddy16        28           0                  
+                                     pudl        2     10      0.000    puddle       med_eff     0   
+                                     till        3     20      0.000    fldcult      null        0   
+                                     till        4      5      0.000    fldcult      null        0   
+                                     till        4     10      0.000    leveler      null        0   
+                                     till        4     15      0.000    fldcult      null        0   
+                                     fert        5      5      0.000    40_10_00     broadcast   300 
+                                     till        5      6      0.000    rolpkrft     null        0   
+                                     weir        5      9      0.000    weir1        null        102 
+                                     irrp        5      9      0.000    ponding161   null        0   
+                                     plnt        5     10      0.000    rice140      tr_rice140  0   
+                                     weir        5     18      0.000    weir1        null        24  
+                                     irrp        5     18      0.000    ponding163   null        0   
+                                     weir        5     22      0.000    weir1        null        53  
+                                     irrp        5     22      0.000    ponding164   null        0   
+                                     irrp        6      5      0.000    ponding_off  null        0   
+                                     weir        6      5      0.000    weir1        null        0   
+                                     weir        6     11      0.000    weir1        null        102 
+                                     irrp        6     11      0.000    ponding161   null        0   
+                                     irrp        6     27      0.000    ponding_off  null        0   
+                                     weir        6     27      0.000    weir1        null        0   
+                                     weir        7      7      0.000    weir1        null        121 
+                                     irrp        7      7      0.000    ponding162   null        0   
+                                     irrp        9     10      0.000    ponding_off  null        0   
+                                     weir        9     11      0.000    weir1        null        0   
+                                     harv        9     26      0.000    rice140      grain       0   
+                                     harv        9     26      0.000    rice140      hay_cut_low 0   
+                                     kill        9     26      0.000    rice140      null        0   
+                                     skip        0      0      0.000    null         null        0   
+
+     paddy18        28           0                  
+                                     pudl        2     10      0.000    puddle       med_eff     0   
+                                     till        3     20      0.000    fldcult      null        0   
+                                     till        4      5      0.000    fldcult      null        0   
+                                     till        4     10      0.000    leveler      null        0   
+                                     till        4     15      0.000    fldcult      null        0   
+                                     fert        5      5      0.000    40_10_00     broadcast   300 
+                                     till        5      6      0.000    rolpkrft     null        0   
+                                     weir        5      9      0.000    weir1        null        100 
+                                     irrp        5      9      0.000    ponding181   null        0   
+                                     plnt        5     10      0.000    rice140      tr_rice140  0   
+                                     weir        5     18      0.000    weir1        null        32  
+                                     irrp        5     18      0.000    ponding183   null        0   
+                                     weir        5     22      0.000    weir1        null        58  
+                                     irrp        5     22      0.000    ponding184   null        0   
+                                     irrp        6      5      0.000    ponding_off  null        0   
+                                     weir        6      5      0.000    weir1        null        0   
+                                     weir        6     11      0.000    weir1        null        100 
+                                     irrp        6     11      0.000    ponding181   null        0   
+                                     irrp        6     27      0.000    ponding_off  null        0   
+                                     weir        6     27      0.000    weir1        null        0   
+                                     weir        7      7      0.000    weir1        null        112 
+                                     irrp        7      7      0.000    ponding182   null        0   
+                                     irrp        9     10      0.000    ponding_off  null        0   
+                                     weir        9     11      0.000    weir1        null        0   
+                                     harv        9     26      0.000    rice140      grain       0   
+                                     harv        9     26      0.000    rice140      hay_cut_low 0   
+                                     kill        9     26      0.000    rice140      null        0   
+                                     skip        0      0      0.000    null         null        0   
+
+     paddy21        28           0                  
+                                     pudl        2     10      0.000    puddle       med_eff     0   
+                                     till        3     20      0.000    fldcult      null        0   
+                                     till        4      5      0.000    fldcult      null        0   
+                                     till        4     10      0.000    leveler      null        0   
+                                     till        4     15      0.000    fldcult      null        0   
+                                     fert        5      5      0.000    40_10_00     broadcast   300 
+                                     till        5      6      0.000    rolpkrft     null        0   
+                                     weir        5      9      0.000    weir1        null        112 
+                                     irrp        5      9      0.000    ponding211   null        0   
+                                     plnt        5     10      0.000    rice140      tr_rice140  0   
+                                     weir        5     18      0.000    weir1        null        22  
+                                     irrp        5     18      0.000    ponding213   null        0   
+                                     weir        5     22      0.000    weir1        null        61  
+                                     irrp        5     22      0.000    ponding214   null        0   
+                                     irrp        6      5      0.000    ponding_off  null        0   
+                                     weir        6      5      0.000    weir1        null        0   
+                                     weir        6     11      0.000    weir1        null        112 
+                                     irrp        6     11      0.000    ponding211   null        0   
+                                     irrp        6     27      0.000    ponding_off  null        0   
+                                     weir        6     27      0.000    weir1        null        0   
+                                     weir        7      7      0.000    weir1        null        130 
+                                     irrp        7      7      0.000    ponding212   null        0   
+                                     irrp        9     10      0.000    ponding_off  null        0   
+                                     weir        9     11      0.000    weir1        null        0   
+                                     harv        9     26      0.000    rice140      grain       0   
+                                     harv        9     26      0.000    rice140      hay_cut_low 0   
+                                     kill        9     26      0.000    rice140      null        0   
+                                     skip        0      0      0.000    null         null        0   
+
+     paddy24        28           0                  
+                                     pudl        2     10      0.000    puddle       med_eff     0   
+                                     till        3     20      0.000    fldcult      null        0   
+                                     till        4      5      0.000    fldcult      null        0   
+                                     till        4     10      0.000    leveler      null        0   
+                                     till        4     15      0.000    fldcult      null        0   
+                                     fert        5      5      0.000    40_10_00     broadcast   300 
+                                     till        5      6      0.000    rolpkrft     null        0   
+                                     weir        5      9      0.000    weir1        null        91  
+                                     irrp        5      9      0.000    ponding241   null        0   
+                                     plnt        5     10      0.000    rice140      tr_rice140  0   
+                                     weir        5     18      0.000    weir1        null        15  
+                                     irrp        5     18      0.000    ponding243   null        0   
+                                     weir        5     22      0.000    weir1        null        47  
+                                     irrp        5     22      0.000    ponding244   null        0   
+                                     irrp        6      5      0.000    ponding_off  null        0   
+                                     weir        6      5      0.000    weir1        null        0   
+                                     weir        6     11      0.000    weir1        null        90  
+                                     irrp        6     11      0.000    ponding241   null        0   
+                                     irrp        6     27      0.000    ponding_off  null        0   
+                                     weir        6     27      0.000    weir1        null        0   
+                                     weir        7      7      0.000    weir1        null        90  
+                                     irrp        7      7      0.000    ponding242   null        0   
+                                     irrp        9     10      0.000    ponding_off  null        0   
+                                     weir        9     11      0.000    weir1        null        0   
+                                     harv        9     26      0.000    rice140      grain       0   
+                                     harv        9     26      0.000    rice140      hay_cut_low 0   
+                                     kill        9     26      0.000    rice140      null        0   
+                                     skip        0      0      0.000    null         null        0   
+
+     paddy25        28           0                  
+                                     pudl        2     10      0.000    puddle       med_eff     0   
+                                     till        3     20      0.000    fldcult      null        0   
+                                     till        4      5      0.000    fldcult      null        0   
+                                     till        4     10      0.000    leveler      null        0   
+                                     till        4     15      0.000    fldcult      null        0   
+                                     fert        5      5      0.000    40_10_00     broadcast   300 
+                                     till        5      6      0.000    rolpkrft     null        0   
+                                     weir        5      9      0.000    weir1        null        101 
+                                     irrp        5      9      0.000    ponding251   null        0   
+                                     plnt        5     10      0.000    rice140      tr_rice140  0   
+                                     weir        5     18      0.000    weir1        null        22  
+                                     irrp        5     18      0.000    ponding253   null        0   
+                                     weir        5     22      0.000    weir1        null        52  
+                                     irrp        5     22      0.000    ponding254   null        0   
+                                     irrp        6      5      0.000    ponding_off  null        0   
+                                     weir        6      5      0.000    weir1        null        0   
+                                     weir        6     11      0.000    weir1        null        101 
+                                     irrp        6     11      0.000    ponding251   null        0   
+                                     irrp        6     27      0.000    ponding_off  null        0   
+                                     weir        6     27      0.000    weir1        null        0   
+                                     weir        7      7      0.000    weir1        null        104 
+                                     irrp        7      7      0.000    ponding252   null        0   
+                                     irrp        9     10      0.000    ponding_off  null        0   
+                                     weir        9     11      0.000    weir1        null        0   
+                                     harv        9     26      0.000    rice140      grain       0   
+                                     harv        9     26      0.000    rice140      hay_cut_low 0   
+                                     kill        9     26      0.000    rice140      null        0   
+                                     skip        0      0      0.000    null         null        0   
+
+     paddy28        28           0                  
+                                     pudl        2     10      0.000    puddle       med_eff     0   
+                                     till        3     20      0.000    fldcult      null        0   
+                                     till        4      5      0.000    fldcult      null        0   
+                                     till        4     10      0.000    leveler      null        0   
+                                     till        4     15      0.000    fldcult      null        0   
+                                     fert        5      5      0.000    40_10_00     broadcast   300 
+                                     till        5      6      0.000    rolpkrft     null        0   
+                                     weir        5      9      0.000    weir1        null        104 
+                                     irrp        5      9      0.000    ponding281   null        0   
+                                     plnt        5     10      0.000    rice140      tr_rice140  0   
+                                     weir        5     18      0.000    weir1        null        24  
+                                     irrp        5     18      0.000    ponding283   null        0   
+                                     weir        5     22      0.000    weir1        null        54  
+                                     irrp        5     22      0.000    ponding284   null        0   
+                                     irrp        6      5      0.000    ponding_off  null        0   
+                                     weir        6      5      0.000    weir1        null        0   
+                                     weir        6     11      0.000    weir1        null        104 
+                                     irrp        6     11      0.000    ponding281   null        0   
+                                     irrp        6     27      0.000    ponding_off  null        0   
+                                     weir        6     27      0.000    weir1        null        0   
+                                     weir        7      7      0.000    weir1        null        121 
+                                     irrp        7      7      0.000    ponding282   null        0   
+                                     irrp        9     10      0.000    ponding_off  null        0   
+                                     weir        9     11      0.000    weir1        null        0   
+                                     harv        9     26      0.000    rice140      grain       0   
+                                     harv        9     26      0.000    rice140      hay_cut_low 0   
+                                     kill        9     26      0.000    rice140      null        0   
+                                     skip        0      0      0.000    null         null        0   
+
+     paddy29        28           0                  
+                                     pudl        2     10      0.000    puddle       med_eff     0   
+                                     till        3     20      0.000    fldcult      null        0   
+                                     till        4      5      0.000    fldcult      null        0   
+                                     till        4     10      0.000    leveler      null        0   
+                                     till        4     15      0.000    fldcult      null        0   
+                                     fert        5      5      0.000    40_10_00     broadcast   300 
+                                     till        5      6      0.000    rolpkrft     null        0   
+                                     weir        5      9      0.000    weir1        null        88  
+                                     irrp        5      9      0.000    ponding291   null        0   
+                                     plnt        5     10      0.000    rice140      tr_rice140  0   
+                                     weir        5     18      0.000    weir1        null        16  
+                                     irrp        5     18      0.000    ponding293   null        0   
+                                     weir        5     22      0.000    weir1        null        50  
+                                     irrp        5     22      0.000    ponding294   null        0   
+                                     irrp        6      5      0.000    ponding_off  null        0   
+                                     weir        6      5      0.000    weir1        null        0   
+                                     weir        6     11      0.000    weir1        null        88  
+                                     irrp        6     11      0.000    ponding291   null        0   
+                                     irrp        6     27      0.000    ponding_off  null        0   
+                                     weir        6     27      0.000    weir1        null        0   
+                                     weir        7      7      0.000    weir1        null        77  
+                                     irrp        7      7      0.000    ponding292   null        0   
+                                     irrp        9     10      0.000    ponding_off  null        0   
+                                     weir        9     11      0.000    weir1        null        0   
+                                     harv        9     26      0.000    rice140      grain       0   
+                                     harv        9     26      0.000    rice140      hay_cut_low 0   
+                                     kill        9     26      0.000    rice140      null        0   
+                                     skip        0      0      0.000    null         null        0   
+
+     paddy31        28           0                  
+                                     pudl        2     10      0.000    puddle       med_eff     0   
+                                     till        3     20      0.000    fldcult      null        0   
+                                     till        4      5      0.000    fldcult      null        0   
+                                     till        4     10      0.000    leveler      null        0   
+                                     till        4     15      0.000    fldcult      null        0   
+                                     fert        5      5      0.000    40_10_00     broadcast   300 
+                                     till        5      6      0.000    rolpkrft     null        0   
+                                     weir        5      9      0.000    weir1        null        91  
+                                     irrp        5      9      0.000    ponding311   null        0   
+                                     plnt        5     10      0.000    rice140      tr_rice140  0   
+                                     weir        5     18      0.000    weir1        null        20  
+                                     irrp        5     18      0.000    ponding313   null        0   
+                                     weir        5     22      0.000    weir1        null        50  
+                                     irrp        5     22      0.000    ponding314   null        0   
+                                     irrp        6      5      0.000    ponding_off  null        0   
+                                     weir        6      5      0.000    weir1        null        0   
+                                     weir        6     11      0.000    weir1        null        91  
+                                     irrp        6     11      0.000    ponding311   null        0   
+                                     irrp        6     27      0.000    ponding_off  null        0   
+                                     weir        6     27      0.000    weir1        null        0   
+                                     weir        7      7      0.000    weir1        null        99 
+                                     irrp        7      7      0.000    ponding312   null        0   
+                                     irrp        9     10      0.000    ponding_off  null        0   
+                                     weir        9     11      0.000    weir1        null        0   
+                                     harv        9     26      0.000    rice140      grain       0   
+                                     harv        9     26      0.000    rice140      hay_cut_low 0   
+                                     kill        9     26      0.000    rice140      null        0   
+                                     skip        0      0      0.000    null         null        0   
+
+     paddy38        28           0                  
+                                     pudl        2     10      0.000    puddle       med_eff     0   
+                                     till        3     20      0.000    fldcult      null        0   
+                                     till        4      5      0.000    fldcult      null        0   
+                                     till        4     10      0.000    leveler      null        0   
+                                     till        4     15      0.000    fldcult      null        0   
+                                     fert        5      5      0.000    40_10_00     broadcast   300 
+                                     till        5      6      0.000    rolpkrft     null        0   
+                                     weir        5      9      0.000    weir1        null        80  
+                                     irrp        5      9      0.000    ponding381   null        0   
+                                     plnt        5     10      0.000    rice140      tr_rice140  0   
+                                     weir        5     18      0.000    weir1        null        17  
+                                     irrp        5     18      0.000    ponding383   null        0   
+                                     weir        5     22      0.000    weir1        null        47  
+                                     irrp        5     22      0.000    ponding384   null        0   
+                                     irrp        6      5      0.000    ponding_off  null        0   
+                                     weir        6      5      0.000    weir1        null        0   
+                                     weir        6     11      0.000    weir1        null        80  
+                                     irrp        6     11      0.000    ponding381   null        0   
+                                     irrp        6     27      0.000    ponding_off  null        0   
+                                     weir        6     27      0.000    weir1        null        0   
+                                     weir        7      7      0.000    weir1        null        65  
+                                     irrp        7      7      0.000    ponding382   null        0   
+                                     irrp        9     10      0.000    ponding_off  null        0   
+                                     weir        9     11      0.000    weir1        null        0   
+                                     harv        9     26      0.000    rice140      grain       0   
+                                     harv        9     26      0.000    rice140      hay_cut_low 0   
+                                     kill        9     26      0.000    rice140      null        0   
+                                     skip        0      0      0.000    null         null        0   
+
+     paddy40        28           0                  
+                                     pudl        2     10      0.000    puddle       med_eff     0   
+                                     till        3     20      0.000    fldcult      null        0   
+                                     till        4      5      0.000    fldcult      null        0   
+                                     till        4     10      0.000    leveler      null        0   
+                                     till        4     15      0.000    fldcult      null        0   
+                                     fert        5      5      0.000    40_10_00     broadcast   300 
+                                     till        5      6      0.000    rolpkrft     null        0   
+                                     weir        5      9      0.000    weir1        null        70  
+                                     irrp        5      9      0.000    ponding401   null        0   
+                                     plnt        5     10      0.000    rice140      tr_rice140  0   
+                                     weir        5     18      0.000    weir1        null        15  
+                                     irrp        5     18      0.000    ponding403   null        0   
+                                     weir        5     22      0.000    weir1        null        40  
+                                     irrp        5     22      0.000    ponding404   null        0   
+                                     irrp        6      5      0.000    ponding_off  null        0   
+                                     weir        6      5      0.000    weir1        null        0   
+                                     weir        6     11      0.000    weir1        null        72  
+                                     irrp        6     11      0.000    ponding401   null        0   
+                                     irrp        6     27      0.000    ponding_off  null        0   
+                                     weir        6     27      0.000    weir1        null        0   
+                                     weir        7      7      0.000    weir1        null        53  
+                                     irrp        7      7      0.000    ponding402   null        0   
+                                     irrp        9     10      0.000    ponding_off  null        0   
+                                     weir        9     11      0.000    weir1        null        0   
+                                     harv        9     26      0.000    rice140      grain       0   
+                                     harv        9     26      0.000    rice140      hay_cut_low 0   
+                                     kill        9     26      0.000    rice140      null        0   
+                                     skip        0      0      0.000    null         null        0   
+
+     paddy41        28           0                  
+                                     pudl        2     10      0.000    puddle       med_eff     0   
+                                     till        3     20      0.000    fldcult      null        0   
+                                     till        4      5      0.000    fldcult      null        0   
+                                     till        4     10      0.000    leveler      null        0   
+                                     till        4     15      0.000    fldcult      null        0   
+                                     fert        5      5      0.000    40_10_00     broadcast   300 
+                                     till        5      6      0.000    rolpkrft     null        0   
+                                     weir        5      9      0.000    weir1        null        98  
+                                     irrp        5      9      0.000    ponding411   null        0   
+                                     plnt        5     10      0.000    rice140      tr_rice140  0   
+                                     weir        5     18      0.000    weir1        null        22  
+                                     irrp        5     18      0.000    ponding413   null        0   
+                                     weir        5     22      0.000    weir1        null        52  
+                                     irrp        5     22      0.000    ponding414   null        0   
+                                     irrp        6      5      0.000    ponding_off  null        0   
+                                     weir        6      5      0.000    weir1        null        0   
+                                     weir        6     11      0.000    weir1        null        98  
+                                     irrp        6     11      0.000    ponding411   null        0   
+                                     irrp        6     27      0.000    ponding_off  null        0   
+                                     weir        6     27      0.000    weir1        null        0   
+                                     weir        7      7      0.000    weir1        null        110 
+                                     irrp        7      7      0.000    ponding412   null        0   
+                                     irrp        9     10      0.000    ponding_off  null        0   
+                                     weir        9     11      0.000    weir1        null        0   
+                                     harv        9     26      0.000    rice140      grain       0   
+                                     harv        9     26      0.000    rice140      hay_cut_low 0   
+                                     kill        9     26      0.000    rice140      null        0   
+                                     skip        0      0      0.000    null         null        0   
+
+     paddy44        28           0                  
+                                     pudl        2     10      0.000    puddle       med_eff     0   
+                                     till        3     20      0.000    fldcult      null        0   
+                                     till        4      5      0.000    fldcult      null        0   
+                                     till        4     10      0.000    leveler      null        0   
+                                     till        4     15      0.000    fldcult      null        0   
+                                     fert        5      5      0.000    40_10_00     broadcast   300 
+                                     till        5      6      0.000    rolpkrft     null        0   
+                                     weir        5      9      0.000    weir1        null        107 
+                                     irrp        5      9      0.000    ponding441   null        0   
+                                     plnt        5     10      0.000    rice140      tr_rice140  0   
+                                     weir        5     18      0.000    weir1        null        27  
+                                     irrp        5     18      0.000    ponding443   null        0   
+                                     weir        5     22      0.000    weir1        null        54  
+                                     irrp        5     22      0.000    ponding444   null        0   
+                                     irrp        6      5      0.000    ponding_off  null        0   
+                                     weir        6      5      0.000    weir1        null        0   
+                                     weir        6     11      0.000    weir1        null        106 
+                                     irrp        6     11      0.000    ponding441   null        0   
+                                     irrp        6     27      0.000    ponding_off  null        0   
+                                     weir        6     27      0.000    weir1        null        0   
+                                     weir        7      7      0.000    weir1        null        115 
+                                     irrp        7      7      0.000    ponding442   null        0   
+                                     irrp        9     10      0.000    ponding_off  null        0   
+                                     weir        9     11      0.000    weir1        null        0   
+                                     harv        9     26      0.000    rice140      grain       0   
+                                     harv        9     26      0.000    rice140      hay_cut_low 0   
+                                     kill        9     26      0.000    rice140      null        0   
+                                     skip        0      0      0.000    null         null        0   
+
+     paddy58        28           0                  
+                                     pudl        2     10      0.000    puddle       med_eff     0   
+                                     till        3     20      0.000    fldcult      null        0   
+                                     till        4      5      0.000    fldcult      null        0   
+                                     till        4     10      0.000    leveler      null        0   
+                                     till        4     15      0.000    fldcult      null        0   
+                                     fert        5      5      0.000    40_10_00     broadcast   300 
+                                     till        5      6      0.000    rolpkrft     null        0   
+                                     weir        5      9      0.000    weir1        null        103 
+                                     irrp        5      9      0.000    ponding581   null        0   
+                                     plnt        5     10      0.000    rice140      tr_rice140  0   
+                                     weir        5     18      0.000    weir1        null        24  
+                                     irrp        5     18      0.000    ponding583   null        0   
+                                     weir        5     22      0.000    weir1        null        55  
+                                     irrp        5     22      0.000    ponding584   null        0   
+                                     irrp        6      5      0.000    ponding_off  null        0   
+                                     weir        6      5      0.000    weir1        null        0   
+                                     weir        6     11      0.000    weir1        null        103 
+                                     irrp        6     11      0.000    ponding581   null        0   
+                                     irrp        6     27      0.000    ponding_off  null        0   
+                                     weir        6     27      0.000    weir1        null        0   
+                                     weir        7      7      0.000    weir1        null        123 
+                                     irrp        7      7      0.000    ponding582   null        0   
+                                     irrp        9     10      0.000    ponding_off  null        0   
+                                     weir        9     11      0.000    weir1        null        0   
+                                     harv        9     26      0.000    rice140      grain       0   
+                                     harv        9     26      0.000    rice140      hay_cut_low 0   
+                                     kill        9     26      0.000    rice140      null        0   
+                                     skip        0      0      0.000    null         null        0   
+
+     paddy73        28           0                  
+                                     pudl        2     10      0.000    puddle       med_eff     0   
+                                     till        3     20      0.000    fldcult      null        0   
+                                     till        4      5      0.000    fldcult      null        0   
+                                     till        4     10      0.000    leveler      null        0   
+                                     till        4     15      0.000    fldcult      null        0   
+                                     fert        5      5      0.000    40_10_00     broadcast   300 
+                                     till        5      6      0.000    rolpkrft     null        0   
+                                     weir        5      9      0.000    weir1        null        98  
+                                     irrp        5      9      0.000    ponding731   null        0   
+                                     plnt        5     10      0.000    rice140      tr_rice140  0   
+                                     weir        5     18      0.000    weir1        null        22  
+                                     irrp        5     18      0.000    ponding733   null        0   
+                                     weir        5     22      0.000    weir1        null        52  
+                                     irrp        5     22      0.000    ponding734   null        0   
+                                     irrp        6      5      0.000    ponding_off  null        0   
+                                     weir        6      5      0.000    weir1        null        0   
+                                     weir        6     11      0.000    weir1        null        98  
+                                     irrp        6     11      0.000    ponding731   null        0   
+                                     irrp        6     27      0.000    ponding_off  null        0   
+                                     weir        6     27      0.000    weir1        null        0   
+                                     weir        7      7      0.000    weir1        null        108 
+                                     irrp        7      7      0.000    ponding732   null        0   
+                                     irrp        9     10      0.000    ponding_off  null        0   
+                                     weir        9     11      0.000    weir1        null        0   
+                                     harv        9     26      0.000    rice140      grain       0   
+                                     harv        9     26      0.000    rice140      hay_cut_low 0   
+                                     kill        9     26      0.000    rice140      null        0   
+                                     skip        0      0      0.000    null         null        0   
+
+     paddy76        28           0                  
+                                     pudl        2     10      0.000    puddle       med_eff     0   
+                                     till        3     20      0.000    fldcult      null        0   
+                                     till        4      5      0.000    fldcult      null        0   
+                                     till        4     10      0.000    leveler      null        0   
+                                     till        4     15      0.000    fldcult      null        0   
+                                     fert        5      5      0.000    40_10_00     broadcast   300 
+                                     till        5      6      0.000    rolpkrft     null        0   
+                                     weir        5      9      0.000    weir1        null        112 
+                                     irrp        5      9      0.000    ponding761   null        0   
+                                     plnt        5     10      0.000    rice140      tr_rice140  0   
+                                     weir        5     18      0.000    weir1        null        22  
+                                     irrp        5     18      0.000    ponding763   null        0   
+                                     weir        5     22      0.000    weir1        null        61  
+                                     irrp        5     22      0.000    ponding764   null        0   
+                                     irrp        6      5      0.000    ponding_off  null        0   
+                                     weir        6      5      0.000    weir1        null        0   
+                                     weir        6     11      0.000    weir1        null        112  
+                                     irrp        6     11      0.000    ponding761   null        0   
+                                     irrp        6     27      0.000    ponding_off  null        0   
+                                     weir        6     27      0.000    weir1        null        0   
+                                     weir        7      7      0.000    weir1        null        130 
+                                     irrp        7      7      0.000    ponding762   null        0   
+                                     irrp        9     10      0.000    ponding_off  null        0   
+                                     weir        9     11      0.000    weir1        null        0   
+                                     harv        9     26      0.000    rice140      grain       0   
+                                     harv        9     26      0.000    rice140      hay_cut_low 0   
+                                     kill        9     26      0.000    rice140      null        0   
+                                     skip        0      0      0.000    null         null        0   
+
+
+management.sch: Management schedules
+    MGT_NAME    NUMB_OPS   NUMB_AUTO OP_TYPE   MON    DAY     HU_SCH    OP1          OP2         OP3            OP4
+     paddy           0           6
+	 plow
+	 weir
+	 paddy_irr
+	 puddle
+	 pl_hv_rice
+	 fert_paddy
+
+
+
+
+
+
+
+
+
+

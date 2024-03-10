@@ -1,0 +1,71 @@
+                    PARAMETER SENSITIVITIES: CASE alb_nw_glm
+
+
+NUMERIC PARAMETER SENSITIVITIES FOR OPTIMISATION ITERATION NO. 1   ----->
+  Parameter name   Group        Current Value        PEST_CSS_wo_reg
+   alpha           pargp        100.000000100        0.00000000000       
+   awc             pargp        100.000000100        0.927638140984      
+   canmx           pargp        100.000000100        0.0456950924179     
+   cn2             pargp        100.000000100        0.00000000000       
+   cn3_swf         pargp        100.000000100        0.00000000000       
+   epco            pargp        100.000000100        0.932902513054      
+   esco            pargp        100.000000100        0.465858412770      
+   lat_len         pargp        100.000000100        0.00000000000       
+   latq_co         pargp        100.000000100        0.00000000000       
+   perco           pargp        100.000000100        0.0110414623020     
+   petco           pargp        100.000000100        40.8535162541       
+   revap_co        pargp        100.000000100        0.00000000000       
+   surlag          pargp        100.000000100        0.00000000000       
+
+
+NUMERIC PARAMETER SENSITIVITIES FOR OPTIMISATION ITERATION NO. 2   ----->
+  Parameter name   Group        Current Value        PEST_CSS_wo_reg
+   alpha           pargp        100.000000100        0.00000000000       
+   awc             pargp        109.854948942        0.00156739436391    
+   canmx           pargp        99.8030237777        0.0450044855992     
+   cn2             pargp        100.000000100        0.00000000000       
+   cn3_swf         pargp        100.000000100        0.00000000000       
+   epco            pargp        110.000000110        0.0382927803155     
+   esco            pargp        102.223918812        0.000859515029733   
+   lat_len         pargp        100.000000100        0.00000000000       
+   latq_co         pargp        100.000000100        0.00000000000       
+   perco           pargp        100.000074841        0.00000000000       
+   petco           pargp        100.167485250        41.1605471607       
+   revap_co        pargp        100.000000100        0.00000000000       
+   surlag          pargp        100.000000100        0.00000000000       
+
+
+NUMERIC PARAMETER SENSITIVITIES FOR OPTIMISATION ITERATION NO. 3   ----->
+  Parameter name   Group        Current Value        PEST_CSS_wo_reg
+   alpha           pargp        100.000000100        2.00778436402e-12   
+   awc             pargp        109.984668367        0.165063781301      
+   canmx           pargp        90.7300216161        0.0431649832309     
+   cn2             pargp        100.000000100        2.00778436402e-12   
+   cn3_swf         pargp        100.000000100        2.00778436402e-12   
+   epco            pargp        112.107433390        0.174852801048      
+   esco            pargp        102.409035572        0.166923668112      
+   lat_len         pargp        100.000000100        2.00778436402e-12   
+   latq_co         pargp        100.000000100        2.00778436402e-12   
+   perco           pargp        100.000074841        1.92790129602e-12   
+   petco           pargp        107.212270942        40.4067285919       
+   revap_co        pargp        100.000000100        2.00778436402e-12   
+   surlag          pargp        100.000000100        2.00778436402e-12   
+
+
+NUMERIC PARAMETER SENSITIVITIES FOR OPTIMISATION ITERATION NO. 4   ----->
+  Parameter name   Group        Current Value        PEST_CSS_wo_reg
+   alpha           pargp        100.000000100        1.80627185408e-12   
+   awc             pargp        100.628022164        0.0382300062226     
+   canmx           pargp        86.8717953356        0.0411200271524     
+   cn2             pargp        100.000000100        1.80627185408e-12   
+   cn3_swf         pargp        100.000000100        1.80627185408e-12   
+   epco            pargp        101.915848537        0.195369557143      
+   esco            pargp        93.4790610812        0.00462854349935    
+   lat_len         pargp        100.000000100        1.80627185408e-12   
+   latq_co         pargp        100.000000100        1.80627185408e-12   
+   perco           pargp        100.000074841        1.68393235407e-12   
+   petco           pargp        110.076365045        42.1480511570       
+   revap_co        pargp        100.000000100        1.80627185408e-12   
+   surlag          pargp        100.000000100        1.80627185408e-12   
+
+

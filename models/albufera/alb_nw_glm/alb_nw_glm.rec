@@ -1,0 +1,997 @@
+             pestpp-glm 5.2.3
+
+    by The PEST++ Development Team
+
+
+
+version: 5.2.3
+binary compiled on Apr 25 2023 at 15:17:23
+
+using control file: "alb_nw_glm.pst"
+
+in directory: "D:\spark\jj\albufera\opt_01\alb_nw_glm"
+on host: "TEMP-CPU2"
+started at 03/08/24 13:42:15
+
+...reading external file 'alb_nw_glm.pargp_data.csv'
+...header line: PARGPNME,INCTYP,DERINC,DERINCLB,FORCEN,DERINCMUL,DERMTHD,SPLITTHRESH,SPLITRELDIFF,SPLITACTION
+...read 2 lines from external file
+...reading external file 'alb_nw_glm.par_data.csv'
+...header line: PARNME,PARTRANS,PARCHGLIM,PARVAL1,PARLBND,PARUBND,PARGP,SCALE,OFFSET,DERCOM
+...read 14 lines from external file
+...reading external file 'alb_nw_glm.obs_data.csv'
+...header line: OBSNME,OBSVAL,WEIGHT,OBGNME
+...read 36 lines from external file
+...reading external file 'alb_nw_glm.tplfile_data.csv'
+...header line: PEST_FILE,MODEL_FILE
+...read 2 lines from external file
+...reading external file 'alb_nw_glm.insfile_data.csv'
+...header line: PEST_FILE,MODEL_FILE
+...read 2 lines from external file
+
+    This software has been approved for release by the
+    U.S.Geological Survey(USGS).Although the software has 
+    been subjected to rigorous review, the USGS reserves the
+    right to update the software as needed pursuant to further
+    analysisand review.No warranty, expressed or implied, is 
+    made by the USGS or the U.S.Government as to the
+    functionality of the softwareand related material nor shall
+    the fact of release constitute any such warranty.
+    Furthermore, the software is released on condition that
+    neither the USGS nor the U.S.Government shall be held
+    liable for any damages resulting from its authorized 
+    or unauthorized use.
+
+
+pestmode:- 
+   estimation
+
+
+Case dimensions:- 
+    Number of parameters = 13
+    Number of adjustable parameters = 13
+    Number of observations = 35
+    Number of prior estimates = 0
+
+PEST Control Information
+    relparmax = 1
+    facparmax = 1.1
+    facorig = 0.001
+    phiredswh = 0.1
+    noptmax = 30
+    phiredstp = 0.01
+    nphistp = 3
+    nphinored = 3
+    relparstp = 0.01
+    nrelpar = 3
+
+
+    PEST++ OPTIONS: 
+
+...general options (used in multiple tools): 
+svd_pack: redsvd
+lambda_scale_fac: 0.75,1,1.1,
+forgive_unknown_args: 0
+max_run_fail: 3
+panther_poll_interval: 1
+parameter_covariance: 
+observation_covariance: 
+hotstart_resfile: 
+overdue_resched_fac: 1.15
+overdue_giveup_fac: 100
+overdue_giveup_minutes: 1e+30
+condor_submit_file: 
+tie_by_group: 0
+par_sigma_range: 4
+enforce_tied_bounds: 0
+debug_parse_only: 0
+check_tplins: 1
+fill_tpl_zeros: 0
+tpl_force_decimal: 0
+additional_ins_delimiters: 
+random_seed: 358183147
+num_tpl_ins_threads: 1
+save_binary: 0
+ensemble_output_precision: 6
+panther_echo: 1
+panther_agent_restart_on_error: 0
+panther_agent_no_ping_timeout_secs: -1
+panther_debug_loop: 0
+debug_check_par_en_consistency: 0
+panther_agent_freeze_on_fail: 0
+panther_transfer_on_finish: 
+panther_transfer_on_fail: 
+
+...pestpp-glm specific options:
+max_n_super: 1000000
+super_eigthresh: 1e-06
+n_iter_base: 1000000
+n_iter_super: 0
+super_relparmax: 0.1
+max_super_frz_iter: 20
+max_reg_iter: 20
+lambdas: 0.1,1,10,100,1000,
+iteration_summary: 1
+der_forgive: 1
+uncertainty: 1
+forecasts: 
+base_jacobian: 
+glm_num_reals: 0
+jac_scale: 1
+glm_normal_form: DIAG
+glm_debug_der_fail: 0
+glm_debug_lamb_fail: 0
+glm_debug_real_fail: 0
+glm_accept_mc_phi: 0
+glm_rebase_super: 0
+glm_iter_mc: 0
+glm_high_2nd_iter_phi: 0
+
+...pestpp-swp options:
+sweep_parameter_csv_file: 
+sweep_output_csv_file: sweep_out.csv
+sweep_chunk: 500
+sweep_forgive: 0
+sweep_base_run: 0
+sweep_include_regul_phi: 0
+
+...pestpp-opt options:
+opt_objective_function: 
+opt_coin_log: 1
+opt_skip_final: 0
+opt_std_weights: 0
+opt_stack_size: 0
+opt_par_stack: 
+opt_obs_stack: 
+opt_decision_variable_groups: 
+opt_external_variable_groups: 
+opt_constraint_groups: 
+opt_risk: 0.5
+opt_iter_derinc_fac: 1
+opt_direction: 1
+opt_iter_tol: 0.001
+opt_recalc_fosm_every: 1
+opt_chance_points: SINGLE
+
+...pestpp-sqp options:
+sqp_dv_en: 
+sqp_obs_restart_en: 
+sqp_num_reals: -1
+sqp_update_hessian: 0
+sqp_scale_facs:
+  1e-05
+  0.0001
+  0.0005
+  0.001
+  0.0025
+  0.005
+  0.01
+  0.05
+  0.075
+  0.1
+  0.25
+  0.5
+  1
+  2
+  5
+  10
+
+...pestpp-mou options:
+mou_generator: DE
+mou_population_size: 100
+mou_dv_population_file: 
+mou_obs_population_restart_file: 
+mou_objectives: 
+mou_max_archive_size: 500
+mou_risk_objective: 0
+mou_verbose_level: 1
+mou_env_selector: NSGA
+mou_mating_selector: TOURNAMENT
+mou_crossover_prob: 0.75
+mou_mutation_prob: -999
+mou_de_f: 0.8
+mou_save_population_every: -1
+mou_pso_omega: 0.7
+mou_pso_social_const: 2
+mou_pso_cognitive: 2
+mou_population_schedule: 
+mou_simplex_reflections:10
+mou_simplex_factors: 
+ 0.5
+ 0.6
+ 0.7
+ 0.8
+mou_simplex_mutation: 0
+mou_use_multigen:0
+
+...shared pestpp-ies/pestpp-da options:
+(note: 'da' args override 'ies' args when using pestpp-da)
+ies_parameter_ensemble: 
+ies_observation_ensemble: 
+ies_weights_ensemble: 
+ies_restart_parameter_ensemble: 
+ies_restart_observation_ensemble: 
+ies_use_approximate_solution: 1
+ies_lambda_mults: 0.1,1,10,
+ies_initial_lambda: 0
+ies_use_approx: 1
+ies_subset_size: 4
+ies_reg_factor: 0
+ies_verbose_level: 1
+ies_use_prior_scaling: 0
+ies_num_reals: 50
+ies_bad_phi: 1e+300
+ies_bad_phi_sigma: 1e+300
+ies_include_base: 1
+ies_use_empirical_prior: 0
+ies_group_draws: 0
+ies_enforce_bounds: 1
+ies_localizer: 
+ies_accept_phi_fac: 1.05
+ies_lambda_inc_fac: 10
+ies_lambda_dec_fac: 0.75
+ies_save_lambda_ensembles: 0
+ies_subset_how: RANDOM
+ies_localize_how: PARAMETERS
+ies_num_threads: -1
+ies_debug_fail_subset: 0
+ies_debug_fail_remainder: 0
+ies_debug_bad_phi: 0
+ies_debug_upgrade_only: 0
+ies_debug_high_subset_phi: 0
+ies_debug_high_upgrade_phi: 0
+ies_csv_by_reals: 1
+ies_autoadaloc: 0
+ies_autoadaloc_sigma_dist: 1
+ies_enforce_chglim: 0
+ies_center_on: 
+ies_no_noise: 0
+ies_drop_conflicts: 0
+ies_save_rescov:0
+ies_pdc_sigma_distance: -1
+ies_use_mda: 0
+ies_mda_init_fac: 10
+ies_mda_dec_fac: 0.5
+ies_localization_type: LOCAL
+ies_upgrades_in_memory: 1
+ies_ordered_binary: 1
+ies_multimodal_alpha: 1
+ies_localizer_forgive_extra: 0
+ies_phi_factors_file: 
+ies_phi_factors_by_real: 0
+
+pestpp-sen options: 
+gsa_method: MORRIS
+gsa_morris_pooled_obs: 0
+gsa_morris_obs_sen: 1
+gsa_morris_p: 4
+gsa_morris_r: 4
+gsa_morris_delta: 0.6666
+gsa_sobol_samples: 4
+gsa_sobol_par_dist: norm
+
+pestpp-da options (those not shared with pestpp-ies):
+da_parameter_cycle_table: 
+da_observation_cycle_table: 
+da_hotstart_cycle: 0
+da_stop_cycle: 1000000000
+da_use_simulated_states: 1
+da_noptmax_schedule: 
+
+
+
+Model command line(s):- 
+    python forward_run.py
+
+Model interface files:-
+    template files:
+      calibration.cal.tpl
+    model input files:
+      calibration.cal
+
+    instruction files:
+      tot_irr_paddy.txt.ins
+    model output files:
+      tot_irr_paddy.txt
+
+
+Parameter group information
+NAME          INCREMENT TYPE     DERIVATIVE INCREMENT    INCREMENT LOWER BOUND  FORCE CENTRAL     INCREMENT MULTIPLIER
+pargp               RELATIVE                     0.01                        0         SWITCH                        2
+
+
+
+Parameter information
+NAME         TRANSFORMATION        CHANGE LIMIT  INITIAL VALUE    LOWER BOUND    UPPER BOUND        GROUP          SCALE         OFFSET  DERIVATIVE COMMAND
+alpha        log                     FACTOR            100              1            199        pargp              1           -100                   1
+awc          log                     FACTOR            100              1            199        pargp              1           -100                   1
+canmx        log                     FACTOR            100              1            199        pargp              1           -100                   1
+cn2          log                     FACTOR            100              1            199        pargp              1           -100                   1
+cn3_swf      log                     FACTOR            100              1            199        pargp              1           -100                   1
+epco         log                     FACTOR            100              1            199        pargp              1           -100                   1
+esco         log                     FACTOR            100              1            199        pargp              1           -100                   1
+lat_len      log                     FACTOR            100              1            199        pargp              1           -100                   1
+latq_co      log                     FACTOR            100              1            199        pargp              1           -100                   1
+perco        log                     FACTOR            100              1            199        pargp              1           -100                   1
+petco        log                     FACTOR            100              1            199        pargp              1           -100                   1
+revap_co     log                     FACTOR            100              1            199        pargp              1           -100                   1
+surlag       log                     FACTOR            100              1            199        pargp              1           -100                   1
+
+
+
+Observation information
+NAME                                  VALUE                GROUP              WEIGHT
+obd_irr_paddy_20160531              25.7465               obgnme                   1
+obd_irr_paddy_20160630              497.425               obgnme                   1
+obd_irr_paddy_20160731              658.431               obgnme                   1
+obd_irr_paddy_20160831               662.53               obgnme                   1
+obd_irr_paddy_20160930              30.7721               obgnme                   1
+obd_irr_paddy_20170531              425.832               obgnme                   1
+obd_irr_paddy_20170630              534.505               obgnme                   1
+obd_irr_paddy_20170731              622.614               obgnme                   1
+obd_irr_paddy_20170831              611.115               obgnme                   1
+obd_irr_paddy_20170930              179.509               obgnme                   1
+obd_irr_paddy_20180531              383.078               obgnme                   1
+obd_irr_paddy_20180630              483.244               obgnme                   1
+obd_irr_paddy_20180731              652.866               obgnme                   1
+obd_irr_paddy_20180831              598.416               obgnme                   1
+obd_irr_paddy_20180930               90.014               obgnme                   1
+obd_irr_paddy_20190531              340.345               obgnme                   1
+obd_irr_paddy_20190630              603.729               obgnme                   1
+obd_irr_paddy_20190731              564.813               obgnme                   1
+obd_irr_paddy_20190831              665.598               obgnme                   1
+obd_irr_paddy_20190930              174.085               obgnme                   1
+obd_irr_paddy_20200531              157.781               obgnme                   1
+obd_irr_paddy_20200630              477.194               obgnme                   1
+obd_irr_paddy_20200731              620.522               obgnme                   1
+obd_irr_paddy_20200831              683.924               obgnme                   1
+obd_irr_paddy_20200930              218.706               obgnme                   1
+obd_irr_paddy_20210531              294.105               obgnme                   1
+obd_irr_paddy_20210630              562.552               obgnme                   1
+obd_irr_paddy_20210731              588.575               obgnme                   1
+obd_irr_paddy_20210831              666.598               obgnme                   1
+obd_irr_paddy_20210930              260.414               obgnme                   1
+obd_irr_paddy_20220531              442.302               obgnme                   1
+obd_irr_paddy_20220630              608.313               obgnme                   1
+obd_irr_paddy_20220731              619.337               obgnme                   1
+obd_irr_paddy_20220831              515.761               obgnme                   1
+obd_irr_paddy_20220930               103.05               obgnme                   1
+
+
+
+Prior information
+
+   no prior information provided
+
+
+
+PEST SVD Information
+    maxsing = 10000000
+    eigthresh = 1e-06
+
+
+
+
+
+...loading prior parameter covariance matrix
+
+   -----    Starting pestpp-glm Iterations    ----    
+
+
+OPTIMISATION ITERATION NUMBER: 1
+
+  Iteration type: base parameter solution
+  SVD Package: RedSVD
+  Model calls so far : 0
+
+
+
+  Starting phi for this iteration                     Total : 466169
+
+
+  Contribution to phi from observation group       "obgnme" : 466169
+  Number of terms in the jacobian equal to zero: 361 / 455 (79%)
+
+   ...calculating lambda upgrade vector: 0.1
+  computing upgrade vector (lambda = 0.1)  1 / 5             
+WARNING: change limit/bound enforcement for lambda 0.1resulted in less than 1% original upgrade vector length
+change limit/bound enforement for lambda 0.1: upper change limit,ESCO, scaling factor: 3.33695e-144
+   ...calculating scaled lambda vector-scale factor: 0.1, 0.75
+   ...calculating lambda upgrade vector: 1
+  computing upgrade vector (lambda = 1)  2 / 5             
+WARNING: change limit/bound enforcement for lambda 1resulted in less than 1% original upgrade vector length
+change limit/bound enforement for lambda 1: upper change limit,ESCO, scaling factor: 5.39916e-20
+   ...calculating scaled lambda vector-scale factor: 1, 0.75
+   ...calculating lambda upgrade vector: 10
+  computing upgrade vector (lambda = 10)  3 / 5             
+WARNING: change limit/bound enforcement for lambda 10resulted in less than 1% original upgrade vector length
+change limit/bound enforement for lambda 10: upper change limit,ESCO, scaling factor: 8.81881e-05
+   ...calculating scaled lambda vector-scale factor: 10, 0.75
+   ...calculating lambda upgrade vector: 100
+  computing upgrade vector (lambda = 100)  4 / 5             
+WARNING: change limit/bound enforcement for lambda 100resulted in less than 1% original upgrade vector length
+change limit/bound enforement for lambda 100: upper change limit,AWC, scaling factor: 0.00228344
+   ...calculating scaled lambda vector-scale factor: 100, 0.75
+   ...calculating lambda upgrade vector: 1000
+  computing upgrade vector (lambda = 1000)  5 / 5             
+WARNING: change limit/bound enforcement for lambda 1000resulted in less than 1% original upgrade vector length
+change limit/bound enforement for lambda 1000: upper change limit,EPCO, scaling factor: 0.00734122
+   ...calculating scaled lambda vector-scale factor: 1000, 0.75
+starting FOSM uncertainty analyses for iteration 0
+
+
+posterior parameter covariance matrix written to file 'alb_nw_glm.1.post.cov'
+
+current parameter uncertainty summary: 
+
+                name          prior_mean         prior_stdev   prior_lower_bound   prior_upper_bound           post_mean          post_stdev    post_lower_bound    post_upper_bound
+               alpha                   2            0.574713            0.850573             3.14943                   2            0.574713            0.850573             3.14943
+                 awc                   2            0.574713            0.850573             3.14943                   2             0.57148            0.857039             3.14296
+               canmx                   2            0.574713            0.850573             3.14943                   2            0.574269            0.851461             3.14854
+                 cn2                   2            0.574713            0.850573             3.14943                   2            0.574713            0.850573             3.14943
+             cn3_swf                   2            0.574713            0.850573             3.14943                   2            0.574713            0.850573             3.14943
+                epco                   2            0.574713            0.850573             3.14943                   2            0.568615             0.86277             3.13723
+                esco                   2            0.574713            0.850573             3.14943                   2              0.5739            0.852199              3.1478
+             lat_len                   2            0.574713            0.850573             3.14943                   2            0.574713            0.850573             3.14943
+             latq_co                   2            0.574713            0.850573             3.14943                   2            0.574713            0.850573             3.14943
+               perco                   2            0.574713            0.850573             3.14943                   2            0.574713            0.850574             3.14943
+               petco                   2            0.574713            0.850573             3.14943                   2           0.0182283             1.96354             2.03646
+            revap_co                   2            0.574713            0.850573             3.14943                   2            0.574713            0.850573             3.14943
+              surlag                   2            0.574713            0.850573             3.14943                   2            0.574713            0.850573             3.14943
+the above parameter uncertainty summary was written to file 'alb_nw_glm.0.par.usum.csv'
+
+  Summary of GLM lambda upgrade runs:
+    Lambda =     0.10; Type:       normal; length = 1.00e+01;  phi = 4.661e+05 (99.98% of starting phi)
+    Lambda =     0.10; Type:  scale(0.75); length = 7.41e+00;  phi = 4.661e+05 (99.98% of starting phi)
+    Lambda =     1.00; Type:       normal; length = 1.00e+01;  phi = 4.661e+05 (99.98% of starting phi)
+    Lambda =     1.00; Type:  scale(0.75); length = 7.41e+00;  phi = 4.661e+05 (99.98% of starting phi)
+    Lambda =    10.00; Type:       normal; length = 1.00e+01;  phi = 4.661e+05 (99.98% of starting phi)
+    Lambda =    10.00; Type:  scale(0.75); length = 7.41e+00;  phi = 4.661e+05 (99.98% of starting phi)
+    Lambda =   100.00; Type:       normal; length = 1.31e+01;  phi = 4.657e+05 (99.89% of starting phi)
+    Lambda =   100.00; Type:  scale(0.75); length = 9.73e+00;  phi = 4.657e+05 (99.90% of starting phi)
+    Lambda =  1000.00; Type:       normal; length = 1.42e+01;  phi = 4.655e+05 (99.85% of starting phi)
+    Lambda =  1000.00; Type:  scale(0.75); length = 1.05e+01;  phi = 4.656e+05 (99.87% of starting phi)
+
+  Model calls in iteration 1: 24
+  Total model calls at end of iteration 1: 24
+
+
+  Final phi for this iteration                     Total : 465492
+
+
+  Contribution to phi from observation group       "obgnme" : 465492
+    Iteration 1 Parameter Upgrades (Control File Parameters) 
+      Parameter     Current       Previous       Factor       Relative
+        Name         Value         Value         Change        Change
+      ----------  ------------  ------------  ------------  ------------
+           alpha           100           100             1             0
+             awc       109.855           100       1.09855    -0.0985495
+           canmx        99.803           100       1.00197    0.00196976
+             cn2           100           100             1             0
+         cn3_swf           100           100             1             0
+            epco           110           100           1.1          -0.1
+            esco       102.224           100       1.02224    -0.0222392
+         lat_len           100           100             1             0
+         latq_co           100           100             1             0
+           perco           100           100             1  -7.47412e-07
+           petco       100.167           100       1.00167   -0.00167485
+        revap_co           100           100             1             0
+          surlag           100           100             1             0
+       Maximum changes in "Control File" parameters:
+         Maximum relative change = -0.1   [epco]
+         Maximum factor change = 1.1   [epco]
+
+    Iteration 1 Parameter Upgrades (Transformed Numeric Parameters) 
+      Parameter     Current       Previous       Factor       Relative
+        Name         Value         Value         Change        Change
+      ----------  ------------  ------------  ------------  ------------
+           alpha             2             2             1             0
+             awc       2.04082             2       1.02041    -0.0204098
+           canmx       1.99914             2       1.00043    0.00042815
+             cn2             2             2             1             0
+         cn3_swf             2             2             1             0
+            epco       2.04139             2        1.0207    -0.0206963
+            esco       2.00955             2       1.00478   -0.00477626
+         latq_co             2             2             1             0
+         lat_len             2             2             1             0
+           perco             2             2             1  -1.62298e-07
+           petco       2.00073             2       1.00036  -0.000363385
+        revap_co             2             2             1             0
+          surlag             2             2             1             0
+       Maximum changes in "Transformed Numeric" parameters:
+         Maximum relative change = -0.0206963   [epco]
+         Maximum factor change = 1.0207   [epco]
+
+
+OPTIMISATION ITERATION NUMBER: 2
+
+  Iteration type: base parameter solution
+  SVD Package: RedSVD
+  Model calls so far : 24
+
+
+
+  Starting phi for this iteration                     Total : 465492
+
+
+  Contribution to phi from observation group       "obgnme" : 465492
+  Number of terms in the jacobian equal to zero: 373 / 455 (82%)
+
+   ...calculating lambda upgrade vector: 0.1
+  computing upgrade vector (lambda = 0.1)  1 / 5             
+WARNING: change limit/bound enforcement for lambda 0.1resulted in less than 1% original upgrade vector length
+change limit/bound enforement for lambda 0.1: upper change limit,AWC, scaling factor: 4.54913e-36
+   ...calculating scaled lambda vector-scale factor: 0.1, 0.75
+   ...calculating lambda upgrade vector: 1
+  computing upgrade vector (lambda = 1)  2 / 5             
+WARNING: change limit/bound enforcement for lambda 1resulted in less than 1% original upgrade vector length
+change limit/bound enforement for lambda 1: upper change limit,EPCO, scaling factor: 2.84756e-10
+   ...calculating scaled lambda vector-scale factor: 1, 0.75
+   ...calculating lambda upgrade vector: 10
+  computing upgrade vector (lambda = 10)  3 / 5             
+WARNING: change limit/bound enforcement for lambda 10resulted in less than 1% original upgrade vector length
+change limit/bound enforement for lambda 10: upper change limit,EPCO, scaling factor: 0.000671583
+   ...calculating scaled lambda vector-scale factor: 10, 0.75
+   ...calculating lambda upgrade vector: 100
+  computing upgrade vector (lambda = 100)  4 / 5             
+   ...calculating scaled lambda vector-scale factor: 100, 0.75
+   ...calculating lambda upgrade vector: 1000
+  computing upgrade vector (lambda = 1000)  5 / 5             
+   ...calculating scaled lambda vector-scale factor: 1000, 0.75
+starting FOSM uncertainty analyses for iteration 1
+
+
+posterior parameter covariance matrix written to file 'alb_nw_glm.2.post.cov'
+
+current parameter uncertainty summary: 
+
+                name          prior_mean         prior_stdev   prior_lower_bound   prior_upper_bound           post_mean          post_stdev    post_lower_bound    post_upper_bound
+               alpha                   2            0.574713            0.850573             3.14943                   2            0.574713            0.850573             3.14943
+                 awc                   2            0.574713            0.850573             3.14943             2.04082            0.574713            0.891393             3.19025
+               canmx                   2            0.574713            0.850573             3.14943             1.99914            0.574269            0.850606             3.14768
+                 cn2                   2            0.574713            0.850573             3.14943                   2            0.574713            0.850573             3.14943
+             cn3_swf                   2            0.574713            0.850573             3.14943                   2            0.574713            0.850573             3.14943
+                epco                   2            0.574713            0.850573             3.14943             2.04139            0.574379            0.892634             3.19015
+                esco                   2            0.574713            0.850573             3.14943             2.00955            0.574713            0.860126             3.15898
+             lat_len                   2            0.574713            0.850573             3.14943                   2            0.574713            0.850573             3.14943
+             latq_co                   2            0.574713            0.850573             3.14943                   2            0.574713            0.850573             3.14943
+               perco                   2            0.574713            0.850573             3.14943                   2            0.574713            0.850574             3.14943
+               petco                   2            0.574713            0.850573             3.14943             2.00073           0.0159806             1.96877             2.03269
+            revap_co                   2            0.574713            0.850573             3.14943                   2            0.574713            0.850573             3.14943
+              surlag                   2            0.574713            0.850573             3.14943                   2            0.574713            0.850573             3.14943
+the above parameter uncertainty summary was written to file 'alb_nw_glm.1.par.usum.csv'
+
+  Summary of GLM lambda upgrade runs:
+    Lambda =     0.10; Type:       normal; length = 1.10e+01;  phi = 4.655e+05 (100.00% of starting phi)
+    Lambda =     0.10; Type:  scale(0.75); length = 8.14e+00;  phi = 4.655e+05 (100.00% of starting phi)
+    Lambda =     1.00; Type:       normal; length = 1.10e+01;  phi = 4.655e+05 (100.00% of starting phi)
+    Lambda =     1.00; Type:  scale(0.75); length = 8.15e+00;  phi = 4.655e+05 (100.00% of starting phi)
+    Lambda =    10.00; Type:       normal; length = 1.10e+01;  phi = 4.655e+05 (100.00% of starting phi)
+    Lambda =    10.00; Type:  scale(0.75); length = 8.15e+00;  phi = 4.655e+05 (100.00% of starting phi)
+    Lambda =   100.00; Type:       normal; length = 1.25e+01;  phi = 4.622e+05 (99.30% of starting phi)
+    Lambda =   100.00; Type:  scale(0.75); length = 9.42e+00;  phi =  4.63e+05 (99.46% of starting phi)
+    Lambda =  1000.00; Type:       normal; length = 1.17e+01;  phi = 4.572e+05 (98.22% of starting phi)
+    Lambda =  1000.00; Type:  scale(0.75); length = 8.80e+00;  phi = 4.592e+05 (98.64% of starting phi)
+
+      Switching to central derivatives:
+
+  Model calls in iteration 2: 23
+  Total model calls at end of iteration 2: 47
+
+
+  Final phi for this iteration                     Total : 457193
+
+
+  Contribution to phi from observation group       "obgnme" : 457193
+    Iteration 2 Parameter Upgrades (Control File Parameters) 
+      Parameter     Current       Previous       Factor       Relative
+        Name         Value         Value         Change        Change
+      ----------  ------------  ------------  ------------  ------------
+           alpha           100           100             1             0
+             awc       109.985       109.855       1.00118   -0.00118082
+           canmx         90.73        99.803           1.1     0.0909091
+             cn2           100           100             1             0
+         cn3_swf           100           100             1             0
+            epco       112.107           110       1.01916    -0.0191585
+            esco       102.409       102.224       1.00181   -0.00181089
+         lat_len           100           100             1             0
+         latq_co           100           100             1             0
+           perco           100           100             1             0
+           petco       107.212       100.167       1.07033    -0.0703301
+        revap_co           100           100             1             0
+          surlag           100           100             1             0
+       Maximum changes in "Control File" parameters:
+         Maximum relative change = 0.0909091   [canmx]
+         Maximum factor change = 1.1   [canmx]
+
+    Iteration 2 Parameter Upgrades (Transformed Numeric Parameters) 
+      Parameter     Current       Previous       Factor       Relative
+        Name         Value         Value         Change        Change
+      ----------  ------------  ------------  ------------  ------------
+           alpha             2             2             1             0
+             awc       2.04133       2.04082       1.00025  -0.000251136
+           canmx       1.95775       1.99914       1.02114     0.0207052
+             cn2             2             2             1             0
+         cn3_swf             2             2             1             0
+            epco       2.04963       2.04139       1.00404    -0.0040373
+            esco       2.01034       2.00955       1.00039  -0.000391008
+         latq_co             2             2             1             0
+         lat_len             2             2             1             0
+           perco             2             2             1             0
+           petco       2.03024       2.00073       1.01475    -0.0147535
+        revap_co             2             2             1             0
+          surlag             2             2             1             0
+       Maximum changes in "Transformed Numeric" parameters:
+         Maximum relative change = 0.0207052   [canmx]
+         Maximum factor change = 1.02114   [canmx]
+
+
+OPTIMISATION ITERATION NUMBER: 3
+
+  Iteration type: base parameter solution
+  SVD Package: RedSVD
+  Model calls so far : 47
+
+
+
+  Starting phi for this iteration                     Total : 457193
+
+
+  Contribution to phi from observation group       "obgnme" : 457193
+  Number of terms in the jacobian equal to zero: 0 / 455 (0%)
+
+   ...calculating lambda upgrade vector: 0.1
+  computing upgrade vector (lambda = 0.1)  1 / 5             
+WARNING: change limit/bound enforcement for lambda 0.1resulted in less than 1% original upgrade vector length
+change limit/bound enforement for lambda 0.1: upper change limit,EPCO, scaling factor: 6.88922e-25
+   ...calculating scaled lambda vector-scale factor: 0.1, 0.75
+   ...calculating lambda upgrade vector: 1
+  computing upgrade vector (lambda = 1)  2 / 5             
+   ...calculating scaled lambda vector-scale factor: 1, 0.75
+   ...calculating lambda upgrade vector: 10
+  computing upgrade vector (lambda = 10)  3 / 5             
+   ...calculating scaled lambda vector-scale factor: 10, 0.75
+   ...calculating lambda upgrade vector: 100
+  computing upgrade vector (lambda = 100)  4 / 5             
+   ...calculating scaled lambda vector-scale factor: 100, 0.75
+   ...calculating lambda upgrade vector: 1000
+  computing upgrade vector (lambda = 1000)  5 / 5             
+   ...calculating scaled lambda vector-scale factor: 1000, 0.75
+starting FOSM uncertainty analyses for iteration 2
+
+
+posterior parameter covariance matrix written to file 'alb_nw_glm.3.post.cov'
+
+current parameter uncertainty summary: 
+
+                name          prior_mean         prior_stdev   prior_lower_bound   prior_upper_bound           post_mean          post_stdev    post_lower_bound    post_upper_bound
+               alpha                   2            0.574713            0.850573             3.14943                   2            0.574713            0.850573             3.14943
+                 awc                   2            0.574713            0.850573             3.14943             2.04133            0.574094            0.893144             3.18952
+               canmx                   2            0.574713            0.850573             3.14943             1.95775            0.574178            0.809395             3.10611
+                 cn2                   2            0.574713            0.850573             3.14943                   2            0.574713            0.850573             3.14943
+             cn3_swf                   2            0.574713            0.850573             3.14943                   2            0.574713            0.850573             3.14943
+                epco                   2            0.574713            0.850573             3.14943             2.04963            0.574037             0.90156             3.19771
+                esco                   2            0.574713            0.850573             3.14943             2.01034            0.574065            0.862208             3.15847
+             lat_len                   2            0.574713            0.850573             3.14943                   2            0.574713            0.850573             3.14943
+             latq_co                   2            0.574713            0.850573             3.14943                   2            0.574713            0.850573             3.14943
+               perco                   2            0.574713            0.850573             3.14943                   2            0.574713            0.850574             3.14943
+               petco                   2            0.574713            0.850573             3.14943             2.03024          0.00924216             2.01176             2.04873
+            revap_co                   2            0.574713            0.850573             3.14943                   2            0.574713            0.850573             3.14943
+              surlag                   2            0.574713            0.850573             3.14943                   2            0.574713            0.850573             3.14943
+the above parameter uncertainty summary was written to file 'alb_nw_glm.2.par.usum.csv'
+
+  Summary of GLM lambda upgrade runs:
+    Lambda =     0.10; Type:       normal; length = 1.12e+01;  phi = 4.572e+05 (100.00% of starting phi)
+    Lambda =     0.10; Type:  scale(0.75); length = 8.31e+00;  phi = 4.572e+05 (100.00% of starting phi)
+    Lambda =     1.00; Type:       normal; length = 1.95e+01;  phi = 4.618e+05 (101.00% of starting phi)
+    Lambda =     1.00; Type:  scale(0.75); length = 1.48e+01;  phi = 4.601e+05 (100.64% of starting phi)
+    Lambda =    10.00; Type:       normal; length = 1.91e+01;  phi = 4.596e+05 (100.53% of starting phi)
+    Lambda =    10.00; Type:  scale(0.75); length = 1.45e+01;  phi =  4.59e+05 (100.40% of starting phi)
+    Lambda =   100.00; Type:       normal; length = 1.86e+01;  phi = 4.565e+05 (99.84% of starting phi)
+    Lambda =   100.00; Type:  scale(0.75); length = 1.41e+01;  phi = 4.566e+05 (99.88% of starting phi)
+    Lambda =  1000.00; Type:       normal; length = 1.72e+01;  phi = 4.544e+05 (99.38% of starting phi)
+    Lambda =  1000.00; Type:  scale(0.75); length = 1.30e+01;  phi =  4.55e+05 (99.52% of starting phi)
+
+  Model calls in iteration 3: 36
+  Total model calls at end of iteration 3: 83
+
+
+  Final phi for this iteration                     Total : 454363
+
+
+  Contribution to phi from observation group       "obgnme" : 454363
+    Iteration 3 Parameter Upgrades (Control File Parameters) 
+      Parameter     Current       Previous       Factor       Relative
+        Name         Value         Value         Change        Change
+      ----------  ------------  ------------  ------------  ------------
+           alpha           100           100             1             0
+             awc       100.628       109.985       1.09298     0.0850723
+           canmx       86.8718         90.73       1.04441     0.0425243
+             cn2           100           100             1             0
+         cn3_swf           100           100             1             0
+            epco       101.916       112.107           1.1     0.0909091
+            esco       93.4791       102.409       1.09553     0.0871991
+         lat_len           100           100             1             0
+         latq_co           100           100             1             0
+           perco           100           100             1             0
+           petco       110.076       107.212       1.02671    -0.0267142
+        revap_co           100           100             1             0
+          surlag           100           100             1             0
+       Maximum changes in "Control File" parameters:
+         Maximum relative change = 0.0909091   [epco]
+         Maximum factor change = 1.1   [epco]
+
+    Iteration 3 Parameter Upgrades (Transformed Numeric Parameters) 
+      Parameter     Current       Previous       Factor       Relative
+        Name         Value         Value         Change        Change
+      ----------  ------------  ------------  ------------  ------------
+           alpha             2             2             1             0
+             awc       2.00272       2.04133       1.01928     0.0189157
+           canmx       1.93888       1.95775       1.00973    0.00963974
+             cn2             2             2             1             0
+         cn3_swf             2             2             1             0
+            epco       2.00824       2.04963       1.02061     0.0201952
+            esco       1.97071       2.01034       1.02011     0.0197101
+         latq_co             2             2             1             0
+         lat_len             2             2             1             0
+           perco             2             2             1             0
+           petco       2.04169       2.03024       1.00564   -0.00563951
+        revap_co             2             2             1             0
+          surlag             2             2             1             0
+       Maximum changes in "Transformed Numeric" parameters:
+         Maximum relative change = 0.0201952   [epco]
+         Maximum factor change = 1.02061   [epco]
+
+
+OPTIMISATION ITERATION NUMBER: 4
+
+  Iteration type: base parameter solution
+  SVD Package: RedSVD
+  Model calls so far : 83
+
+
+
+  Starting phi for this iteration                     Total : 454363
+
+
+  Contribution to phi from observation group       "obgnme" : 454363
+  Number of terms in the jacobian equal to zero: 0 / 455 (0%)
+
+   ...calculating lambda upgrade vector: 0.1
+  computing upgrade vector (lambda = 0.1)  1 / 5             
+WARNING: change limit/bound enforcement for lambda 0.1resulted in less than 1% original upgrade vector length
+change limit/bound enforement for lambda 0.1: upper change limit,ESCO, scaling factor: 1.32714e-141
+   ...calculating scaled lambda vector-scale factor: 0.1, 0.75
+   ...calculating lambda upgrade vector: 1
+  computing upgrade vector (lambda = 1)  2 / 5             
+WARNING: change limit/bound enforcement for lambda 1resulted in less than 1% original upgrade vector length
+change limit/bound enforement for lambda 1: upper change limit,AWC, scaling factor: 9.06799e-47
+   ...calculating scaled lambda vector-scale factor: 1, 0.75
+   ...calculating lambda upgrade vector: 10
+  computing upgrade vector (lambda = 10)  3 / 5             
+WARNING: change limit/bound enforcement for lambda 10resulted in less than 1% original upgrade vector length
+change limit/bound enforement for lambda 10: upper change limit,AWC, scaling factor: 2.3742e-05
+   ...calculating scaled lambda vector-scale factor: 10, 0.75
+   ...calculating lambda upgrade vector: 100
+  computing upgrade vector (lambda = 100)  4 / 5             
+   ...calculating scaled lambda vector-scale factor: 100, 0.75
+   ...calculating lambda upgrade vector: 1000
+  computing upgrade vector (lambda = 1000)  5 / 5             
+   ...calculating scaled lambda vector-scale factor: 1000, 0.75
+starting FOSM uncertainty analyses for iteration 3
+
+
+posterior parameter covariance matrix written to file 'alb_nw_glm.4.post.cov'
+
+current parameter uncertainty summary: 
+
+                name          prior_mean         prior_stdev   prior_lower_bound   prior_upper_bound           post_mean          post_stdev    post_lower_bound    post_upper_bound
+               alpha                   2            0.574713            0.850573             3.14943                   2            0.574713            0.850573             3.14943
+                 awc                   2            0.574713            0.850573             3.14943             2.00272            0.574676            0.853367             3.15207
+               canmx                   2            0.574713            0.850573             3.14943             1.93888            0.574157            0.790565             3.08719
+                 cn2                   2            0.574713            0.850573             3.14943                   2            0.574713            0.850573             3.14943
+             cn3_swf                   2            0.574713            0.850573             3.14943                   2            0.574713            0.850573             3.14943
+                epco                   2            0.574713            0.850573             3.14943             2.00824            0.573875            0.860492             3.15599
+                esco                   2            0.574713            0.850573             3.14943             1.97071            0.574713            0.821289             3.12014
+             lat_len                   2            0.574713            0.850573             3.14943                   2            0.574713            0.850573             3.14943
+             latq_co                   2            0.574713            0.850573             3.14943                   2            0.574713            0.850573             3.14943
+               perco                   2            0.574713            0.850573             3.14943                   2            0.574713            0.850574             3.14943
+               petco                   2            0.574713            0.850573             3.14943             2.04169            0.014971             2.01175             2.07164
+            revap_co                   2            0.574713            0.850573             3.14943                   2            0.574713            0.850573             3.14943
+              surlag                   2            0.574713            0.850573             3.14943                   2            0.574713            0.850573             3.14943
+the above parameter uncertainty summary was written to file 'alb_nw_glm.3.par.usum.csv'
+
+  Summary of GLM lambda upgrade runs:
+    Lambda =     0.10; Type:       normal; length = 9.35e+00;  phi = 4.544e+05 (100.00% of starting phi)
+    Lambda =     0.10; Type:  scale(0.75); length = 6.93e+00;  phi = 4.544e+05 (100.00% of starting phi)
+    Lambda =     1.00; Type:       normal; length = 1.01e+01;  phi = 4.544e+05 (100.00% of starting phi)
+    Lambda =     1.00; Type:  scale(0.75); length = 7.46e+00;  phi = 4.544e+05 (100.00% of starting phi)
+    Lambda =    10.00; Type:       normal; length = 1.01e+01;  phi = 4.544e+05 (100.00% of starting phi)
+    Lambda =    10.00; Type:  scale(0.75); length = 7.46e+00;  phi = 4.544e+05 (100.00% of starting phi)
+    Lambda =   100.00; Type:       normal; length = 1.30e+01;  phi = 4.551e+05 (100.16% of starting phi)
+    Lambda =   100.00; Type:  scale(0.75); length = 9.86e+00;  phi = 4.545e+05 (100.03% of starting phi)
+    Lambda =  1000.00; Type:       normal; length = 1.01e+01;  phi = 4.539e+05 (99.90% of starting phi)
+    Lambda =  1000.00; Type:  scale(0.75); length = 7.64e+00;  phi = 4.543e+05 (99.98% of starting phi)
+
+  Model calls in iteration 4: 36
+  Total model calls at end of iteration 4: 119
+
+
+  Final phi for this iteration                     Total : 453898
+
+
+  Contribution to phi from observation group       "obgnme" : 453898
+    Iteration 4 Parameter Upgrades (Control File Parameters) 
+      Parameter     Current       Previous       Factor       Relative
+        Name         Value         Value         Change        Change
+      ----------  ------------  ------------  ------------  ------------
+           alpha           100           100             1             0
+             awc       100.435       100.628       1.00192    0.00192096
+           canmx       83.7586       86.8718       1.03717     0.0358364
+             cn2           100           100             1             0
+         cn3_swf           100           100             1             0
+            epco       92.6508       101.916           1.1     0.0909091
+            esco       94.3686       93.4791       1.00952   -0.00951575
+         lat_len           100           100             1             0
+         latq_co           100           100             1             0
+           perco           100           100             1             0
+           petco         112.4       110.076       1.02111    -0.0211116
+        revap_co           100           100             1             0
+          surlag           100           100             1             0
+       Maximum changes in "Control File" parameters:
+         Maximum relative change = 0.0909091   [epco]
+         Maximum factor change = 1.1   [epco]
+
+    Iteration 4 Parameter Upgrades (Transformed Numeric Parameters) 
+      Parameter     Current       Previous       Factor       Relative
+        Name         Value         Value         Change        Change
+      ----------  ------------  ------------  ------------  ------------
+           alpha             2             2             1             0
+             awc       2.00188       2.00272       1.00042   0.000416965
+           canmx       1.92303       1.93888       1.00824    0.00817446
+             cn2             2             2             1             0
+         cn3_swf             2             2             1             0
+            epco       1.96685       2.00824       1.02105     0.0206114
+            esco       1.97483       1.97071       1.00209   -0.00208711
+         latq_co             2             2             1             0
+         lat_len             2             2             1             0
+           perco             2             2             1             0
+           petco       2.05077       2.04169       1.00444   -0.00444397
+        revap_co             2             2             1             0
+          surlag             2             2             1             0
+       Maximum changes in "Transformed Numeric" parameters:
+         Maximum relative change = 0.0206114   [epco]
+         Maximum factor change = 1.02105   [epco]
+
+-----------------------------------------
+     ---   OPTIMIZATION COMPLETE   ---   
+  Reason for terminating PEST++ simulation: PHIREDSTP / NPHISTP criterion met
+  Summary of termination criteria:
+  NOPTMAX = 30 ;  NOPT at termination = 4
+  NPHINORED = 3 ;  NPHINORED at termination = 0
+  NRELPAR = 3; RELPARSTP = 0.01 ;  NRELPAR at termination = 0
+  PHIREDSTP = 0.01; NPHISTP = 3
+  NPHISTP lowest PHI's:
+        453898
+        454363
+        457193
+
+FINAL OPTIMISATION RESULTS
+
+  Optimal parameter values  
+
+     Parameter            
+        Name         Value
+    ------------  ------------
+    alpha                  100
+    awc                100.435
+    canmx              83.7586
+    cn2                    100
+    cn3_swf                100
+    epco               92.6508
+    esco               94.3686
+    lat_len                100
+    latq_co                100
+    perco                  100
+    petco                112.4
+    revap_co               100
+    surlag                 100
+
+
+  Observations with optimal model-simulated equivalents and residuals
+                   Name        Group             Measured             Modelled             Residual               Weight
+ obd_irr_paddy_20160531       obgnme              25.7465              417.081             -391.335              1.00000
+ obd_irr_paddy_20160630       obgnme              497.425              456.122              41.3028              1.00000
+ obd_irr_paddy_20160731       obgnme              658.431              622.105              36.3257              1.00000
+ obd_irr_paddy_20160831       obgnme              662.530              525.740              136.790              1.00000
+ obd_irr_paddy_20160930       obgnme              30.7721              174.296             -143.524              1.00000
+ obd_irr_paddy_20170531       obgnme              425.832              434.907             -9.07498              1.00000
+ obd_irr_paddy_20170630       obgnme              534.505              448.907              85.5980              1.00000
+ obd_irr_paddy_20170731       obgnme              622.614              610.320              12.2935              1.00000
+ obd_irr_paddy_20170831       obgnme              611.115              527.751              83.3639              1.00000
+ obd_irr_paddy_20170930       obgnme              179.509              155.749              23.7607              1.00000
+ obd_irr_paddy_20180531       obgnme              383.078              419.814             -36.7360              1.00000
+ obd_irr_paddy_20180630       obgnme              483.244              415.844              67.4001              1.00000
+ obd_irr_paddy_20180731       obgnme              652.866              633.091              19.7752              1.00000
+ obd_irr_paddy_20180831       obgnme              598.416              556.414              42.0024              1.00000
+ obd_irr_paddy_20180930       obgnme              90.0140              164.194             -74.1805              1.00000
+ obd_irr_paddy_20190531       obgnme              340.345              419.184             -78.8392              1.00000
+ obd_irr_paddy_20190630       obgnme              603.729              448.303              155.426              1.00000
+ obd_irr_paddy_20190731       obgnme              564.813              628.307             -63.4940              1.00000
+ obd_irr_paddy_20190831       obgnme              665.598              556.485              109.113              1.00000
+ obd_irr_paddy_20190930       obgnme              174.085              166.829              7.25564              1.00000
+ obd_irr_paddy_20200531       obgnme              157.781              390.128             -232.347              1.00000
+ obd_irr_paddy_20200630       obgnme              477.194              428.422              48.7722              1.00000
+ obd_irr_paddy_20200731       obgnme              620.522              592.184              28.3381              1.00000
+ obd_irr_paddy_20200831       obgnme              683.924              556.047              127.878              1.00000
+ obd_irr_paddy_20200930       obgnme              218.706              170.923              47.7823              1.00000
+ obd_irr_paddy_20210531       obgnme              294.105              409.591             -115.486              1.00000
+ obd_irr_paddy_20210630       obgnme              562.552              411.199              151.354              1.00000
+ obd_irr_paddy_20210731       obgnme              588.575              578.534              10.0412              1.00000
+ obd_irr_paddy_20210831       obgnme              666.598              517.137              149.461              1.00000
+ obd_irr_paddy_20210930       obgnme              260.414              142.882              117.532              1.00000
+ obd_irr_paddy_20220531       obgnme              442.302              421.652              20.6500              1.00000
+ obd_irr_paddy_20220630       obgnme              608.313              452.721              155.592              1.00000
+ obd_irr_paddy_20220731       obgnme              619.337              612.879              6.45755              1.00000
+ obd_irr_paddy_20220831       obgnme              515.761              585.680             -69.9185              1.00000
+ obd_irr_paddy_20220930       obgnme              103.050              177.647             -74.5971              1.00000
+
+Final composite objective function 
+  Final phi                                           Total : 453898.
+  Contribution to phi from observation group       "obgnme" : 453898.
+
+
+Number of forward model runs performed during optimization: 119
+
+
+
+
+-----------------------------------------------------------------------
+Note: The following uncertainty estimates were calculated using 
+      Schur's complement for linear-based conditional uncertainty 
+      propagation.  For a derivation from Bayes equation, see 
+      M. N. Fienen, J. E. Doherty, R. J. Hunt, and H. W. Reeves. 
+      2010. 'Using Prediction Uncertainty Analysis to Design 
+      Hydrologic Monitoring Networks: Example Applications 
+      from the Great Lakes Water Availability Pilot Project'. 
+      See PEST++ V3 documentation for implementation details.
+-----------------------------------------------------------------------
+
+Note: Any observations or prior information equations with a group name
+      starting with 'regul' are dropped from the Jacobian and observation
+      covariance matrices before uncertainty calculations.  Please
+      make sure that all expert knowledge is expressed in the prior 
+      parameter bounds or through a covariance matix, which can be 
+      supplied as a ++ option as '++parcov(<matrix_file_name>)',
+      where <matrix_file_name> can be an ASCII PEST-compatible matrix file (.mat) or
+      a PEST-compatible uncertainty file (.unc).
+
+starting FOSM uncertainty analyses for iteration -999
+
+
+posterior parameter covariance matrix written to file 'alb_nw_glm.post.cov'
+
+current parameter uncertainty summary: 
+
+                name          prior_mean         prior_stdev   prior_lower_bound   prior_upper_bound           post_mean          post_stdev    post_lower_bound    post_upper_bound
+               alpha             2.00000            0.574713            0.850573             3.14943             2.00000            0.574713            0.850573             3.14943
+                 awc             2.00000            0.574713            0.850573             3.14943             2.00188            0.574678            0.852529             3.15124
+               canmx             2.00000            0.574713            0.850573             3.14943             1.92303            0.574053            0.774924             3.07113
+                 cn2             2.00000            0.574713            0.850573             3.14943             2.00000            0.574713            0.850573             3.14943
+             cn3_swf             2.00000            0.574713            0.850573             3.14943             2.00000            0.574713            0.850573             3.14943
+                epco             2.00000            0.574713            0.850573             3.14943             1.96685            0.573893            0.819062             3.11464
+                esco             2.00000            0.574713            0.850573             3.14943             1.97483            0.574713            0.825402             3.12425
+             lat_len             2.00000            0.574713            0.850573             3.14943             2.00000            0.574713            0.850573             3.14943
+             latq_co             2.00000            0.574713            0.850573             3.14943             2.00000            0.574713            0.850573             3.14943
+               perco             2.00000            0.574713            0.850573             3.14943             2.00000            0.574713            0.850574             3.14943
+               petco             2.00000            0.574713            0.850573             3.14943             2.05077           0.0155413             2.01968             2.08185
+            revap_co             2.00000            0.574713            0.850573             3.14943             2.00000            0.574713            0.850573             3.14943
+              surlag             2.00000            0.574713            0.850573             3.14943             2.00000            0.574713            0.850573             3.14943
+the above parameter uncertainty summary was written to file 'alb_nw_glm.par.usum.csv'
+
+
+
+pestpp-glm analysis complete...
+started at 03/08/24 13:42:15
+finished at 03/08/24 13:44:27
+took 2.20000 minutes
