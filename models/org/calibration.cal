@@ -1,8 +1,0 @@
-calibration.cal: written by SWAT+ Toolbox
-5
-cal_parm               chg_typ       chg_val     conds  soil_lyr1  soil_lyr2       yr1       yr2      day1      day2   obj_tot
-cn2                     pctchg     -15.07121         0          0          0         0         0         0         0         0      
-awc                     pctchg       0.00001         0          0          0         0         0         0         0         0      
-surlag                  absval       0.10000         0          0          0         0         0         0         0         0      
-alpha                   absval       0.00001         0          0          0         0         0         0         0         0      
-esco                    absval       0.00001         0          0          0         0         0         0         0         0      
