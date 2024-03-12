@@ -178,7 +178,7 @@ def single_plot_fdc_added(
     plt.tight_layout()
     plt.savefig('fdc.png', bbox_inches='tight', dpi=300)
     plt.show()
-    print(os.getcwd())
+    print(os.getcwd())  
 
     # return pr_oe_min
 
@@ -242,6 +242,70 @@ def plot_tseries_ensembles(
         ax.set_title(og,loc="left")
     # fig.tight_layout()
     plt.show()
+
+
+def plot_onetone_ensembles(
+                    pst, pr_oe, pt_oe, width=5, height=4.5, dot=True,
+                    dotsize=30
+#                     onames=["hds","sfr"]
+                    ):
+    # pst.try_parse_name_metadata()
+    # get the observation data from the control file and select 
+    obs = pst.observation_data.copy()
+    obs = obs.loc[obs.obgnme.apply(lambda x: x in pst.nnz_obs_groups),:]
+    time_col = []
+    for i in range(len(obs)):
+        time_col.append(obs.iloc[i, 0][-6:])
+    obs['time'] = time_col
+#     # onames provided in oname argument
+#     obs = obs.loc[obs.oname.apply(lambda x: x in onames)]
+    # only non-zero observations
+#     obs = obs.loc[obs.obgnme.apply(lambda x: x in pst.nnz_obs_groups),:]
+    # make a plot
+    ogs = obs.obgnme.unique()
+    fig, ax = plt.subplots(figsize=(width,height))
+
+    oobs = obs
+    oobs.loc[:,"time"] = oobs.loc[:,"time"].astype(str)
+#         oobs.sort_values(by="time",inplace=True)
+    tvals = oobs.time.values
+    onames = oobs.obsnme.values
+    # '''
+    if dot is True:
+        # plot prior
+        [ax.scatter(oobs.obsval,pr_oe.loc[i,onames].values,color="gray",s=dotsize, alpha=0.5) for i in pr_oe.index]
+        # plot posterior
+        [ax.scatter(oobs.obsval,pt_oe.loc[i,onames].values,color='b',s=dotsize,alpha=0.2) for i in pt_oe.index]
+        # plot measured+noise 
+        oobs = oobs.loc[oobs.weight>0,:]
+        tvals = oobs.time.values
+        onames = oobs.obsnme.values
+        # ax.scatter(oobs.obsval,oobs.obsval,color='red',s=dotsize).set_facecolor("none")
+        ax.plot([0, 750], [0, 750], linestyle="--", color='k', alpha=0.3)
+
+    if dot is False:
+        # plot prior
+        [ax.plot(tvals,pr_oe.loc[i,onames].values,"0.5",lw=0.5,alpha=0.5) for i in pr_oe.index]
+        # plot posterior
+        [ax.plot(tvals,pt_oe.loc[i,onames].values,"b",lw=0.5,alpha=0.5) for i in pt_oe.index]
+        # plot measured+noise 
+        oobs = oobs.loc[oobs.weight>0,:]
+        tvals = oobs.time.values
+        onames = oobs.obsnme.values
+        ax.plot(oobs.time,oobs.obsval,"r-",lw=2)
+    ax.tick_params(axis='both', labelsize=12)
+    ax.set_ylabel(r"Monthly simulated irrigation $(mm/month)$", fontsize=12)
+    ax.set_xlabel(r"Monthly measured irrigation $(mm/month)$", fontsize=12)
+    ax.grid(True, alpha=0.5)
+    # ax.margins(x=0.01)
+    # ax.set_title(og,loc="left")
+    plt.tight_layout()
+    plt.savefig('onetoone.png', bbox_inches='tight', dpi=300)
+    print(os.getcwd())
+    plt.show()
+
+
+
 
 def plot_prior_posterior_par_hist(
         pst, prior_df, post_df, sel_pars, 
@@ -339,16 +403,18 @@ def plot_wb_mon_cal_val_hist(ax, wd, colnam, calidates, validates):
             bin_min, bin_max, 20
         ), alpha=0.5, density=True,edgecolor='white')
 
-def get_average_annual_wb(wd, colnam, calidates, validates):
+def get_average_annual_wb(wd, colnam, calidates=None, validates=None):
     m1 = SWATp(wd)
     start_day = m1.stdate_warmup
     df = m1.read_basin_wb_yr()
     df = df.loc[:, colnam]
-    df.index = pd.date_range(start_day, periods=len(df), freq='YE')    
-    cal_df = df[calidates[0]:calidates[1]]
-    val_df = df[validates[0]:validates[1]]
-    print(cal_df.mean())
-    print(val_df.mean())
+    df.index = pd.date_range(start_day, periods=len(df), freq='YE') 
+    if calidates is not None:   
+        cal_df = df[calidates[0]:calidates[1]]
+        val_df = df[validates[0]:validates[1]]
+        print(cal_df.mean())
+        print(val_df.mean())
+    print(df.mean())
 
 
 # data comes from hanlder module and SWATMFout class
@@ -535,6 +601,12 @@ def get_d_factor(pst, pt_oe, cal_val=False):
             dfactors.append(dfactor)
         print(dfactors)
         return dfactors
+    else:
+        std_obd = np.std(df['obd'])
+        dist_pts = (df['pt_max'] - df['pt_min']).mean()
+        dfactor = dist_pts/std_obd
+        print(dfactor)
+        return dfactor
 
 
 def create_rels_objs(wd, pst_file, iter_idx):
@@ -816,6 +888,8 @@ def plot_fill_between_ensembles(
     if size is None:
         size = 30
     fig, ax = plt.subplots(figsize=(width,height))
+    x_values = df.loc[:, "newtime"].values
+    # x_values = df.index.values
     if caldates is not None:
         caldf = df[caldates[0]:caldates[1]]
         valdf = df[valdates[0]:valdates[1]]
@@ -835,13 +909,14 @@ def plot_fill_between_ensembles(
         ax.plot(valdf.index.values, valdf.loc[:, 'best_rel'].values, c='m', lw=1, label="validated")
     else:
         ax.fill_between(
-            df.index.values, df.loc[:, 'pr_min'].values, df.loc[:, 'pr_max'].values, 
-            facecolor="0.5", alpha=0.4)
+            x_values, df.loc[:, 'pr_min'].values, df.loc[:, 'pr_max'].values, 
+            facecolor="0.5", alpha=0.4, label="Prior")
         ax.fill_between(
-            df.index.values, df.loc[:, 'pt_min'].values, df.loc[:, 'pt_max'].values, 
-            facecolor="b", alpha=0.4)
+            x_values, df.loc[:, 'pt_min'].values, df.loc[:, 'pt_max'].values, 
+            facecolor="g", alpha=0.4, label="Posterior")
+        ax.plot(x_values, df.loc[:, 'best_rel'].values, c='g', lw=1, label="calibrated")
         ax.scatter(
-            df.index.values, df.loc[:, 'obd'].values, 
+            x_values, df.loc[:, 'obd'].values, 
             color='red',s=size, zorder=10, label="Observed").set_facecolor("none")
     if pcp_df is not None:
         # pcp_df.index.freq = None
@@ -858,31 +933,47 @@ def plot_fill_between_ensembles(
         ax2.set_ylim(pcp_df.loc[:, "pcpmm"].max()*3, 0)
         # ax.set_ylabel("Stream Discharge $(m^3/day)$",fontsize=14)
         ax2.tick_params(axis='y', labelsize=12)
-    ax.axvline(datetime.datetime(2016,12,31), linestyle="--", color='k', alpha=0.3)
+    # ax.axvline(datetime.datetime(2016,12,31), linestyle="--", color='k', alpha=0.3)
     # ax.set_xlabel(r"Exceedence [%]", fontsize=12)
-    ax.set_ylabel(r"Monthly streamflow $(m^3/s)$", fontsize=12)
+    ax.set_ylabel(r"Monthly irrigation $(mm/month)$", fontsize=12)
+    # ax.set_ylabel(r"Monthly streamflow $(m^3/s)$", fontsize=12)
     ax.margins(0.01)
     ax.tick_params(axis='both', labelsize=12)
-    ax.set_ylim(0, df.max().max()*1.5)
-    ax.xaxis.set_major_locator(mdates.YearLocator(1))
+    # ax.set_ylim(0, df.max().max()*1.5)
+    ax.set_ylim(0, 800)
+    # ax.xaxis.set_major_locator(mdates.YearLocator(1))
     # ask matplotlib for the plotted objects and their labels
-    '''
     lines, labels = ax.get_legend_handles_labels()
-    lines2, labels2 = ax2.get_legend_handles_labels()
-    order = [0,1,2,3,4,6,5]
+    # lines2, labels2 = ax2.get_legend_handles_labels()
+    order = [0,1,2,3]
 
-    tlables = labels2 + labels
-    tlines = lines2 + lines
+    tlables = labels
+    tlines = lines
+    '''
     # plt.legend([handles[idx] for idx in order],[labels[idx] for idx in order])
 
+    '''
     fig.legend(
         [tlines[idx] for idx in order],[tlables[idx] for idx in order],
         fontsize=10,
         loc = 'lower center',
         bbox_to_anchor=(0.5, -0.08),
         ncols=7)
-    '''
     # fig.legend(fontsize=12, loc="lower left")
+    # years = mdates.YearLocator()
+    # print(years)
+    # yearsFmt = mdates.DateFormatter('%Y')  # add some space for the year label
+    # months = mdates.MonthLocator()
+    # monthsFmt = mdates.DateFormatter('%b') 
+    # ax.xaxis.set_minor_locator()
+    # ax.xaxis.set_minor_formatter(monthsFmt)
+    # plt.setp(ax.xaxis.get_minorticklabels(), fontsize = 8, rotation=90)
+    # ax.xaxis.set_major_locator(years)
+    # ax.xaxis.set_major_formatter(yearsFmt)
+    ax.set_xticklabels(["May", "Jun", "Jul", "Aug", "Sep"]*7)
+    ax.tick_params(axis='both', labelsize=8, rotation=90)
+    ax.tick_params(axis = 'x', pad=20)
+
     plt.tight_layout()
     plt.savefig('cal_val.png', bbox_inches='tight', dpi=300)
     plt.show()
@@ -1269,6 +1360,30 @@ def jj_paper(wd1, wd2, pst_file1, pst_file2):
     sttsm1 = stts1.mean()
 
 
+def albufera_results():
+    wd = 'D:\\jj\\Albufera\\alb_nw_calibrated'
+    colnam = 'et'
+    pstfile = "alb_nw_ies.pst"
+    iter_idx = 2
+    # get_average_annual_wb(wd, colnam)
+    pst = pyemu.Pst(os.path.join(wd, pstfile))
+    pst_nam = pstfile[:-4]
+    pr_oe = pyemu.ObservationEnsemble.from_csv(
+        pst=pst,filename=os.path.join(wd,"{0}.{1}.obs.csv".format(pst_nam, 0)))
+    pt_oe = pyemu.ObservationEnsemble.from_csv(
+        pst=pst,filename=os.path.join(wd,"{0}.{1}.obs.csv".format(pst_nam, iter_idx)))
+    # get_p_factor(pst, pt_oe)
+    # get_d_factor(pst, pt_oe)
+    # plot_onetone_ensembles(pst, pr_oe, pt_oe, dotsize=15)
+    # single_plot_tseries_ensembles(pst, pr_oe, pt_oe, dot=True)
+    dff = get_pr_pt_df(pst, pr_oe, pt_oe, bestrel_idx="glm")
+    dff['newtime'] =dff.index.strftime('%Y-\n%b')
+    print(dff)
+    plot_fill_between_ensembles(dff)
+
+
+    # print(pr_oe)
+
 
 
     # sfdf2 = read_sobol_sfi(wd2, pst_file2)
@@ -1293,19 +1408,17 @@ if __name__ == '__main__':
     # plt.show()
     # plot_sen_sobol(wd, pst_file)
 
-
-    wd = 'D:\\jj\\opt_3rd\\calibrated_model'
     # wd = '/Users/seonggyu.park/Documents/projects/tools/swatp_pst_wf/models/calibrated_model'
-    obd_file = "singi_obs_q1_colnam.csv"
-    obd_colnam = "cha01"
-    cha_id = 1
+    # obd_file = "singi_obs_q1_colnam.csv"
+    # obd_colnam = "cha01"
+    # cha_id = 1
 
-    df = create_stf_sim_obd_df(wd, cha_id, obd_file, obd_colnam)
-    # print(df)
-    validates = ['1/1/2013', '12/31/2016']
-    calidates = ['1/1/2017', '12/31/2023']
+    # df = create_stf_sim_obd_df(wd, cha_id, obd_file, obd_colnam)
+    # # print(df)
+    # validates = ['1/1/2013', '12/31/2016']
+    # calidates = ['1/1/2017', '12/31/2023']
 
-    colnam = "surq_cha"
+    # colnam = "surq_cha"
 
     # fig, ax = plt.subplots()
     # # plot_wb_mon_cal_val_hist(ax, wd, colnam, calidates, validates)
@@ -1313,17 +1426,18 @@ if __name__ == '__main__':
     # plt.show()
     
     
-    # get_average_annual_wb(wd, colnam, calidates, validates)
+
+    albufera_results()
+    
+    
+    
     wd = 'D:\\jj\\opt_3rd\\swatp_nw_sen_sobol'
     pstfile = "swatp_nw_sen_sobol.pst"
     wd2 = 'D:\\jj\\Albufera\\alb_nw_sen_sobol'
     pstfile2 = "alb_nw_sen_sobol.pst"
     # sftsm, sttsm, sfts_cfis, stts_cfis = get_sobol_results(wd, pst_file)
+    # plot_sen_sobol_jj(wd, pstfile, wd2, pstfile2)
 
-    plot_sen_sobol_jj(wd, pstfile, wd2, pstfile2)
-    # print(sftsm)
-    # print(sttsm)
-    # print(sfts_cfis)
     
     # result_ies()
     # wd = 'D:\\jj\\Albufera\\alb_nw_ies'
