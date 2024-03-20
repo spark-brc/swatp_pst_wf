@@ -200,8 +200,15 @@ class SWATp(object):
             sep=r'\s+',
             skiprows=[0,2],
             usecols=["gis_id", "area", "precip", ]
-            )        
-
+            )
+    
+    def read_lu_wb_mon(self):
+        return pd.read_csv(
+            "lsunit_wb_mon.txt",
+            sep=r'\s+',
+            skiprows=[0,2]            
+        )
+    
     def extract_mon_stf(self, chs, cali_start_day, cali_end_day):
         sim_stf_f = self.read_cha_morph_mon()
         start_day = self.stdate_warmup
@@ -252,6 +259,29 @@ class SWATp(object):
                         )
         print('tot_irr_paddy.txt file has been created...')
         return paddy_df
+
+    def get_lu_mon(self, field, stdate=None, eddate=None):
+        from warnings import simplefilter
+        simplefilter(action="ignore", category=pd.errors.PerformanceWarning)
+        lu_df = pd.DataFrame()
+        lu_mon_df = self.read_lu_wb_mon()
+        luids = lu_mon_df.name.unique()
+        for luid in luids:
+            lu_df[f"{luid}"] = lu_mon_df.loc[lu_mon_df["name"]==luid, field].values
+        lu_df.index = pd.date_range(
+            self.stdate_warmup, periods=len(lu_df), freq="ME")
+        if stdate is not None:
+            dff = lu_df[stdate:eddate].astype(float)
+        else:
+            dff = lu_df.astype(float)
+        mbig_df = dff.groupby(dff.index.month).mean().T
+        mbig_df['lsuid'] = [int(i[3:]) for i in mbig_df.index]
+        mbig_df.to_csv(f"lsu_{field}_mon_wb.csv", index=False)
+
+
+        return mbig_df
+
+
 
 
 def get_last_day_of_month(df):
@@ -339,18 +369,19 @@ def init_setup(prj_dir, swatp_wd):
 
 
 if __name__ == '__main__':
-    wd = "D:\\jj\\Albufera\\TxtInOut_Albuferamanuscript"
+    wd = "D:\\jj\\opt_3rd\\calibrated_model"
     # wd = "D:\\Projects\\Watersheds\\Koksilah\\analysis\\koksilah_swatmf\\SWAT-MODFLOW"
 
     m1 = SWATp(wd)
-    cns =  [1]
-    cali_start_day = "1/1/2013"
-    cali_end_day = "12/31/2023"
-    obd_file = "singi_obs_q1_colnam.csv"
-    obd_colnam = "cha01"
-    cha_ext_file = "stf_001.txt"
-
-    df = m1.get_mon_irr()
-    print(df)
+    # cns =  [1]
+    # cali_start_day = "1/1/2013"
+    # cali_end_day = "12/31/2023"
+    # obd_file = "singi_obs_q1_colnam.csv"
+    # obd_colnam = "cha01"
+    # cha_ext_file = "stf_001.txt"
+    fields = ["wateryld", "perc", "et", "sw_ave"]
+    for fd in fields:
+        m1.get_lu_mon(fd, stdate="1/1/2017", eddate="12/31/2023")
+        print(fd)
 
     # print(dff)
