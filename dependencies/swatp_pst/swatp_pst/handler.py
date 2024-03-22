@@ -379,7 +379,7 @@ if __name__ == '__main__':
     # obd_file = "singi_obs_q1_colnam.csv"
     # obd_colnam = "cha01"
     # cha_ext_file = "stf_001.txt"
-    fields = ["wateryld", "perc", "et", "sw_ave"]
+    fields = ["wateryld", "perc", "et", "sw_ave", "latq_runon"]
     for fd in fields:
         m1.get_lu_mon(fd, stdate="1/1/2017", eddate="12/31/2023")
         print(fd)
