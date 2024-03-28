@@ -277,8 +277,6 @@ class SWATp(object):
         mbig_df = dff.groupby(dff.index.month).mean().T
         mbig_df['lsuid'] = [int(i[3:]) for i in mbig_df.index]
         mbig_df.to_csv(f"lsu_{field}_mon_wb.csv", index=False)
-
-
         return mbig_df
 
 
@@ -369,7 +367,7 @@ def init_setup(prj_dir, swatp_wd):
 
 
 if __name__ == '__main__':
-    wd = "D:\\jj\\opt_3rd\\calibrated_model"
+    wd = "D:\\jj\\opt_3rd\\calibrated_model_v02"
     # wd = "D:\\Projects\\Watersheds\\Koksilah\\analysis\\koksilah_swatmf\\SWAT-MODFLOW"
 
     m1 = SWATp(wd)
