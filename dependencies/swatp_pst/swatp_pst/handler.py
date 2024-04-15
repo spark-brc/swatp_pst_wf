@@ -209,6 +209,30 @@ class SWATp(object):
             skiprows=[0,2]            
         )
     
+    def read_lu_wb_aa(self):
+        return pd.read_csv(
+            "lsunit_wb_aa.txt",
+            sep=r'\s+',
+            skiprows=[0,2]            
+        )
+    
+    def read_lu_wb_yr(self):
+        return pd.read_csv(
+            "lsunit_wb_yr.txt",
+            sep=r'\s+',
+            skiprows=[0,2]            
+        )
+    
+    def read_ls_def(self):
+        return pd.read_csv(
+            "ls_unit.def",
+            sep=r'\s+',
+            skiprows=3,
+            header=None,
+            usecols=[1, 2],
+            names=["name", "area"]
+        )
+
     def extract_mon_stf(self, chs, cali_start_day, cali_end_day):
         sim_stf_f = self.read_cha_morph_mon()
         start_day = self.stdate_warmup
@@ -279,6 +303,92 @@ class SWATp(object):
         mbig_df.to_csv(f"lsu_{field}_mon_wb.csv", index=False)
         return mbig_df
 
+    def get_lu_hf_wb(self):
+        lu_hf = self.read_lu_wb_yr()
+        # filter >=2017
+        # lu_hf = lu_hf.loc[lu_hf['yr']>=2013]
+        cols = [
+                "name", "yr",
+                "precip", "surq_gen", "latq", "wateryld", "perc", 
+                "et", "sw_ave", "irr", "surq_runon", "latq_runon",
+                # "surq_cha"
+                ]
+        lu_hf = lu_hf[cols]
+        lu_hf = lu_hf.groupby(lu_hf['name']).mean()
+        lu_area = self.read_ls_def()
+        lu_area.set_index('name', inplace=True)
+        lu_hf = pd.concat([lu_hf, lu_area], axis=1)
+        hill_df = lu_hf.loc[lu_hf.index.str.strip().str[-1]=='2']
+        hill_totarea = hill_df['area'].sum()
+        hill_df['weight_area'] = hill_df['area'] / hill_totarea
+        hill_wt = pd.DataFrame()
+        for col in hill_df.columns[1:-2]:
+            hill_wt[f'{col}'] = hill_df[f'{col}'] * hill_df['weight_area']
+            # hill_wt = pd.concat([hill_wt, hill_df[f'{col}'] * hill_df['weight_area']], axis=1)
+        hill_sum = hill_wt.sum(axis=0)
+
+
+        fdp_df = lu_hf.loc[lu_hf.index.str.strip().str[-1]=='1']
+        fdp_totarea = fdp_df['area'].sum()
+        fdp_df['weight_area'] = fdp_df['area'] / fdp_totarea
+        fdp_wt = pd.DataFrame()
+        for col in fdp_df.columns[1:-2]:
+            fdp_wt[f'{col}'] = fdp_df[f'{col}'] * fdp_df['weight_area']
+            # fdp_wt = pd.concat([fdp_wt, fdp_df[f'{col}'] * fdp_df['weight_area']], axis=1)
+        fdp_sum = fdp_wt.sum(axis=0)
+
+        tot_df = pd.concat([hill_sum, fdp_sum], axis=1)
+        tot_df.columns = ["hillslope", "floodplain"]
+        tot_df.to_csv("hf.csv")
+        print(os.getcwd())
+        return tot_df
+
+
+    def get_lu_hf_wb(self):
+        lu_hf = self.read_lu_wb_aa()
+        # filter >=2017
+        # lu_hf = lu_hf.loc[lu_hf['yr']>=2013]
+        cols = [
+                "name", "yr",
+                "precip", "surq_gen", "latq", "wateryld", "perc", 
+                "et", "sw_ave", "irr", "surq_runon", "latq_runon",
+                # "surq_cha"
+                ]
+        lu_hf = lu_hf[cols]
+        lu_hf = lu_hf.groupby(lu_hf['name']).mean()
+        lu_area = self.read_ls_def()
+        lu_area.set_index('name', inplace=True)
+        lu_hf = pd.concat([lu_hf, lu_area], axis=1)
+        hill_df = lu_hf.loc[lu_hf.index.str.strip().str[-1]=='2']
+        hill_totarea = hill_df['area'].sum()
+        hill_df['weight_area'] = hill_df['area'] / hill_totarea
+        hill_wt = pd.DataFrame()
+        for col in hill_df.columns[1:-2]:
+            hill_wt[f'{col}'] = hill_df[f'{col}'] * hill_df['weight_area']
+            # hill_wt = pd.concat([hill_wt, hill_df[f'{col}'] * hill_df['weight_area']], axis=1)
+        hill_sum = hill_wt.sum(axis=0)
+        fdp_df = lu_hf.loc[lu_hf.index.str.strip().str[-1]=='1']
+        fdp_totarea = fdp_df['area'].sum()
+        fdp_df['weight_area'] = fdp_df['area'] / fdp_totarea
+        fdp_wt = pd.DataFrame()
+        for col in fdp_df.columns[1:-2]:
+            fdp_wt[f'{col}'] = fdp_df[f'{col}'] * fdp_df['weight_area']
+            # fdp_wt = pd.concat([fdp_wt, fdp_df[f'{col}'] * fdp_df['weight_area']], axis=1)
+        fdp_sum = fdp_wt.sum(axis=0)
+
+
+        tot_df = pd.concat([hill_sum, fdp_sum], axis=1)
+        tot_df.columns = ["hillslope", "floodplain"]
+        print(tot_df)
+        """
+        tot_df.to_csv("hf.csv")
+        print(os.getcwd())
+        return tot_df
+        """
+        print(lu_hf)
+
+
+
 
 
 
@@ -292,10 +402,6 @@ def get_last_day_of_month(df):
     df.drop("new_index", axis=1, inplace=True)
     df.index.rename("date", inplace=True)
     return df
-
-
-
-
 
 
 def init_setup(prj_dir, swatp_wd):
@@ -377,9 +483,11 @@ if __name__ == '__main__':
     # obd_file = "singi_obs_q1_colnam.csv"
     # obd_colnam = "cha01"
     # cha_ext_file = "stf_001.txt"
-    fields = ["wateryld", "perc", "et", "sw_ave", "latq_runon"]
-    for fd in fields:
-        m1.get_lu_mon(fd, stdate="1/1/2017", eddate="12/31/2023")
-        print(fd)
+    # fields = ["wateryld", "perc", "et", "sw_ave", "latq_runon"]
+    # for fd in fields:
+    #     m1.get_lu_mon(fd, stdate="1/1/2017", eddate="12/31/2023")
+    #     print(fd)
+
+    m1.get_lu_hf_wb()
 
     # print(dff)
