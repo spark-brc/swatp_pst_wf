@@ -45,7 +45,7 @@ class PstUtil(SWATp):
         if time_step == 'month':
             stfobd_file = 'stf_mon.obd.csv'
         stf_obd = self.read_cha_obd(obd_file)
-        stf_obd = get_last_day_of_month(stf_obd)
+        # stf_obd = get_last_day_of_month(stf_obd)
         stf_obd = stf_obd[cal_start:cal_end]
         stf_sim = pd.read_csv(
                             cha_extract_file,
@@ -53,7 +53,8 @@ class PstUtil(SWATp):
                             names=["date", "stf_sim"],
                             index_col=0,
                             parse_dates=True)
-        result = pd.concat([stf_obd, stf_sim], axis=1)
+        # result = pd.concat([stf_obd, stf_sim], axis=1)
+        result = pd.concat([stf_sim, stf_obd], axis=1)
         result['tdate'] = pd.to_datetime(result.index)
         result['month'] = result['tdate'].dt.month
         result['year'] = result['tdate'].dt.year
@@ -104,7 +105,8 @@ class PstUtil(SWATp):
                             names=["date", "irr_sim"],
                             index_col=0,
                             parse_dates=True)
-        result = pd.concat([stf_obd, stf_sim], axis=1)
+        # result = pd.concat([stf_obd, stf_sim], axis=1)
+        result = pd.concat([stf_sim, stf_obd], axis=1)
         result['tdate'] = pd.to_datetime(result.index)
         result['month'] = result['tdate'].dt.month
         result['year'] = result['tdate'].dt.year
@@ -234,7 +236,7 @@ if __name__ == '__main__':
     io_files = pyemu.helpers.parse_dir_for_io_files('.')
     pst = pyemu.Pst.from_io_files(*io_files)
     par = pst.parameter_data
-    m1.update_par_initials_ranges(par)
+    m1.update_par_inits_rgs(par)
 
     print(par)
 

@@ -2,7 +2,6 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import os
-# from hydroeval import evaluator, nse, rmse, pbias
 import numpy as np
 import datetime as dt
 from datetime import datetime
@@ -18,22 +17,29 @@ foward_path = os.path.dirname(os.path.abspath( __file__ ))
 
 
 def create_swatp_pst_con(
-    prj_dir, swatp_wd, cal_start, cal_end, chs, time_step=None
-    ):
+            prj_dir, swatp_wd, cal_start, cal_end, chs, 
+            irr_cal=None,
+            time_step=None
+            ):
 
     if time_step is None:
         time_step = 'day'
+    if irr_cal:
+        irr_cal = "activated"
+
 
     col01 = [
         'prj_dir',
         'swatp_wd', 'cal_start', 'cal_end',
         'chs',
+        'irr_cal',
         'time_step',
         ]
     col02 = [
         prj_dir,
         swatp_wd, cal_start, cal_end, 
         chs,
+        irr_cal, 
         time_step,
         ]
     df = pd.DataFrame({'names': col01, 'vals': col02})
@@ -164,6 +170,23 @@ class SWATp(object):
         return hru_paddy
 
 
+    def read_cha_morph_day(self):
+        return pd.read_csv(
+            "channel_sdmorph_day.txt",
+            sep=r'\s+',
+            skiprows=[0,2],
+            usecols=["gis_id", "flo_out"]
+            )
+
+    # def read_cha_morph_day(self):
+    #     return pd.read_csv(
+    #         "channel_sdmorph_day.txt",
+    #         sep=r'\s+',
+    #         skiprows=[0,2],
+    #         usecols=["gis_id", "flo_out"]
+    #         )
+
+
     def read_cha_morph_mon(self):
         return pd.read_csv(
             "channel_sdmorph_mon.txt",
@@ -237,16 +260,34 @@ class SWATp(object):
         sim_stf_f = self.read_cha_morph_mon()
         start_day = self.stdate_warmup
         for i in chs:
-            sim_stf_f = self.read_cha_morph_mon()
-            sim_stf_f = sim_stf_f.loc[sim_stf_f["gis_id"] == i]
-            sim_stf_f = sim_stf_f.drop(['gis_id'], axis=1)
-            sim_stf_f.index = pd.date_range(start_day, periods=len(sim_stf_f.flo_out), freq='ME')
-            sim_stf_f = sim_stf_f[cali_start_day:cali_end_day]
-            sim_stf_f.to_csv(
+            # sim_stf_f = self.read_cha_morph_mon()
+            sim_stf_ff = sim_stf_f.loc[sim_stf_f["gis_id"] == i]
+            sim_stf_ff = sim_stf_ff.drop(['gis_id'], axis=1)
+            sim_stf_ff.index = pd.date_range(start_day, periods=len(sim_stf_ff.flo_out), freq='ME')
+            sim_stf_ff = sim_stf_ff[cali_start_day:cali_end_day]
+            sim_stf_ff.to_csv(
                 'stf_{:03d}.txt'.format(i), sep='\t', encoding='utf-8', index=True, header=False,
                 float_format='%.7e')
             print('stf_{:03d}.txt file has been created...'.format(i))
         print('Finished ...')
+
+
+    def extract_day_stf(self, chs, cali_start_day, cali_end_day):
+        sim_stf_f = self.read_cha_morph_day()
+        start_day = self.stdate_warmup
+        for i in chs:
+            # sim_stf_f = self.read_cha_morph_mon()
+            sim_stf_ff = sim_stf_f.loc[sim_stf_f["gis_id"] == i]
+            sim_stf_ff = sim_stf_ff.drop(['gis_id'], axis=1)
+            sim_stf_ff.index = pd.date_range(start_day, periods=len(sim_stf_ff.flo_out))
+            sim_stf_ff = sim_stf_ff[cali_start_day:cali_end_day]
+            sim_stf_ff.to_csv(
+                'stf_{:03d}.txt'.format(i), sep='\t', encoding='utf-8', index=True, header=False,
+                float_format='%.7e')
+            print(' >>> stf_{:03d}.txt file has been created...'.format(i))
+        print(' > Finished ...\n')
+
+
 
     def get_mon_irr(self):
         paddy_df = pd.DataFrame()
@@ -281,7 +322,7 @@ class SWATp(object):
                 "tot_irr_paddy.txt", sep='\t', encoding='utf-8', index=True, header=False,
                 float_format='%.7e'
                         )
-        print('tot_irr_paddy.txt file has been created...')
+        print(' > tot_irr_paddy.txt file has been created...\n')
         return paddy_df
 
     def get_lu_mon(self, field, stdate=None, eddate=None):
