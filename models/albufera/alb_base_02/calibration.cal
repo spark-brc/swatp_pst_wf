@@ -1,0 +1,16 @@
+  hru-new.cal developed from soft data calibration
+    13
+name           CHG_TYP                  VAL   CONDS  LYR1  LYR2   YEAR1  YEAR2   DAY1   DAY2  OBJ_TOT
+cn2         pctchg       9.99999940631823847e-08  0           0           0           0           0           0           0           0           0          
+petco       pctchg       9.99999940631823847e-08  0           0           0           0           0           0           0           0           0          
+latq_co     pctchg       9.99999940631823847e-08  0           0           0           0           0           0           0           0           0          
+alpha       pctchg       9.99999940631823847e-08  0           0           0           0           0           0           0           0           0          
+epco        pctchg       9.99999940631823847e-08  0           0           0           0           0           0           0           0           0          
+awc         pctchg       9.99999940631823847e-08  0           0           0           0           0           0           0           0           0          
+esco        pctchg       9.99999940631823847e-08  0           0           0           0           0           0           0           0           0          
+perco       pctchg       9.99999940631823847e-08  0           0           0           0           0           0           0           0           0          
+cn3_swf     pctchg       9.99999940631823847e-08  0           0           0           0           0           0           0           0           0          
+canmx       pctchg       9.99999940631823847e-08  0           0           0           0           0           0           0           0           0          
+lat_len     pctchg       9.99999940631823847e-08  0           0           0           0           0           0           0           0           0          
+revap_co    pctchg       9.99999940631823847e-08  0           0           0           0           0           0           0           0           0          
+surlag      pctchg       9.99999940631823847e-08  0           0           0           0           0           0           0           0           0          
