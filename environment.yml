@@ -20,9 +20,9 @@ dependencies:
   - git
   - nbconvert
   - pip:
-    - -e ./dependencies/swatp_pst
     # - -e ./dependencies/flopy
     - -e ./dependencies/pyemu
+    - -e ./dependencies/swatp_pst
     # - flopy
     # - git+https://github.com/modflowpy/flopy.git
     # - pyemu
