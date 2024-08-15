@@ -42,7 +42,7 @@ setup(
     },
     packages=find_packages(),
     install_requires=[
-        'pandas', 'numpy', 'pyemu', 'flopy', 'scipy', 'matplotlib', 'openpyxl',
+        'pandas', 'numpy', 'scipy', 'matplotlib', 'openpyxl',
         'tqdm', 'termcolor', 'pyshp'],
     keywords=['python', 'SWAT+', 'PEST'],
     classifiers=[
