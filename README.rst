@@ -65,8 +65,15 @@ To execute jupyter notebook, we need the Miniconda environment.
 
 2. Set Environment and install libraries:
 -----------------------------------------
-
 - After installation, go to the START menu and select "Miniconda Prompt" to open a DOS box.
+- Let's update conda base first.
+
+.. code-block:: bash
+
+   conda update -n base -c defaults conda
+
+and hit ENTER.
+
 - Using the `cd <https://www.computerhope.com/issues/chusedos.htm>`_ command in the Miniconda DOS box, navigate to the location where you have `environment.yml` the file and type: 
 
 .. code-block:: bash
