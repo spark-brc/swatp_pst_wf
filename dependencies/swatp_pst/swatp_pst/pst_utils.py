@@ -164,7 +164,8 @@ class PstUtil(SWATp):
             tpl_file = cal_file + ".tpl"
         cal_df = self.read_cal()
         cal_df.index = cal_df.iloc[:, 0]
-        cal_df.iloc[:, 2] = cal_df.iloc[:, 0].apply(lambda x: " ~   {0:15s}   ~".format(x))
+        # cal_df.iloc[:, 2] = cal_df.iloc[:, 0].apply(lambda x: " ~   {0:15s}   ~".format(x))
+        cal_df.iloc[:, 2] = cal_df.iloc[:, 0].apply(lambda x: " ~ {0:12s} ~".format(x))
 
         # # cal_df.loc[:, "tpl"] = cal_df.parnme.apply(lambda x: " ~   {0:15s}   ~".format(x[3:7]))
 
