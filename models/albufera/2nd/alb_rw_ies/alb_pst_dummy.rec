@@ -1,0 +1,732 @@
+             pestpp-glm 5.2.3
+
+    by The PEST++ Development Team
+
+
+
+version: 5.2.3
+binary compiled on Apr 25 2023 at 15:17:23
+
+using control file: "alb_pst_dummy.pst"
+
+in directory: "D:\spark\Albufera\opt01\main_opt"
+on host: "TEMP-GL5CT-D"
+started at 08/16/24 14:33:13
+
+...reading external file 'alb_pst_dummy.pargp_data.csv'
+...header line: PARGPNME,INCTYP,DERINC,DERINCLB,FORCEN,DERINCMUL,DERMTHD,SPLITTHRESH,SPLITRELDIFF,SPLITACTION
+...read 2 lines from external file
+...reading external file 'alb_pst_dummy.par_data.csv'
+...header line: PARNME,PARTRANS,PARCHGLIM,PARVAL1,PARLBND,PARUBND,PARGP,SCALE,OFFSET,DERCOM
+...read 14 lines from external file
+...reading external file 'alb_pst_dummy.obs_data.csv'
+...header line: OBSNME,OBSVAL,WEIGHT,OBGNME
+...read 168 lines from external file
+...reading external file 'alb_pst_dummy.tplfile_data.csv'
+...header line: PEST_FILE,MODEL_FILE
+...read 2 lines from external file
+...reading external file 'alb_pst_dummy.insfile_data.csv'
+...header line: PEST_FILE,MODEL_FILE
+...read 3 lines from external file
+
+Note 'NOPTMAX' == 0, switching to forgiveness mode when checking inputs
+
+noptmax = 0, resetting max_run_fail = 1
+
+    This software has been approved for release by the
+    U.S.Geological Survey(USGS).Although the software has 
+    been subjected to rigorous review, the USGS reserves the
+    right to update the software as needed pursuant to further
+    analysisand review.No warranty, expressed or implied, is 
+    made by the USGS or the U.S.Government as to the
+    functionality of the softwareand related material nor shall
+    the fact of release constitute any such warranty.
+    Furthermore, the software is released on condition that
+    neither the USGS nor the U.S.Government shall be held
+    liable for any damages resulting from its authorized 
+    or unauthorized use.
+
+
+pestmode:- 
+   estimation
+
+
+Case dimensions:- 
+    Number of parameters = 13
+    Number of adjustable parameters = 13
+    Number of observations = 167
+    Number of prior estimates = 0
+
+PEST Control Information
+    relparmax = 1
+    facparmax = 1.1
+    facorig = 0.001
+    phiredswh = 0.1
+    noptmax = 0
+    phiredstp = 0.01
+    nphistp = 3
+    nphinored = 3
+    relparstp = 0.01
+    nrelpar = 3
+
+
+    PEST++ OPTIONS: 
+
+...general options (used in multiple tools): 
+svd_pack: redsvd
+lambda_scale_fac: 0.75,1,1.1,
+forgive_unknown_args: 0
+max_run_fail: 1
+panther_poll_interval: 1
+parameter_covariance: 
+observation_covariance: 
+hotstart_resfile: 
+overdue_resched_fac: 1.15
+overdue_giveup_fac: 100
+overdue_giveup_minutes: 1e+30
+condor_submit_file: 
+tie_by_group: 0
+par_sigma_range: 4
+enforce_tied_bounds: 0
+debug_parse_only: 0
+check_tplins: 1
+fill_tpl_zeros: 0
+tpl_force_decimal: 0
+additional_ins_delimiters: 
+random_seed: 358183147
+num_tpl_ins_threads: 1
+save_binary: 0
+ensemble_output_precision: 6
+panther_echo: 1
+panther_agent_restart_on_error: 0
+panther_agent_no_ping_timeout_secs: -1
+panther_debug_loop: 0
+debug_check_par_en_consistency: 0
+panther_agent_freeze_on_fail: 0
+panther_transfer_on_finish: 
+panther_transfer_on_fail: 
+
+...pestpp-glm specific options:
+max_n_super: 1000000
+super_eigthresh: 1e-06
+n_iter_base: 1000000
+n_iter_super: 0
+super_relparmax: 0.1
+max_super_frz_iter: 20
+max_reg_iter: 20
+lambdas: 0.1,1,10,100,1000,
+iteration_summary: 1
+der_forgive: 1
+uncertainty: 1
+forecasts: 
+base_jacobian: 
+glm_num_reals: 0
+jac_scale: 1
+glm_normal_form: DIAG
+glm_debug_der_fail: 0
+glm_debug_lamb_fail: 0
+glm_debug_real_fail: 0
+glm_accept_mc_phi: 0
+glm_rebase_super: 0
+glm_iter_mc: 0
+glm_high_2nd_iter_phi: 0
+
+...pestpp-swp options:
+sweep_parameter_csv_file: 
+sweep_output_csv_file: sweep_out.csv
+sweep_chunk: 500
+sweep_forgive: 0
+sweep_base_run: 0
+sweep_include_regul_phi: 0
+
+...pestpp-opt options:
+opt_objective_function: 
+opt_coin_log: 1
+opt_skip_final: 0
+opt_std_weights: 0
+opt_stack_size: 0
+opt_par_stack: 
+opt_obs_stack: 
+opt_decision_variable_groups: 
+opt_external_variable_groups: 
+opt_constraint_groups: 
+opt_risk: 0.5
+opt_iter_derinc_fac: 1
+opt_direction: 1
+opt_iter_tol: 0.001
+opt_recalc_fosm_every: 1
+opt_chance_points: SINGLE
+
+...pestpp-sqp options:
+sqp_dv_en: 
+sqp_obs_restart_en: 
+sqp_num_reals: -1
+sqp_update_hessian: 0
+sqp_scale_facs:
+  1e-05
+  0.0001
+  0.0005
+  0.001
+  0.0025
+  0.005
+  0.01
+  0.05
+  0.075
+  0.1
+  0.25
+  0.5
+  1
+  2
+  5
+  10
+
+...pestpp-mou options:
+mou_generator: DE
+mou_population_size: 100
+mou_dv_population_file: 
+mou_obs_population_restart_file: 
+mou_objectives: 
+mou_max_archive_size: 500
+mou_risk_objective: 0
+mou_verbose_level: 1
+mou_env_selector: NSGA
+mou_mating_selector: TOURNAMENT
+mou_crossover_prob: 0.75
+mou_mutation_prob: -999
+mou_de_f: 0.8
+mou_save_population_every: -1
+mou_pso_omega: 0.7
+mou_pso_social_const: 2
+mou_pso_cognitive: 2
+mou_population_schedule: 
+mou_simplex_reflections:10
+mou_simplex_factors: 
+ 0.5
+ 0.6
+ 0.7
+ 0.8
+mou_simplex_mutation: 0
+mou_use_multigen:0
+
+...shared pestpp-ies/pestpp-da options:
+(note: 'da' args override 'ies' args when using pestpp-da)
+ies_parameter_ensemble: 
+ies_observation_ensemble: 
+ies_weights_ensemble: 
+ies_restart_parameter_ensemble: 
+ies_restart_observation_ensemble: 
+ies_use_approximate_solution: 1
+ies_lambda_mults: 0.1,1,10,
+ies_initial_lambda: 0
+ies_use_approx: 1
+ies_subset_size: 4
+ies_reg_factor: 0
+ies_verbose_level: 1
+ies_use_prior_scaling: 0
+ies_num_reals: 50
+ies_bad_phi: 1e+300
+ies_bad_phi_sigma: 1e+300
+ies_include_base: 1
+ies_use_empirical_prior: 0
+ies_group_draws: 0
+ies_enforce_bounds: 1
+ies_localizer: 
+ies_accept_phi_fac: 1.05
+ies_lambda_inc_fac: 10
+ies_lambda_dec_fac: 0.75
+ies_save_lambda_ensembles: 0
+ies_subset_how: RANDOM
+ies_localize_how: PARAMETERS
+ies_num_threads: -1
+ies_debug_fail_subset: 0
+ies_debug_fail_remainder: 0
+ies_debug_bad_phi: 0
+ies_debug_upgrade_only: 0
+ies_debug_high_subset_phi: 0
+ies_debug_high_upgrade_phi: 0
+ies_csv_by_reals: 1
+ies_autoadaloc: 0
+ies_autoadaloc_sigma_dist: 1
+ies_enforce_chglim: 0
+ies_center_on: 
+ies_no_noise: 0
+ies_drop_conflicts: 0
+ies_save_rescov:0
+ies_pdc_sigma_distance: -1
+ies_use_mda: 0
+ies_mda_init_fac: 10
+ies_mda_dec_fac: 0.5
+ies_localization_type: LOCAL
+ies_upgrades_in_memory: 1
+ies_ordered_binary: 1
+ies_multimodal_alpha: 1
+ies_localizer_forgive_extra: 0
+ies_phi_factors_file: 
+ies_phi_factors_by_real: 0
+
+pestpp-sen options: 
+gsa_method: MORRIS
+gsa_morris_pooled_obs: 0
+gsa_morris_obs_sen: 1
+gsa_morris_p: 4
+gsa_morris_r: 4
+gsa_morris_delta: 0.6666
+gsa_sobol_samples: 4
+gsa_sobol_par_dist: norm
+
+pestpp-da options (those not shared with pestpp-ies):
+da_parameter_cycle_table: 
+da_observation_cycle_table: 
+da_hotstart_cycle: 0
+da_stop_cycle: 1000000000
+da_use_simulated_states: 1
+da_noptmax_schedule: 
+
+
+
+Model command line(s):- 
+    python forward_run.py
+
+Model interface files:-
+    template files:
+      calibration.cal.tpl
+    model input files:
+      calibration.cal
+
+    instruction files:
+      stf_049.txt.ins
+      tot_irr_paddy.txt.ins
+    model output files:
+      stf_049.txt
+      tot_irr_paddy.txt
+
+
+Parameter group information
+NAME          INCREMENT TYPE     DERIVATIVE INCREMENT    INCREMENT LOWER BOUND  FORCE CENTRAL     INCREMENT MULTIPLIER
+pargp               RELATIVE                     0.01                        0         SWITCH                        2
+
+
+
+Parameter information
+NAME         TRANSFORMATION        CHANGE LIMIT  INITIAL VALUE    LOWER BOUND    UPPER BOUND        GROUP          SCALE         OFFSET  DERIVATIVE COMMAND
+alpha        log                     FACTOR            100             50            150        pargp              1           -100                   1
+awc          log                     FACTOR            100             50            150        pargp              1           -100                   1
+canmx        log                     FACTOR            100             50            150        pargp              1           -100                   1
+cn2          log                     FACTOR            100             50            150        pargp              1           -100                   1
+cn3_swf      log                     FACTOR            100             50            150        pargp              1           -100                   1
+epco         log                     FACTOR            100             50            150        pargp              1           -100                   1
+esco         log                     FACTOR            100             50            150        pargp              1           -100                   1
+lat_len      log                     FACTOR            100             50            150        pargp              1           -100                   1
+latq_co      log                     FACTOR            100             50            150        pargp              1           -100                   1
+perco        log                     FACTOR            100             50            150        pargp              1           -100                   1
+petco        log                     FACTOR            100             50            150        pargp              1           -100                   1
+revap_co     log                     FACTOR            100             50            150        pargp              1           -100                   1
+surlag       log                     FACTOR            100             50            150        pargp              1           -100                   1
+
+
+
+Observation information
+NAME                                  VALUE                GROUP              WEIGHT
+cha049_20170511                      0.1265               cha049                   1
+cha049_20170512                       0.121               cha049                   1
+cha049_20170513                   0.0806667               cha049                   1
+cha049_20170514                    0.161333               cha049                   1
+cha049_20170515                       0.242               cha049                   1
+cha049_20170516                    0.161333               cha049                   1
+cha049_20170517                    0.161333               cha049                   1
+cha049_20170518                    0.201667               cha049                   1
+cha049_20170519                    0.161333               cha049                   1
+cha049_20170520                    0.161333               cha049                   1
+cha049_20170521                    0.201667               cha049                   1
+cha049_20170522                    0.161333               cha049                   1
+cha049_20170523                    0.161333               cha049                   1
+cha049_20170524                    0.161333               cha049                   1
+cha049_20170525                    0.161333               cha049                   1
+cha049_20170526                    0.161333               cha049                   1
+cha049_20170527                    0.161333               cha049                   1
+cha049_20170528                    0.161333               cha049                   1
+cha049_20170529                    0.161333               cha049                   1
+cha049_20170530                    0.201667               cha049                   1
+cha049_20170531                    0.161333               cha049                   1
+cha049_20170601                    0.161333               cha049                   1
+cha049_20170602                    0.161333               cha049                   1
+cha049_20170603                       0.242               cha049                   1
+cha049_20170604                    0.322667               cha049                   1
+cha049_20170605                    0.564667               cha049                   1
+cha049_20170606                    0.403333               cha049                   1
+cha049_20170607                       0.242               cha049                   1
+cha049_20170608                    0.161333               cha049                   1
+cha049_20170609                       0.121               cha049                   1
+cha049_20170610                    0.161333               cha049                   1
+cha049_20170611                    0.161333               cha049                   1
+cha049_20170612                       0.121               cha049                   1
+cha049_20170613                       0.121               cha049                   1
+cha049_20170614                    0.161333               cha049                   1
+cha049_20170615                    0.161333               cha049                   1
+cha049_20170616                    0.161333               cha049                   1
+cha049_20170617                    0.161333               cha049                   1
+cha049_20170618                    0.161333               cha049                   1
+cha049_20170619                    0.322667               cha049                   1
+cha049_20170620                    0.403333               cha049                   1
+cha049_20170621                    0.403333               cha049                   1
+cha049_20170622                    0.403333               cha049                   1
+cha049_20170623                    0.443667               cha049                   1
+cha049_20170624                    0.524333               cha049                   1
+cha049_20170625                       0.484               cha049                   1
+cha049_20170626                       0.484               cha049                   1
+cha049_20170627                    0.443667               cha049                   1
+cha049_20170628                       0.363               cha049                   1
+cha049_20170629                    0.201667               cha049                   1
+cha049_20170630                    0.161333               cha049                   1
+cha049_20170701                    0.766333               cha049                   1
+cha049_20170702                    0.564667               cha049                   1
+cha049_20170703                    0.403333               cha049                   1
+cha049_20170704                       0.242               cha049                   1
+cha049_20170705                       0.121               cha049                   1
+cha049_20170706                    0.201667               cha049                   1
+cha049_20170707                    0.201667               cha049                   1
+cha049_20170708                    0.201667               cha049                   1
+cha049_20170709                    0.201667               cha049                   1
+cha049_20170710                    0.201667               cha049                   1
+cha049_20170711                    0.201667               cha049                   1
+cha049_20170712                       0.242               cha049                   1
+cha049_20170713                    0.201667               cha049                   1
+cha049_20170714                       0.242               cha049                   1
+cha049_20170715                       0.363               cha049                   1
+cha049_20170716                    0.443667               cha049                   1
+cha049_20170717                       0.484               cha049                   1
+cha049_20170718                    0.403333               cha049                   1
+cha049_20170719                    0.443667               cha049                   1
+cha049_20170720                    0.443667               cha049                   1
+cha049_20170721                       0.484               cha049                   1
+cha049_20170722                       0.605               cha049                   1
+cha049_20170723                    0.645333               cha049                   1
+cha049_20170724                    0.443667               cha049                   1
+cha049_20170725                    0.443667               cha049                   1
+cha049_20170726                    0.443667               cha049                   1
+cha049_20170727                    0.564667               cha049                   1
+cha049_20170728                    0.645333               cha049                   1
+cha049_20170729                    0.645333               cha049                   1
+cha049_20170730                    0.645333               cha049                   1
+cha049_20170731                    0.645333               cha049                   1
+cha049_20170801                    0.645333               cha049                   1
+cha049_20170802                    0.685667               cha049                   1
+cha049_20170803                    0.645333               cha049                   1
+cha049_20170804                    0.645333               cha049                   1
+cha049_20170805                    0.645333               cha049                   1
+cha049_20170806                    0.645333               cha049                   1
+cha049_20170807                    0.645333               cha049                   1
+cha049_20170808                    0.645333               cha049                   1
+cha049_20170809                    0.685667               cha049                   1
+cha049_20170810                    0.685667               cha049                   1
+cha049_20170811                    0.685667               cha049                   1
+cha049_20170812                    0.685667               cha049                   1
+cha049_20170813                    0.685667               cha049                   1
+cha049_20170814                    0.685667               cha049                   1
+cha049_20170815                       0.726               cha049                   1
+cha049_20170816                       0.726               cha049                   1
+cha049_20170817                       0.726               cha049                   1
+cha049_20170818                       0.726               cha049                   1
+cha049_20170819                       0.726               cha049                   1
+cha049_20170820                       0.726               cha049                   1
+cha049_20170821                       0.726               cha049                   1
+cha049_20170822                       0.726               cha049                   1
+cha049_20170823                       0.726               cha049                   1
+cha049_20170824                       0.726               cha049                   1
+cha049_20170825                       0.726               cha049                   1
+cha049_20170826                       0.726               cha049                   1
+cha049_20170827                       0.726               cha049                   1
+cha049_20170828                       0.726               cha049                   1
+cha049_20170829                    0.766333               cha049                   1
+cha049_20170830                       0.726               cha049                   1
+cha049_20170831                       0.726               cha049                   1
+cha049_20170901                       0.726               cha049                   1
+cha049_20170902                       0.726               cha049                   1
+cha049_20170903                       0.726               cha049                   1
+cha049_20170904                       0.726               cha049                   1
+cha049_20170905                    0.564667               cha049                   1
+cha049_20170906                    0.564667               cha049                   1
+cha049_20170907                    0.564667               cha049                   1
+cha049_20170908                    0.564667               cha049                   1
+cha049_20170909                    0.564667               cha049                   1
+cha049_20170910                    0.524333               cha049                   1
+cha049_20170911                     1.12933               cha049                   1
+cha049_20170912                       0.968               cha049                   1
+cha049_20170913                    0.766333               cha049                   1
+cha049_20170914                    0.403333               cha049                   1
+obd_irr_paddy_20160531              25.7465        obd_irr_paddy                   1
+obd_irr_paddy_20160630              497.425        obd_irr_paddy                   1
+obd_irr_paddy_20160731              658.431        obd_irr_paddy                   1
+obd_irr_paddy_20160831               662.53        obd_irr_paddy                   1
+obd_irr_paddy_20160930              30.7721        obd_irr_paddy                   1
+obd_irr_paddy_20170531              420.331        obd_irr_paddy                   1
+obd_irr_paddy_20170630                527.6        obd_irr_paddy                   1
+obd_irr_paddy_20170731               614.57        obd_irr_paddy                   1
+obd_irr_paddy_20170831               603.22        obd_irr_paddy                   1
+obd_irr_paddy_20170930               177.19        obd_irr_paddy                   1
+obd_irr_paddy_20180531               378.13        obd_irr_paddy                   1
+obd_irr_paddy_20180630              477.001        obd_irr_paddy                   1
+obd_irr_paddy_20180731              644.432        obd_irr_paddy                   1
+obd_irr_paddy_20180831              590.686        obd_irr_paddy                   1
+obd_irr_paddy_20180930              88.8512        obd_irr_paddy                   1
+obd_irr_paddy_20190531              335.949        obd_irr_paddy                   1
+obd_irr_paddy_20190630              595.929        obd_irr_paddy                   1
+obd_irr_paddy_20190731              557.516        obd_irr_paddy                   1
+obd_irr_paddy_20190831              656.999        obd_irr_paddy                   1
+obd_irr_paddy_20190930              171.836        obd_irr_paddy                   1
+obd_irr_paddy_20200531              155.742        obd_irr_paddy                   1
+obd_irr_paddy_20200630              471.029        obd_irr_paddy                   1
+obd_irr_paddy_20200731              612.505        obd_irr_paddy                   1
+obd_irr_paddy_20200831              675.089        obd_irr_paddy                   1
+obd_irr_paddy_20200930               215.88        obd_irr_paddy                   1
+obd_irr_paddy_20210531              290.306        obd_irr_paddy                   1
+obd_irr_paddy_20210630              555.285        obd_irr_paddy                   1
+obd_irr_paddy_20210731              580.971        obd_irr_paddy                   1
+obd_irr_paddy_20210831              657.986        obd_irr_paddy                   1
+obd_irr_paddy_20210930               257.05        obd_irr_paddy                   1
+obd_irr_paddy_20220531              436.588        obd_irr_paddy                   1
+obd_irr_paddy_20220630              600.454        obd_irr_paddy                   1
+obd_irr_paddy_20220731              611.336        obd_irr_paddy                   1
+obd_irr_paddy_20220831              509.098        obd_irr_paddy                   1
+obd_irr_paddy_20220930              101.718        obd_irr_paddy                   1
+obd_irr_paddy_20230531              320.329        obd_irr_paddy                   1
+obd_irr_paddy_20230630              533.104        obd_irr_paddy                   1
+obd_irr_paddy_20230731              629.228        obd_irr_paddy                   1
+obd_irr_paddy_20230831              691.368        obd_irr_paddy                   1
+obd_irr_paddy_20230930              106.164        obd_irr_paddy                   1
+
+
+
+Prior information
+
+   no prior information provided
+
+
+
+PEST SVD Information
+    maxsing = 10000000
+    eigthresh = 1e-06
+
+
+
+
+
+...loading prior parameter covariance matrix
+
+   -----    Starting pestpp-glm Iterations    ----    
+
+-----------------------------------------
+     ---   OPTIMIZATION COMPLETE   ---   
+  Reason for terminating PEST++ simulation: NOPTMAX criterion met
+  Summary of termination criteria:
+  NOPTMAX = 0 ;  NOPT at termination = 0
+  NPHINORED = 3 ;  NPHINORED at termination = 0
+  NRELPAR = 3; RELPARSTP = 0.01 ;  NRELPAR at termination = 0
+  PHIREDSTP = 0.01; NPHISTP = 3
+  NPHISTP lowest PHI's:
+
+FINAL OPTIMISATION RESULTS
+
+  Optimal parameter values  
+
+     Parameter            
+        Name         Value
+    ------------  ------------
+    alpha                  100
+    awc                    100
+    canmx                  100
+    cn2                    100
+    cn3_swf                100
+    epco                   100
+    esco                   100
+    lat_len                100
+    latq_co                100
+    perco                  100
+    petco                  100
+    revap_co               100
+    surlag                 100
+
+
+  Observations with optimal model-simulated equivalents and residuals
+                   Name        Group             Measured             Modelled             Residual               Weight
+        cha049_20170511       cha049             0.126500            0.0924300            0.0340700              1.00000
+        cha049_20170512       cha049             0.121000            0.0863000            0.0347000              1.00000
+        cha049_20170513       cha049            0.0806667            0.0808700         -0.000203333              1.00000
+        cha049_20170514       cha049             0.161333            0.0927300            0.0686033              1.00000
+        cha049_20170515       cha049             0.242000             0.118400             0.123600              1.00000
+        cha049_20170516       cha049             0.161333             0.140000            0.0213333              1.00000
+        cha049_20170517       cha049             0.161333             0.131500            0.0298333              1.00000
+        cha049_20170518       cha049             0.201667             0.136100            0.0655667              1.00000
+        cha049_20170519       cha049             0.161333             0.126000            0.0353333              1.00000
+        cha049_20170520       cha049             0.161333             0.118200            0.0431333              1.00000
+        cha049_20170521       cha049             0.201667             0.123700            0.0779667              1.00000
+        cha049_20170522       cha049             0.161333             0.113400            0.0479333              1.00000
+        cha049_20170523       cha049             0.161333             0.109300            0.0520333              1.00000
+        cha049_20170524       cha049             0.161333             0.105200            0.0561333              1.00000
+        cha049_20170525       cha049             0.161333            0.0979000            0.0634333              1.00000
+        cha049_20170526       cha049             0.161333            0.0952700            0.0660633              1.00000
+        cha049_20170527       cha049             0.161333             0.102100            0.0592333              1.00000
+        cha049_20170528       cha049             0.161333             0.101500            0.0598333              1.00000
+        cha049_20170529       cha049             0.161333             0.101900            0.0594333              1.00000
+        cha049_20170530       cha049             0.201667             0.119200            0.0824667              1.00000
+        cha049_20170531       cha049             0.161333             0.114800            0.0465333              1.00000
+        cha049_20170601       cha049             0.161333             0.109500            0.0518333              1.00000
+        cha049_20170602       cha049             0.161333             0.105800            0.0555333              1.00000
+        cha049_20170603       cha049             0.242000             0.112800             0.129200              1.00000
+        cha049_20170604       cha049             0.322667             0.156000             0.166667              1.00000
+        cha049_20170605       cha049             0.564667             0.335500             0.229167              1.00000
+        cha049_20170606       cha049             0.403333             0.285900             0.117433              1.00000
+        cha049_20170607       cha049             0.242000             0.174900            0.0671000              1.00000
+        cha049_20170608       cha049             0.161333            0.0962700            0.0650633              1.00000
+        cha049_20170609       cha049             0.121000            0.0581100            0.0628900              1.00000
+        cha049_20170610       cha049             0.161333            0.0868100            0.0745233              1.00000
+        cha049_20170611       cha049             0.161333            0.0788400            0.0824933              1.00000
+        cha049_20170612       cha049             0.121000            0.0703800            0.0506200              1.00000
+        cha049_20170613       cha049             0.121000            0.0887100            0.0322900              1.00000
+        cha049_20170614       cha049             0.161333             0.100400            0.0609333              1.00000
+        cha049_20170615       cha049             0.161333             0.109400            0.0519333              1.00000
+        cha049_20170616       cha049             0.161333             0.130200            0.0311333              1.00000
+        cha049_20170617       cha049             0.161333             0.135900            0.0254333              1.00000
+        cha049_20170618       cha049             0.161333             0.136500            0.0248333              1.00000
+        cha049_20170619       cha049             0.322667             0.249300            0.0733667              1.00000
+        cha049_20170620       cha049             0.403333             0.320200            0.0831333              1.00000
+        cha049_20170621       cha049             0.403333             0.354800            0.0485333              1.00000
+        cha049_20170622       cha049             0.403333             0.380600            0.0227333              1.00000
+        cha049_20170623       cha049             0.443667             0.399400            0.0442667              1.00000
+        cha049_20170624       cha049             0.524333             0.423200             0.101133              1.00000
+        cha049_20170625       cha049             0.484000             0.458100            0.0259000              1.00000
+        cha049_20170626       cha049             0.484000             0.458600            0.0254000              1.00000
+        cha049_20170627       cha049             0.443667             0.442500           0.00116667              1.00000
+        cha049_20170628       cha049             0.363000             0.377900           -0.0149000              1.00000
+        cha049_20170629       cha049             0.201667             0.362200            -0.160533              1.00000
+        cha049_20170630       cha049             0.161333             0.393600            -0.232267              1.00000
+        cha049_20170701       cha049             0.766333             0.677600            0.0887333              1.00000
+        cha049_20170702       cha049             0.564667             0.631500           -0.0668333              1.00000
+        cha049_20170703       cha049             0.403333             0.455900           -0.0525667              1.00000
+        cha049_20170704       cha049             0.242000             0.295200           -0.0532000              1.00000
+        cha049_20170705       cha049             0.121000             0.187600           -0.0666000              1.00000
+        cha049_20170706       cha049             0.201667            0.0898300             0.111837              1.00000
+        cha049_20170707       cha049             0.201667             0.133200            0.0684667              1.00000
+        cha049_20170708       cha049             0.201667             0.119500            0.0821667              1.00000
+        cha049_20170709       cha049             0.201667             0.106600            0.0950667              1.00000
+        cha049_20170710       cha049             0.201667             0.137900            0.0637667              1.00000
+        cha049_20170711       cha049             0.201667             0.160400            0.0412667              1.00000
+        cha049_20170712       cha049             0.242000             0.175800            0.0662000              1.00000
+        cha049_20170713       cha049             0.201667             0.206800          -0.00513333              1.00000
+        cha049_20170714       cha049             0.242000             0.227300            0.0147000              1.00000
+        cha049_20170715       cha049             0.363000             0.238100             0.124900              1.00000
+        cha049_20170716       cha049             0.443667             0.372800            0.0708667              1.00000
+        cha049_20170717       cha049             0.484000             0.467500            0.0165000              1.00000
+        cha049_20170718       cha049             0.403333             0.520400            -0.117067              1.00000
+        cha049_20170719       cha049             0.443667             0.554900            -0.111233              1.00000
+        cha049_20170720       cha049             0.443667             0.580100            -0.136433              1.00000
+        cha049_20170721       cha049             0.484000             0.597700            -0.113700              1.00000
+        cha049_20170722       cha049             0.605000             0.604800          0.000200000              1.00000
+        cha049_20170723       cha049             0.645333             0.614800            0.0305333              1.00000
+        cha049_20170724       cha049             0.443667             0.615800            -0.172133              1.00000
+        cha049_20170725       cha049             0.443667             0.614000            -0.170333              1.00000
+        cha049_20170726       cha049             0.443667             0.617400            -0.173733              1.00000
+        cha049_20170727       cha049             0.564667             0.613200           -0.0485333              1.00000
+        cha049_20170728       cha049             0.645333             0.619500            0.0258333              1.00000
+        cha049_20170729       cha049             0.645333             0.624500            0.0208333              1.00000
+        cha049_20170730       cha049             0.645333             0.627900            0.0174333              1.00000
+        cha049_20170731       cha049             0.645333             0.631400            0.0139333              1.00000
+        cha049_20170801       cha049             0.645333             0.645800         -0.000466667              1.00000
+        cha049_20170802       cha049             0.685667             0.659800            0.0258667              1.00000
+        cha049_20170803       cha049             0.645333             0.643900           0.00143333              1.00000
+        cha049_20170804       cha049             0.645333             0.638100           0.00723333              1.00000
+        cha049_20170805       cha049             0.645333             0.650900          -0.00556667              1.00000
+        cha049_20170806       cha049             0.645333             0.665500           -0.0201667              1.00000
+        cha049_20170807       cha049             0.645333             0.671200           -0.0258667              1.00000
+        cha049_20170808       cha049             0.645333             0.664500           -0.0191667              1.00000
+        cha049_20170809       cha049             0.685667             0.668400            0.0172667              1.00000
+        cha049_20170810       cha049             0.685667             0.672000            0.0136667              1.00000
+        cha049_20170811       cha049             0.685667             0.674400            0.0112667              1.00000
+        cha049_20170812       cha049             0.685667             0.676700           0.00896667              1.00000
+        cha049_20170813       cha049             0.685667             0.678600           0.00706667              1.00000
+        cha049_20170814       cha049             0.685667             0.684700          0.000966667              1.00000
+        cha049_20170815       cha049             0.726000             0.690700            0.0353000              1.00000
+        cha049_20170816       cha049             0.726000             0.694800            0.0312000              1.00000
+        cha049_20170817       cha049             0.726000             0.696600            0.0294000              1.00000
+        cha049_20170818       cha049             0.726000             0.692400            0.0336000              1.00000
+        cha049_20170819       cha049             0.726000             0.697000            0.0290000              1.00000
+        cha049_20170820       cha049             0.726000             0.699900            0.0261000              1.00000
+        cha049_20170821       cha049             0.726000             0.691600            0.0344000              1.00000
+        cha049_20170822       cha049             0.726000             0.687200            0.0388000              1.00000
+        cha049_20170823       cha049             0.726000             0.688300            0.0377000              1.00000
+        cha049_20170824       cha049             0.726000             0.690100            0.0359000              1.00000
+        cha049_20170825       cha049             0.726000             0.697300            0.0287000              1.00000
+        cha049_20170826       cha049             0.726000             0.700500            0.0255000              1.00000
+        cha049_20170827       cha049             0.726000             0.716900           0.00910000              1.00000
+        cha049_20170828       cha049             0.726000             0.724900           0.00110000              1.00000
+        cha049_20170829       cha049             0.766333             0.742300            0.0240333              1.00000
+        cha049_20170830       cha049             0.726000             0.729500          -0.00350000              1.00000
+        cha049_20170831       cha049             0.726000             0.699600            0.0264000              1.00000
+        cha049_20170901       cha049             0.726000             0.717400           0.00860000              1.00000
+        cha049_20170902       cha049             0.726000             0.714300            0.0117000              1.00000
+        cha049_20170903       cha049             0.726000             0.713700            0.0123000              1.00000
+        cha049_20170904       cha049             0.726000             0.712900            0.0131000              1.00000
+        cha049_20170905       cha049             0.564667             0.578700           -0.0140333              1.00000
+        cha049_20170906       cha049             0.564667             0.564200          0.000466667              1.00000
+        cha049_20170907       cha049             0.564667             0.553400            0.0112667              1.00000
+        cha049_20170908       cha049             0.564667             0.537800            0.0268667              1.00000
+        cha049_20170909       cha049             0.564667             0.528500            0.0361667              1.00000
+        cha049_20170910       cha049             0.524333             0.503100            0.0212333              1.00000
+        cha049_20170911       cha049              1.12933             0.946300             0.183033              1.00000
+        cha049_20170912       cha049             0.968000             0.910200            0.0578000              1.00000
+        cha049_20170913       cha049             0.766333             0.677300            0.0890333              1.00000
+        cha049_20170914       cha049             0.403333             0.460200           -0.0568667              1.00000
+ obd_irr_paddy_20160531 obd_irr_paddy              25.7465              488.317             -462.571              1.00000
+ obd_irr_paddy_20160630 obd_irr_paddy              497.425              538.470             -41.0451              1.00000
+ obd_irr_paddy_20160731 obd_irr_paddy              658.431              584.585              73.8456              1.00000
+ obd_irr_paddy_20160831 obd_irr_paddy              662.530              615.832              46.6980              1.00000
+ obd_irr_paddy_20160930 obd_irr_paddy              30.7721              167.340             -136.568              1.00000
+ obd_irr_paddy_20170531 obd_irr_paddy              420.331              509.312             -88.9810              1.00000
+ obd_irr_paddy_20170630 obd_irr_paddy              527.600              505.867              21.7323              1.00000
+ obd_irr_paddy_20170731 obd_irr_paddy              614.570              577.382              37.1887              1.00000
+ obd_irr_paddy_20170831 obd_irr_paddy              603.220              591.634              11.5864              1.00000
+ obd_irr_paddy_20170930 obd_irr_paddy              177.190              140.873              36.3177              1.00000
+ obd_irr_paddy_20180531 obd_irr_paddy              378.130              465.976             -87.8467              1.00000
+ obd_irr_paddy_20180630 obd_irr_paddy              477.001              482.989             -5.98752              1.00000
+ obd_irr_paddy_20180731 obd_irr_paddy              644.432              599.028              45.4038              1.00000
+ obd_irr_paddy_20180831 obd_irr_paddy              590.686              644.311             -53.6253              1.00000
+ obd_irr_paddy_20180930 obd_irr_paddy              88.8512              104.062             -15.2108              1.00000
+ obd_irr_paddy_20190531 obd_irr_paddy              335.949              484.346             -148.398              1.00000
+ obd_irr_paddy_20190630 obd_irr_paddy              595.929              496.868              99.0618              1.00000
+ obd_irr_paddy_20190731 obd_irr_paddy              557.516              564.216             -6.70042              1.00000
+ obd_irr_paddy_20190831 obd_irr_paddy              656.999              620.641              36.3585              1.00000
+ obd_irr_paddy_20190930 obd_irr_paddy              171.836              141.055              30.7812              1.00000
+ obd_irr_paddy_20200531 obd_irr_paddy              155.742              468.084             -312.342              1.00000
+ obd_irr_paddy_20200630 obd_irr_paddy              471.029              493.499             -22.4692              1.00000
+ obd_irr_paddy_20200731 obd_irr_paddy              612.505              557.581              54.9244              1.00000
+ obd_irr_paddy_20200831 obd_irr_paddy              675.089              620.987              54.1019              1.00000
+ obd_irr_paddy_20200930 obd_irr_paddy              215.880              121.615              94.2652              1.00000
+ obd_irr_paddy_20210531 obd_irr_paddy              290.306              478.558             -188.252              1.00000
+ obd_irr_paddy_20210630 obd_irr_paddy              555.285              440.441              114.844              1.00000
+ obd_irr_paddy_20210731 obd_irr_paddy              580.971              554.506              26.4651              1.00000
+ obd_irr_paddy_20210831 obd_irr_paddy              657.986              612.129              45.8577              1.00000
+ obd_irr_paddy_20210930 obd_irr_paddy              257.050              113.504              143.545              1.00000
+ obd_irr_paddy_20220531 obd_irr_paddy              436.588              460.793             -24.2049              1.00000
+ obd_irr_paddy_20220630 obd_irr_paddy              600.454              465.963              134.491              1.00000
+ obd_irr_paddy_20220731 obd_irr_paddy              611.336              587.221              24.1145              1.00000
+ obd_irr_paddy_20220831 obd_irr_paddy              509.098              620.932             -111.834              1.00000
+ obd_irr_paddy_20220930 obd_irr_paddy              101.718              162.439             -60.7210              1.00000
+ obd_irr_paddy_20230531 obd_irr_paddy              320.329              455.109             -134.780              1.00000
+ obd_irr_paddy_20230630 obd_irr_paddy              533.104              480.456              52.6476              1.00000
+ obd_irr_paddy_20230731 obd_irr_paddy              629.228              560.079              69.1494              1.00000
+ obd_irr_paddy_20230831 obd_irr_paddy              691.368              603.199              88.1694              1.00000
+ obd_irr_paddy_20230930 obd_irr_paddy              106.164              134.245             -28.0802              1.00000
+
+Final composite objective function 
+  Final phi                                           Total : 554898.
+  Contribution to phi from observation group       "cha049" : 0.642005
+  Contribution to phi from observation group "obd_irr_paddy" : 554897.
+
+
+Number of forward model runs performed during optimization: 1
+
+
+pestpp-glm analysis complete...
+started at 08/16/24 14:33:13
+finished at 08/16/24 14:33:36
+took 0.383333 minutes

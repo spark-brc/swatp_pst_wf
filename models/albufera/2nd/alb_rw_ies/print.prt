@@ -1,0 +1,48 @@
+print.prt: written by SWAT+ editor v2.3.3 on 2023-12-13 20:04 for SWAT+ rev.60.5.7
+nyskip      day_start  yrc_start  day_end   yrc_end   interval  
+1           1         2016         365         2017         1         
+AA_NUMINT
+0
+CSV                 DB                  NETCDF
+n                   n                   n
+SNUTC               MGT                 HYDCON              FDC	
+m                   n                   n                   n	
+OBJECTS                           DAILY             MONTHLY              YEARLY               AVANN
+basin_wb                              n                   n                   y                   n
+basin_nb                              n                   n                   n                   n
+basin_ls                              n                   n                   n                   n
+basin_pw                              n                   n                   n                   n
+basin_aqu                             n                   n                   n                   n
+basin_res                             n                   n                   n                   n
+basin_cha                             n                   n                   n                   n
+basin_sd_cha                          n                   n                   n                   n
+basin_psc                             n                   n                   n                   n
+region_wb                             n                   n                   n                   n
+region_nb                             n                   n                   n                   n
+region_ls                             n                   n                   n                   n
+region_pw                             n                   n                   n                   n
+region_aqu                            n                   n                   n                   n
+region_res                            n                   n                   n                   n
+region_cha                            n                   n                   n                   n
+region_sd_cha                         n                   n                   n                   n
+region_psc                            n                   n                   n                   n
+lsunit_wb                             n                   n                   n                   n
+lsunit_nb                             n                   n                   n                   n
+lsunit_ls                             n                   n                   n                   n
+lsunit_pw                             n                   n                   n                   n
+hru_wb                                y                   y                   y                   n
+hru_nb                                y                   n                   n                   n
+hru_ls                                n                   n                   n                   n
+hru_pw                                y                   y                   y                   y
+hru-lte_wb                            n                   n                   n                   n
+hru-lte_nb                            n                   n                   n                   n
+hru-lte_ls                            n                   n                   n                   n
+hru-lte_pw                            n                   n                   n                   n
+channel                               n                   n                   n                   n
+channel_sd                            y                   y                   y                   y
+aquifer                               y                   y                   y                   y
+reservoir                             n                   n                   n                   n
+recall	                              n                   n                   n                   n
+hyd                                   n                   n                   n                   n
+ru                                    n                   n                   n                   n
+pest                                  n                   n                   n                   n 

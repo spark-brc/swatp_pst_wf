@@ -1,0 +1,4 @@
+ april24                   SWAT+ Apr 12 2023       MODULAR Rev 2023.60.5.6                                
+   jday   mon   day    yr   unit  gis_id  name                    flo_in          geo_bf         flo_out           peakr         sed_in        sed_out         washld          bedld            dep        deg_btm       deg_bank         hc_sed          width          depth          slope        deg_btm       deg_bank         hc_len      flo_in_mm       aqu_in_mm      flo_out_mm        sed_stor 
+                                                                         m^3/s   
+   365    12    31  2022         1     1  april24               0.1211E+04     0.0000E+00     0.1207E+04     0.1932E+04     0.1104E-02     0.1796E-02     0.5518E-03     0.0000E+00     0.5240E-03     0.1243E-02     0.1446E-05     0.0000E+00     0.4823E+01     0.3132E+00     0.1850E-02     0.1420E-04     0.6054E-06     0.0000E+00     0.8182E-01     0.0000E+00     0.8137E-01     0.1014E+04

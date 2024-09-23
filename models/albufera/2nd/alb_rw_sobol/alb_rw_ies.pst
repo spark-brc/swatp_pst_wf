@@ -1,0 +1,21 @@
+pcf version=2
+* control data keyword
+pestmode                                 estimation
+noptmax                                15
+svdmode                                 1
+maxsing                          10000000
+eigthresh                           1e-06
+eigwrite                                1
+ies_num_reals                  100
+* parameter groups external
+alb_rw_ies.pargp_data.csv
+* parameter data external
+alb_rw_ies.par_data.csv
+* observation data external
+alb_rw_ies.obs_data.csv
+* model command line
+python forward_run_albu.py
+* model input external
+alb_rw_ies.tplfile_data.csv
+* model output external
+alb_rw_ies.insfile_data.csv

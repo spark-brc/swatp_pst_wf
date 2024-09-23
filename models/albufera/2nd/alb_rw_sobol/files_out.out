@@ -1,0 +1,27 @@
+ files_out.out - OUTPUT FILES WRITTEN
+ CHK                       checker.out
+ HRU                       hru_wb_day.txt
+ HRU                       hru_wb_mon.txt
+ HRU                       hru_wb_yr.txt
+ HRU                       hru_nb_day.txt
+ HRU                       hru_ncycle_day.txt
+ HRU                       hru_pw_day.txt
+ HRU                       hru_pw_mon.txt
+ HRU                       hru_pw_yr.txt
+ HRU                       hru_pw_aa.txt
+ BASIN                     basin_wb_yr.txt
+ AQUIFER                   aquifer_day.txt
+ AQUIFER                   aquifer_mon.txt
+ AQUIFER                   aquifer_yr.txt
+ AQUIFER                   aquifer_aa.txt
+ SWAT-DEG_CHANNEL          channel_sd_day.txt
+ SWAT-DEG_CHANNEL          channel_sd_mon.txt
+ SWAT-DEG_CHANNEL          channel_sd_yr.txt
+ SWAT-DEG_CHANNEL          channel_sd_aa.txt
+ SWAT-DEG_CHANNEL_MORPH    channel_sdmorph_day.txt
+ SWAT-DEG_CHANNEL_MORPH    channel_sdmorph_mon.txt
+ SWAT-DEG_CHANNEL_MORPH    channel_sdmorph_yr.txt
+ SWAT-DEG_CHANNEL_MORPH    channel_sdmorph_aa.txt
+ DTBL                      lu_change_out.txt
+ BASIN_CROP_YLD            basin_crop_yld_yr.txt
+ BASIN_CROP_YLD            basin_crop_yld_aa.txt

@@ -1,0 +1,8 @@
+# swatp_pst.con created by swatp_pst
+prj_dir	D:\spark\Albufera\opt01
+swatp_wd	D:\spark\Albufera\alb_base_02
+cal_start	1/1/2016
+cal_end	12/31/2023
+chs	[49]
+irr_cal	activated
+time_step	day
