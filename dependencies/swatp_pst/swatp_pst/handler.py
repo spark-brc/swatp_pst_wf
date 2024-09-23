@@ -170,12 +170,16 @@ class SWATp(object):
         return hru_paddy
 
 
-    def read_cha_morph_day(self):
+    def read_cha_morph_day(self, flo=None):
+        if flo is None:
+            flo = "flo_out"
+        if flo == "flo_in":
+            flo = "flo_in"
         return pd.read_csv(
             "channel_sdmorph_day.txt",
             sep=r'\s+',
             skiprows=[0,2],
-            usecols=["gis_id", "flo_out"]
+            usecols=["gis_id", flo]
             )
 
     # def read_cha_morph_day(self):
@@ -286,6 +290,25 @@ class SWATp(object):
                 float_format='%.7e')
             print(' >>> stf_{:03d}.txt file has been created...'.format(i))
         print(' > Finished ...\n')
+
+
+
+    def extract_day_stf_albu(self, chs, cali_start_day, cali_end_day):
+        sim_stf_f = self.read_cha_morph_day(flo="flo_in")
+        start_day = self.stdate_warmup
+        for i in chs:
+            # sim_stf_f = self.read_cha_morph_mon()
+            sim_stf_ff = sim_stf_f.loc[sim_stf_f["gis_id"] == i]
+            sim_stf_ff = sim_stf_ff.drop(['gis_id'], axis=1)
+            sim_stf_ff.index = pd.date_range(start_day, periods=len(sim_stf_ff.flo_in))
+            sim_stf_ff = sim_stf_ff[cali_start_day:cali_end_day]
+            sim_stf_ff.to_csv(
+                'stf_{:03d}.txt'.format(i), sep='\t', encoding='utf-8', index=True, header=False,
+                float_format='%.7e')
+            print(' >>> stf_{:03d}.txt file has been created...'.format(i))
+        print(' > Finished ...\n')
+
+
 
 
 
