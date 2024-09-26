@@ -1312,3 +1312,40 @@ def albufera_predictive_results():
 
     # sfdf2 = read_sobol_sfi(wd2, pst_file2)
 
+
+'''
+class Paddy(Paddy):
+    print(os.getcwd())
+    def plot_paddy_daily(self, df):
+        cmap = plt.get_cmap("tab10")
+        nums = len(df.columns)
+        fig, axes = plt.subplots(nrows=nums, sharex=True, figsize=(9, 11))
+        for i, (col, ax) in enumerate(zip(df.columns, axes)):
+            ax.plot(df.index, df[col], color=cmap(i), label=col)
+            ax.legend(loc="upper left", fontsize=12)
+        
+            ax.tick_params(axis='both', labelsize=12)
+        plt.tight_layout()
+        plt.show()
+
+    def plot_yield(self, df):
+        fig, ax = plt.subplots()
+        ax.plot(df.index, df["yield"], "v-",markerfacecolor="None", label="Simulated, Botanga HRU Model")
+        ax.plot(df.index, df["obd_yield"], "o-", markerfacecolor="None", label="Observed, District Data")
+        ax.tick_params(axis='both', labelsize=12)
+        plt.legend(fontsize=12)
+        plt.tight_layout()
+        plt.show()
+
+    def plot_prep(self, df):
+        fig, ax = plt.subplots()
+        ax.plot(df.index, df["precip"], "v-",markerfacecolor="None", label="CHIRPS, Botanga HRU Model")
+        ax.plot(df.index, df["northern"], "o-", markerfacecolor="None", label="Observed, Northern Regional Data")
+        ax.tick_params(axis='both', labelsize=12)
+        plt.legend(fontsize=12)
+        plt.tight_layout()
+        plt.show()
+
+    
+'''
+    

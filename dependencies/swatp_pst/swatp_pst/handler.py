@@ -452,10 +452,6 @@ class SWATp(object):
         print(lu_hf)
 
 
-
-
-
-
 def get_last_day_of_month(df):
     for i in range(len(df)):
         res = calendar.monthrange(df.index[i].year, df.index[i].month)
@@ -528,6 +524,148 @@ def init_setup(prj_dir, swatp_wd):
     # if not os.path.isdir(os.path.join(main_opt_path, 'sufi2.in')):
     #     os.makedirs(os.path.join(main_opt_path, 'sufi2.in'))
     # print(" Creating 'sufi2.in' folder ..."  + colored(suffix, 'green'))
+
+
+
+class Paddy(object):
+    def __init__(self, wd) -> None:
+        os.chdir(wd)
+        self.stdate, self.enddate, self.stdate_warmup = self.define_sim_period()
+    
+    def read_print_prt(self):
+        return pd.read_csv(
+            "print.prt",
+            sep=r'\s+',
+            skiprows=1
+        )
+
+    def read_time_sim(self):
+        return pd.read_csv(
+            "time.sim",
+            sep=r'\s+',
+            skiprows=1,
+        )
+    
+    def define_sim_period(self):
+        df_time = self.read_time_sim()
+        df_prt = self.read_print_prt()
+        skipyear = int(df_prt.loc[0, "nyskip"])
+        yrc_start = int(df_time.loc[0, "yrc_start"])
+        yrc_st_warmup = yrc_start + skipyear
+        yrc_end = int(df_time.loc[0, "yrc_end"])
+        start_day = int(df_time.loc[0, "day_start"])
+        end_day = int(df_time.loc[0, "day_end"])
+        stdate = dt.datetime(yrc_start, 1, 1) + dt.timedelta(start_day - 1)
+        eddate = dt.datetime(yrc_end, 1, 1) + dt.timedelta(end_day - 1)
+        stdate_warmup = dt.datetime(yrc_st_warmup, 1, 1) + dt.timedelta(start_day - 1)
+        # eddate_warmup = dt.datetime(yrc_end_warmup, 1, 1) + dt.timedelta(FCendday - 1)        
+        startDate = stdate.strftime("%m/%d/%Y")
+        endDate = eddate.strftime("%m/%d/%Y")
+        startDate_warmup = stdate_warmup.strftime("%m/%d/%Y")
+        # endDate_warmup = eddate_warmup.strftime("%m/%d/%Y")
+        return startDate, endDate, startDate_warmup
+
+    def read_paddy_daily(self, hruid=None):
+        if hruid is None:
+            hruid = 1 
+        df = pd.read_csv("paddy_daily.csv", index_col=False)
+        df = df.rename(columns=lambda x: x.strip())
+        df = df.loc[df["HRU"]==1]
+        df.index = pd.date_range(self.stdate_warmup, periods=len(df))
+        return df
+
+    def read_basin_pw_day(self, hruid=None):
+        if hruid is None:
+            hruid =1
+        df = pd.read_csv("basin_pw_day.txt", sep=r"\s+", index_col=False, skiprows=[0, 2])
+        df = df.rename(columns=lambda x: x.strip())
+        df = df.loc[df["gis_id"]==1]
+        df.index = pd.date_range(self.stdate_warmup, periods=len(df))
+        return df
+    
+    def read_yield_obd(self):
+        inf = "YIELD & PRODUCTION - DISTRICT DATA_csir request.xlsx"
+        years, yields = [], []
+        for i in range(2013, 2023):
+            df = pd.read_excel(inf, sheet_name=str(i), skiprows=1, usecols=[1, 3])
+            df.dropna(inplace=True)
+            # df = df.loc[df["DISTRICTS"]=="Tolon/Kumbungu"]
+            df = df[df["DISTRICTS"].str.contains('Kumbungu')]
+            # df['Credit-Rating'].str.contains('Fair')
+            years.append(i)
+            yields.append(df.loc[:, "RICE"].values[0])
+        dff = pd.Series(index=years, data=yields, name='obd_yield')
+        dff.index = pd.date_range(f"1/1/{2013}", periods=len(dff), freq="YE")
+        return dff
+
+    def read_lsunit_wb_yr(self, hruid=None):
+        if hruid is None:
+            hruid =1
+        df = pd.read_csv("lsunit_wb_yr.txt", sep=r"\s+", index_col=False, skiprows=[0, 2])
+        df = df.rename(columns=lambda x: x.strip())
+        df = df.loc[df["unit"]==1]
+        df.index = pd.date_range(self.stdate_warmup, periods=len(df), freq="YE")
+        return df
+    
+
+    def read_pcp_obd(self):
+        inf = "pcp_year_obd.csv"
+        df = pd.read_csv(inf, parse_dates=True, index_col=0)
+        return df
+
+
+# def plot_tot():
+if __name__ == '__main__':
+    # wd = "D:\\Projects\\Watersheds\\Koksilah\\analysis\\koksilah_git\\koki_zon_rw_morris"
+    # pst_name = "koki_zon_rw_morris.pst"
+    # # read_morris_msn(wd, pst_name)
+    # analyzer.plot_sen_morris(read_morris_msn(wd, pst_name))
+    # wd = "/Users/seonggyu.park/Documents/projects/tools/swatmf_wf/temp/dawhenya_weather"
+    # wd = "D:\\Projects\\Watersheds\\Ghana\\Analysis\\botanaga_weather"
+    # os.chdir(wd)
+    # # tmp_files = [f for f in glob.glob("*.txt") if f[-7:] == "TMP.txt"]
+    # # cropBHU = 0
+    # # df = generate_heatunit(wd, "AF_430172_TMP.txt", cropBHU, 4, 15)
+    
+ 
+    # # # dff = pd.concat([phu0["PHU0"], tphu0["PHU0"]], axis=1, ignore_index=True)
+    # # print(df)
+    # inf = "AF_468598_TMP.txt"
+    # cropBHU = 0
+    # analyzer.plot_violin2(wd, inf, cropBHU, 12)
+    
+    # # # analyzer.plot_heatunit(df)
+    # # generate_heatunit(wd, inf, cropBHU, 4, 15)
+
+    # NOTE: PADDY
+    wd =  "d:\\Projects\\Watersheds\\Ghana\\Analysis\\botanga\\prj01\\Scenarios\\Default\\TxtInOut_rice_f"
+    m1 = Paddy(wd)
+
+    '''
+    '''
+    df = m1.read_paddy_daily()
+    cols = ["Precip", "Irrig", "Seep", "ET", "PET", 'WeirH', 'Wtrdep', 'WeirQ','LAI']
+    df = df.loc[:,  cols]
+    df = df["1/1/2019":"12/31/2020"]
+    print(df)
+    analyzer.Paddy(wd).plot_paddy_daily(df)
+
+    dfs = m1.read_lsunit_wb_yr()
+    dfs = dfs.loc[:,  "precip"]
+    dfo = m1.read_pcp_obd()
+    print(dfs)
+
+    dfs = pd.concat([dfs, dfo], axis=1)
+    analyzer.Paddy(wd).plot_prep(dfs)
+    # print(analyzer.Paddy(wd).stdate)
+
+    dfy = m1.read_basin_pw_day()
+    dfy = dfy.loc[:,  "yield"].resample('YE').sum() * 0.001
+    dfyo = m1.read_yield_obd()
+    dfy = pd.concat([dfy, dfyo], axis=1)
+
+    print(dfy)
+    analyzer.Paddy(wd).plot_yield(dfy)
 
 
 
