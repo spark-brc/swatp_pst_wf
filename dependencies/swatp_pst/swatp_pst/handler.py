@@ -529,7 +529,8 @@ def init_setup(prj_dir, swatp_wd):
 
 class Paddy(object):
     def __init__(self, wd) -> None:
-        os.chdir(wd)
+        self.wd = wd
+        os.chdir(self.wd)
         self.stdate, self.enddate, self.stdate_warmup = self.define_sim_period()
     
     def read_print_prt(self):
@@ -607,89 +608,148 @@ class Paddy(object):
         df.index = pd.date_range(self.stdate_warmup, periods=len(df), freq="YE")
         return df
     
-
     def read_pcp_obd(self):
         inf = "pcp_year_obd.csv"
         df = pd.read_csv(inf, parse_dates=True, index_col=0)
         return df
 
+    def create_backup(self, overwrite=False):
+        filesToCopy = [
+            "hru-data.hru",
+            "hydrology.wet",
+            "file.cio",
+            "initial.res",
+            ]
+        suffix = ' passed'
+        # print(" > Creating 'backup' folder in working directory ...",  end='\r', flush=True)
+        print(" > Creating 'backup' folder in working directory ...")
+        backup_path = os.path.join(os.getcwd(), 'backup')
+        if not os.path.isdir(backup_path):
+            os.makedirs(backup_path)
+        for j in filesToCopy:
+            if not os.path.isfile(os.path.join(backup_path, j)):
+                shutil.copy2(os.path.join(os.getcwd(), j), os.path.join(backup_path, j))
+                print(" >>> '{}' file copied ...".format(j) + colored(suffix, 'green'))
+        print(" > Creating 'backup' folder in working directory ..." + colored(suffix, 'green'))
 
-# def plot_tot():
+
+    def conv_hrudata(self, lumlist=None):
+        if lumlist is None: # landcode
+            lumlist = ["rice"]
+        with open(os.path.join(self.wd, 'backup', 'hru-data.hru'), "r") as f:
+            data = f.readlines()
+            ndigits = len(str(data[-1].split()[0]))
+            for ll in lumlist:
+                c = 0
+                for line in data:
+                    if line.split()[5] != "null" and line.split()[5].startswith(ll):
+                        new_line = self.replace_line(line, ndigits)
+                        data[c] = new_line
+                    c += 1
+        with open(os.path.join(self.wd, "hru-data.hru"), "w") as wf:
+            wf.writelines(data)
+        new_file = os.path.join(self.wd, 'hru-data.hru')
+        print(
+            f" {'>'*3} {os.path.basename(new_file)}" + 
+            " file is overwritten successfully!"
+            )
+
+    def replace_line_hrudata(self, line, nd):
+        parts = line.split()
+        new_line = (
+            f'{int(parts[0]):8d}'+ f'{parts[1]:>9s}'+ f'{parts[2]:>27s}'+
+            f'{parts[3]:>18s}'+ f'{parts[4]:>18s}'+ f"{'rice_paddy_lum':>18s}"+
+            f'{parts[6]:>18s}' + f"{f'paddy{int(parts[0][-4:]):>0{nd}d}':>18s}" + 
+            f'{parts[8]:>18s}' + f'{parts[9]:>18s}'
+            "\n"
+        )
+        return new_line
+    
+    def conv_wetlandwet(self):
+        with open('hru-data.hru', "r") as f:
+            data = f.readlines()
+            paddy_objs = []
+            for line in data:
+                if len(line.split()) >=7 and line.split()[7].startswith("paddy"):
+                    paddy_objs.append(line.split()[7])
+        print(paddy_objs)
+
+        with open(os.path.join(self.wd, 'backup', 'wetland.wet'), "r") as f:
+            data = f.readlines()
+            ndigits = len(str(data[-1].split()[0]))
+            for ll in lumlist:
+                c = 0
+                for line in data:
+                    if line.split()[5] != "null" and line.split()[5].startswith(ll):
+                        new_line = self.replace_line(line, ndigits)
+                        data[c] = new_line
+                    c += 1
+
+    def replace_line_wetlandwet(self, line, nd):
+        parts = line.split()
+        new_line = (
+            f'{int(parts[0]):8d}'+ f'{parts[1]:>9s}'+ f'{parts[2]:>27s}'+
+            f'{parts[3]:>18s}'+ f'{parts[4]:>18s}'+ f"{'rice_paddy_lum':>18s}"+
+            f'{parts[6]:>18s}' + f"{f'paddy{int(parts[0][-4:]):>0{nd}d}':>18s}" + 
+            f'{parts[8]:>18s}' + f'{parts[9]:>18s}'
+            "\n"
+        )
+        return new_line
+
+
 if __name__ == '__main__':
-    # wd = "D:\\Projects\\Watersheds\\Koksilah\\analysis\\koksilah_git\\koki_zon_rw_morris"
-    # pst_name = "koki_zon_rw_morris.pst"
-    # # read_morris_msn(wd, pst_name)
-    # analyzer.plot_sen_morris(read_morris_msn(wd, pst_name))
-    # wd = "/Users/seonggyu.park/Documents/projects/tools/swatmf_wf/temp/dawhenya_weather"
-    # wd = "D:\\Projects\\Watersheds\\Ghana\\Analysis\\botanaga_weather"
-    # os.chdir(wd)
-    # # tmp_files = [f for f in glob.glob("*.txt") if f[-7:] == "TMP.txt"]
-    # # cropBHU = 0
-    # # df = generate_heatunit(wd, "AF_430172_TMP.txt", cropBHU, 4, 15)
-    
- 
-    # # # dff = pd.concat([phu0["PHU0"], tphu0["PHU0"]], axis=1, ignore_index=True)
-    # # print(df)
-    # inf = "AF_468598_TMP.txt"
-    # cropBHU = 0
-    # analyzer.plot_violin2(wd, inf, cropBHU, 12)
-    
-    # # # analyzer.plot_heatunit(df)
-    # # generate_heatunit(wd, inf, cropBHU, 4, 15)
 
-    # NOTE: PADDY
-    wd =  "d:\\Projects\\Watersheds\\Ghana\\Analysis\\botanga\\prj01\\Scenarios\\Default\\TxtInOut_rice_f"
+    # NOTE: paddy convert
+    wd =  "D:\\Projects\\Watersheds\\Ghana\\Analysis\\dawhenya\\prj02\\Scenarios\\Default\\TxtInOut"
     m1 = Paddy(wd)
-
-    '''
-    '''
-    df = m1.read_paddy_daily()
-    cols = ["Precip", "Irrig", "Seep", "ET", "PET", 'WeirH', 'Wtrdep', 'WeirQ','LAI']
-    df = df.loc[:,  cols]
-    df = df["1/1/2019":"12/31/2020"]
-    print(df)
-    analyzer.Paddy(wd).plot_paddy_daily(df)
-
-    dfs = m1.read_lsunit_wb_yr()
-    dfs = dfs.loc[:,  "precip"]
-    dfo = m1.read_pcp_obd()
-    print(dfs)
-
-    dfs = pd.concat([dfs, dfo], axis=1)
-    analyzer.Paddy(wd).plot_prep(dfs)
-    # print(analyzer.Paddy(wd).stdate)
-
-    dfy = m1.read_basin_pw_day()
-    dfy = dfy.loc[:,  "yield"].resample('YE').sum() * 0.001
-    dfyo = m1.read_yield_obd()
-    dfy = pd.concat([dfy, dfyo], axis=1)
-
-    print(dfy)
-    analyzer.Paddy(wd).plot_yield(dfy)
+    m1.conv_wetlandwet()
 
 
+    # # NOTE: PADDY
+    # wd =  "d:\\Projects\\Watersheds\\Ghana\\Analysis\\botanga\\prj01\\Scenarios\\Default\\TxtInOut_rice_f"
+    # m1 = Paddy(wd)
+
+    # '''
+    # '''
+    # df = m1.read_paddy_daily()
+    # cols = ["Precip", "Irrig", "Seep", "ET", "PET", 'WeirH', 'Wtrdep', 'WeirQ','LAI']
+    # df = df.loc[:,  cols]
+    # df = df["1/1/2019":"12/31/2020"]
+    # print(df)
+    # analyzer.Paddy(wd).plot_paddy_daily(df)
+
+    # dfs = m1.read_lsunit_wb_yr()
+    # dfs = dfs.loc[:,  "precip"]
+    # dfo = m1.read_pcp_obd()
+    # print(dfs)
+
+    # dfs = pd.concat([dfs, dfo], axis=1)
+    # analyzer.Paddy(wd).plot_prep(dfs)
+    # # print(analyzer.Paddy(wd).stdate)
+
+    # dfy = m1.read_basin_pw_day()
+    # dfy = dfy.loc[:,  "yield"].resample('YE').sum() * 0.001
+    # dfyo = m1.read_yield_obd()
+    # dfy = pd.concat([dfy, dfyo], axis=1)
+
+    # print(dfy)
+    # analyzer.Paddy(wd).plot_yield(dfy)
 
 
+    # # NOTE: get landuse hf waterbalance
+    # wd = "D:\\jj\\opt_3rd\\calibrated_model_v02"
+    # # wd = "D:\\Projects\\Watersheds\\Koksilah\\analysis\\koksilah_swatmf\\SWAT-MODFLOW"
 
+    # m1 = SWATp(wd)
+    # # cns =  [1]
+    # # cali_start_day = "1/1/2013"
+    # # cali_end_day = "12/31/2023"
+    # # obd_file = "singi_obs_q1_colnam.csv"
+    # # obd_colnam = "cha01"
+    # # cha_ext_file = "stf_001.txt"
+    # # fields = ["wateryld", "perc", "et", "sw_ave", "latq_runon"]
+    # # for fd in fields:
+    # #     m1.get_lu_mon(fd, stdate="1/1/2017", eddate="12/31/2023")
+    # #     print(fd)
 
-
-
-if __name__ == '__main__':
-    wd = "D:\\jj\\opt_3rd\\calibrated_model_v02"
-    # wd = "D:\\Projects\\Watersheds\\Koksilah\\analysis\\koksilah_swatmf\\SWAT-MODFLOW"
-
-    m1 = SWATp(wd)
-    # cns =  [1]
-    # cali_start_day = "1/1/2013"
-    # cali_end_day = "12/31/2023"
-    # obd_file = "singi_obs_q1_colnam.csv"
-    # obd_colnam = "cha01"
-    # cha_ext_file = "stf_001.txt"
-    # fields = ["wateryld", "perc", "et", "sw_ave", "latq_runon"]
-    # for fd in fields:
-    #     m1.get_lu_mon(fd, stdate="1/1/2017", eddate="12/31/2023")
-    #     print(fd)
-
-    m1.get_lu_hf_wb()
-
-    # print(dff)
+    # m1.get_lu_hf_wb()
