@@ -619,6 +619,7 @@ class Paddy(object):
             "hydrology.wet",
             "file.cio",
             "initial.res",
+            "wetland.wet"
             ]
         suffix = ' passed'
         # print(" > Creating 'backup' folder in working directory ...",  end='\r', flush=True)
@@ -672,8 +673,29 @@ class Paddy(object):
             for line in data:
                 if len(line.split()) >=7 and line.split()[7].startswith("paddy"):
                     paddy_objs.append(line.split()[7])
-        print(paddy_objs)
 
+        with open(os.path.join(self.wd, 'backup',"wetland.wet"), "r") as fw:
+            data = fw.readlines()
+            ndigits = len(str(data[-1].split()[0]))
+            stid = int(data[-1].split()[0]) + 1
+            for paddy_obj in paddy_objs:
+                new_line = (
+                    f'{int(stid):8d}' + 
+                    f'  {paddy_obj:<16s}' 
+                    f"{'high_init':>18s}" 
+                    f"{'paddy':>18s}" 
+                    f"{'weir':>18s}" 
+                    f"{'sedwet1':>18s}" 
+                    f"{'nutwet1':>18s}\n" 
+                )
+                data.append(new_line)
+                stid += 1
+
+        with open("wetland.wet", "w") as wf:
+            wf.writelines(data)
+    # print(paddy_objs)
+
+        '''
         with open(os.path.join(self.wd, 'backup', 'wetland.wet'), "r") as f:
             data = f.readlines()
             ndigits = len(str(data[-1].split()[0]))
@@ -684,6 +706,7 @@ class Paddy(object):
                         new_line = self.replace_line(line, ndigits)
                         data[c] = new_line
                     c += 1
+        '''
 
     def replace_line_wetlandwet(self, line, nd):
         parts = line.split()

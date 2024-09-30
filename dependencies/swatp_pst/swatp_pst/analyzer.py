@@ -132,43 +132,138 @@ def single_plot_tseries_ensembles_plots_added(
     plt.show()
 
 
+# NOTE: will be deprecated
+# def single_plot_fdc_added(
+#                     pst, pr_oe, pt_oe, 
+#                     width=10, height=8, dot=True,
+#                     size=None, bstcs=None,
+#                     orgsim=None
+#                     ):
+#     if size is None:
+#         size = 30
+#     # pst.try_parse_name_metadata()
+#     # get the observation data from the control file and select 
+#     obs = pst.observation_data.copy()
+#     obs = obs.loc[obs.obgnme.apply(lambda x: x in pst.nnz_obs_groups),:]
+#     time_col = []
+#     for i in range(len(obs)):
+#         time_col.append(obs.iloc[i, 0][-6:])
+#     obs['time'] = time_col
+#     onames = obs.obsnme.values
+
+#     obs_d, obd_exd = convert_fdc_data(obs.obsval.values)
+#     pr_min_d, pr_min_exd = convert_fdc_data(pr_oe.min().values)
+#     pr_max_d, pr_max_exd = convert_fdc_data(pr_oe.max().values)
+#     pt_min_d, pt_min_exd = convert_fdc_data(pt_oe.min().values)
+#     pt_max_d, pt_max_exd = convert_fdc_data(pt_oe.max().values)
+
+#     fig, ax = plt.subplots(figsize=(width,height))
+#     ax.fill_between(pr_min_exd*100, pr_min_d, pr_max_d, interpolate=False, facecolor="0.5", alpha=0.4)
+#     ax.fill_between(pt_min_exd*100, pt_min_d, pt_max_d, interpolate=False, facecolor="b", alpha=0.4)
+#     ax.scatter(obd_exd*100, obs_d, color='red',s=size, zorder=10, label="Observed").set_facecolor("none")
+#     if orgsim is not None:
+#         orgsim = orgsim
+#         org_d, org_exd = convert_fdc_data(orgsim.iloc[:, 0].values)
+#         ax.plot(org_exd*100, org_d, c='limegreen', lw=2, label="Original")
+#     if bstcs is not None:
+#         for bstc in bstcs:
+#             dd, eexd = convert_fdc_data(pt_oe.loc[bstc,onames].values)
+#             ax.plot(eexd*100, dd, lw=2, label=bstc)
+
+#     ax.set_yscale('log')
+#     ax.set_xlabel(r"Exceedence [%]", fontsize=12)
+#     ax.set_ylabel(r"Flow rate $[m^3/s]$", fontsize=12)
+#     ax.margins(0.01)
+#     ax.tick_params(axis='both', labelsize=12)
+#     plt.legend(fontsize=12, loc="lower left")
+#     plt.tight_layout()
+#     plt.savefig('fdc.png', bbox_inches='tight', dpi=300)
+#     plt.show()
+#     print(os.getcwd())  
+
+#     # return pr_oe_min
+
 def single_plot_fdc_added(
-                    pst, pr_oe, pt_oe, 
+                    pst,
+                    df,
+                    obgnam,
                     width=10, height=8, dot=True,
-                    size=None, bstcs=None,
-                    orgsim=None
+                    size=None, bstc=False,
+                    orgsim=None,
+                    pr_oe=None
                     ):
+    """plot flow exceedence
+
+    :param df: dataframe created by get_pr_pt_df function
+    :type df: dataframe
+    :param width: figure width, defaults to 10
+    :type width: int, optional
+    :param height: figure hight, defaults to 8
+    :type height: int, optional
+    :param dot: scatter or line, defaults to True
+    :type dot: bool, optional
+    :param size: maker size, defaults to None
+    :type size: int, optional
+    :param bstcs: best candiates, defaults to None
+    :type bstcs: list, optional
+    :param orgsim: _description_, defaults to None
+    :type orgsim: _type_, optional
+    """
+    df = df.loc[df["obgnme"]==obgnam]
+
     if size is None:
         size = 30
-    # pst.try_parse_name_metadata()
-    # get the observation data from the control file and select 
+    obs_d, obd_exd = convert_fdc_data(df.obd.values)
+    pr_min_d, pr_min_exd = convert_fdc_data(df.pr_min.values)
+    pr_max_d, pr_max_exd = convert_fdc_data(df.pr_max.values)
+    pt_min_d, pt_min_exd = convert_fdc_data(df.pt_min.values)
+    pt_max_d, pt_max_exd = convert_fdc_data(df.pt_max.values)
     obs = pst.observation_data.copy()
     obs = obs.loc[obs.obgnme.apply(lambda x: x in pst.nnz_obs_groups),:]
     time_col = []
     for i in range(len(obs)):
-        time_col.append(obs.iloc[i, 0][-6:])
+        time_col.append(obs.iloc[i, 0][-8:])
     obs['time'] = time_col
-    onames = obs.obsnme.values
+    obs['time'] = pd.to_datetime(obs['time'])
+    # only non-zero observations
+    # make a plot
+    # ogs = obs.obgnme.unique()
+    # ogs.sort()
+    # print(ogs)
 
-    obs_d, obd_exd = convert_fdc_data(obs.obsval.values)
-    pr_min_d, pr_min_exd = convert_fdc_data(pr_oe.min().values)
-    pr_max_d, pr_max_exd = convert_fdc_data(pr_oe.max().values)
-    pt_min_d, pt_min_exd = convert_fdc_data(pt_oe.min().values)
-    pt_max_d, pt_max_exd = convert_fdc_data(pt_oe.max().values)
-
+    # get values for x axis
+    oobs = obs.loc[obs.obgnme==obgnam,:].copy()
+    onames = oobs.obsnme.values
     fig, ax = plt.subplots(figsize=(width,height))
-    ax.fill_between(pr_min_exd*100, pr_min_d, pr_max_d, interpolate=False, facecolor="0.5", alpha=0.4)
-    ax.fill_between(pt_min_exd*100, pt_min_d, pt_max_d, interpolate=False, facecolor="b", alpha=0.4)
-    ax.scatter(obd_exd*100, obs_d, color='red',s=size, zorder=10, label="Observed").set_facecolor("none")
+    if pr_oe:
+        for i in pr_oe.index:
+            # pr_oe_df = pr_oe.loc[i,onames].values
+            pr_d, pr_exd = convert_fdc_data(pr_oe.loc[i,onames].values)
+            ax.plot(
+                    pr_exd*100, pr_d, "0.5",lw=1,alpha=0.5, 
+                    label="Prior ensemble" if i == pr_oe.index[-1] else None,
+                    zorder=1)
+            # print(pr_oe_df)
+    else:
+        ax.fill_between(pr_min_exd*100, pr_min_d, pr_max_d, interpolate=False, facecolor="0.5", alpha=0.3, label="Prior ensemble")
+    ax.fill_between(
+        pt_min_exd*100, pt_min_d, pt_max_d, 
+        interpolate=False, facecolor="g", alpha=0.6, label="Posterior ensemble",
+        zorder=2)
+    ax.scatter(
+        obd_exd*100, obs_d, color='red',s=size, zorder=3, label="Observed", alpha=0.7, linewidths=0.5).set_facecolor("none")
     if orgsim is not None:
         orgsim = orgsim
         org_d, org_exd = convert_fdc_data(orgsim.iloc[:, 0].values)
         ax.plot(org_exd*100, org_d, c='limegreen', lw=2, label="Original")
-    if bstcs is not None:
-        for bstc in bstcs:
-            dd, eexd = convert_fdc_data(pt_oe.loc[bstc,onames].values)
-            ax.plot(eexd*100, dd, lw=2, label=bstc)
-
+    if bstc is True:
+        # for bstc in bstcs:
+        #     dd, eexd = convert_fdc_data(df.best_rel.values)
+        #     ax.plot(eexd*100, dd, lw=2, label=bstc)
+        # for bstc in bstcs:
+        dd, eexd = convert_fdc_data(df.best_rel.values)
+        ax.plot(eexd*100, dd, "b", lw=2, label="Best estimation",
+                zorder=4)
     ax.set_yscale('log')
     ax.set_xlabel(r"Exceedence [%]", fontsize=12)
     ax.set_ylabel(r"Flow rate $[m^3/s]$", fontsize=12)
@@ -176,11 +271,11 @@ def single_plot_fdc_added(
     ax.tick_params(axis='both', labelsize=12)
     plt.legend(fontsize=12, loc="lower left")
     plt.tight_layout()
-    plt.savefig('fdc.png', bbox_inches='tight', dpi=300)
-    plt.show()
+    plt.savefig(f'fdc_{obgnam}.png', bbox_inches='tight', dpi=300)
+    # plt.show()
     print(os.getcwd())  
 
-    # return pr_oe_min
+
 
 
 def convert_fdc_data(data):
@@ -189,7 +284,7 @@ def convert_fdc_data(data):
     return data, exd
 
 
-def plot_tseries_ensembles(
+def plot_tseries_ensembles_old(
                     pst, pr_oe, pt_oe, width=10, height=4, dot=True,
 #                     onames=["hds","sfr"]
                     ):
@@ -242,6 +337,119 @@ def plot_tseries_ensembles(
         ax.set_title(og,loc="left")
     # fig.tight_layout()
     plt.show()
+
+def plot_tseries_ensembles(
+                    pst, pr_oe, pt_oe, obgnam, width=10, height=3, 
+                    dot=False, bstcd=None,
+                    pt_fill=None,
+                    ymin=None,
+                    ymax=None,
+                    # onames=["obd249lyr2"]
+                    ):
+    
+    if pt_fill is not None:
+        df = pt_fill.loc[pt_fill["obgnme"]==obgnam]
+        print(df)
+    # pst.try_parse_name_metadata()
+    # get the observation data from the control file and select 
+    obs = pst.observation_data.copy()
+    obs = obs.loc[obs.obgnme.apply(lambda x: x in pst.nnz_obs_groups),:]
+    time_col = []
+    for i in range(len(obs)):
+        time_col.append(obs.iloc[i, 0][-8:])
+    obs['time'] = time_col
+    obs['time'] = pd.to_datetime(obs['time'])
+    # only non-zero observations
+    # make a plot
+    ogs = obs.obgnme.unique()
+    ogs.sort()
+    print(ogs)
+
+    # get values for x axis
+    oobs = obs.loc[obs.obgnme==obgnam,:].copy()
+    # oobs.loc[:,"time"] = oobs.loc[:,"time"].astype(str)
+#         oobs.sort_values(by="time",inplace=True)
+    pr_oe = pd.DataFrame(pr_oe, index=pr_oe.index, columns=pr_oe.columns)
+    pr_oe = pr_oe[(pr_oe > -999)]
+
+    tvals = oobs.time.values
+    onames = oobs.obsnme.values
+    # obs['time'] = pd.to_datetime(obs['time'])
+    fig,ax = plt.subplots(figsize=(width, height))
+
+
+    if dot is True:
+        # plot prior
+        [ax.scatter(tvals,pr_oe.loc[i,onames].values,color="gray",s=30, alpha=0.5) for i in pr_oe.index]
+        # plot posterior
+        [ax.scatter(tvals,pt_oe.loc[i,onames].values,color='b',s=30,alpha=0.2) for i in pt_oe.index]
+        # plot measured+noise 
+        oobs = oobs.loc[oobs.weight>0,:]
+        # tvals = oobs.time.values
+        # onames = oobs.obsnme.values
+        ax.scatter(oobs.time,oobs.obsval,color='red',s=30).set_facecolor("none")
+    if dot is False:
+        # plot prior
+        [ax.plot(
+            tvals,pr_oe.loc[i,onames].values,"0.5",lw=0.5,alpha=0.6,
+            label="Prior ensemble" if i == pr_oe.index[-1] else None,
+            ) for i in pr_oe.index]
+        # plot posterior
+        if pt_fill is not None:
+            ax.fill_between(
+                df.index, df.pt_min, df.pt_max, interpolate=False, facecolor="g", alpha=0.6, label="Posterior ensemble",
+                zorder=2)
+        else:
+            [ax.plot(tvals,pt_oe.loc[i,onames].values,"g",lw=0.5,alpha=0.7) for i in pt_oe.index]
+        # plot measured+noise 
+        oobs = oobs.loc[oobs.weight>0,:]
+        # tvals = oobs.time.values
+        # onames = oobs.obsnme.values
+        ax.scatter(
+            oobs.time,oobs.obsval,color='red',s=5, zorder=5, alpha=0.5,
+            label="Observed"
+            ).set_facecolor("none")
+        # ax.scatter(oobs.time,oobs.obsval,color='red',s=1).set_facecolor("none")
+        # ax.plot(oobs.time,oobs.obsval,"r-",lw=1)
+    if bstcd is not None:
+        ax.plot(tvals,pt_oe.loc[bstcd, onames].values,"b",lw=1, zorder=6, label="Best estimation")
+
+
+
+    ax.tick_params(axis='x', labelrotation=90)
+    ax.margins(x=0.01)
+    # ax.set_title(og,loc="left")
+    # fig.tight_layout()
+
+    years = mdates.YearLocator()
+    # print(years)
+    yearsFmt = mdates.DateFormatter('%Y')  # add some space for the year label
+    months = mdates.MonthLocator()
+    monthsFmt = mdates.DateFormatter('%b') 
+    ax.xaxis.set_minor_locator(months)
+    ax.xaxis.set_minor_formatter(monthsFmt)
+    plt.setp(ax.xaxis.get_minorticklabels(), fontsize=6, rotation=90)
+    ax.xaxis.set_major_locator(years)
+    ax.xaxis.set_major_formatter(yearsFmt)
+    # ax.set_xticklabels(["May", "Jun", "Jul", "Aug", "Sep"]*7)
+    ax.tick_params(axis='both', labelsize=8, rotation=0)
+    ax.tick_params(axis = 'x', pad=15)
+    if ymin is not None:
+        ax.set_ylim(ymin, ymax)
+    # if obgnam
+    # ax.set_ylabel("Stream Discharge $(m^3/s)$",fontsize=10)
+    # ax.set_ylabel("Depth to water $(m)$",fontsize=14)
+    # plt.legend(
+    #     fontsize=10,
+    #     ncol=4
+    #     # loc="lower left"
+    #     )
+    plt.tight_layout()
+    plt.savefig(f'tensemble_{obgnam}.png', bbox_inches='tight', dpi=300)
+    # plt.show()
+    # '''
+
+
 
 
 def plot_onetone_ensembles(
@@ -512,6 +720,19 @@ def get_rels_cal_val_objs(wd, pst_file, iter_idx=None, opt_idx=None, calval=None
     rmse = objfns.rmse(obds, sims)
     mse = objfns.mse(obds, sims)
     return ns, pbias, rsq, rmse
+
+def get_rels_objs_new(df, obgnme=None):
+    if obgnme is not None:
+        df = df.loc[df["obgnme"]==obgnme]
+    sims = df.loc[:, "best_rel"].tolist()
+    obds = df.loc[:, "obd"].tolist()
+    pbias = objfns.pbias(obds, sims)
+    ns = objfns.nashsutcliffe(obds, sims)
+    rsq = objfns.rsquared(obds, sims)
+    rmse = objfns.rmse(obds, sims)
+    mse = objfns.mse(obds, sims)
+    pcc = objfns.correlationcoefficient(obds, sims)
+    return ns, pbias, rsq, rmse, mse, pcc
 
 def get_p_factor(pst, pt_oe, perc_obd_nz=None, cal_val=False):
     """calculate p-factor
@@ -841,7 +1062,8 @@ def get_pr_pt_df(pst, pr_oe, pt_oe, bestrel_idx=None):
             'pr_max': pr_oe.max(),
             'pt_min': pt_oe.min(),
             'pt_max': pt_oe.max(),
-            'best_rel': pt_oe.loc[str(bestrel_idx)],
+            'best_rel': pt_oe.loc[bestrel_idx],
+            'obgnme': obs['obgnme'],
             }
             )
     else:
@@ -851,7 +1073,8 @@ def get_pr_pt_df(pst, pr_oe, pt_oe, bestrel_idx=None):
             'pr_min': pr_oe.min(),
             'pr_max': pr_oe.max(),
             'pt_min': pt_oe.min(),
-            'pt_max': pt_oe.max()}
+            'pt_max': pt_oe.max(),
+            'obgnme': obs['obgnme'],}
             )
     df.set_index('date', inplace=True)
     return df
@@ -1285,11 +1508,10 @@ def jj_paper(wd1, wd2, pst_file1, pst_file2):
     sttsm1 = stts1.mean()
 
 
-def albufera_predictive_results():
-    wd = 'D:\\jj\\Albufera\\alb_nw_calibrated'
+def albufera_predictive_results(wd):
     colnam = 'et'
-    pstfile = "alb_nw_ies.pst"
-    iter_idx = 2
+    pstfile = "alb_rw_ies.pst"
+    iter_idx = 11
     # get_average_annual_wb(wd, colnam)
     pst = pyemu.Pst(os.path.join(wd, pstfile))
     pst_nam = pstfile[:-4]
@@ -1301,10 +1523,11 @@ def albufera_predictive_results():
     # get_d_factor(pst, pt_oe)
     # plot_onetone_ensembles(pst, pr_oe, pt_oe, dotsize=15)
     # single_plot_tseries_ensembles(pst, pr_oe, pt_oe, dot=True)
-    dff = get_pr_pt_df(pst, pr_oe, pt_oe, bestrel_idx="glm")
-    dff['newtime'] =dff.index.strftime('%Y-\n%b')
+    dff = get_pr_pt_df(pst, pr_oe, pt_oe)
+    # dff['newtime'] =dff.index.strftime('%Y-\n%b')
     print(dff)
-    plot_fill_between_ensembles(dff)
+    # plot_fill_between_ensembles(dff)
+    single_plot_fdc_added(pst, dff, "cha049", pr_oe=pr_oe)
 
 
 
@@ -1348,4 +1571,13 @@ class Paddy(Paddy):
 
     
 '''
+
+if __name__ == '__main__':
+
+    # NOTE: paddy convert
+    wd =  "D:\\Projects\\Watersheds\\Albufera\\2nd\\alb_rw_ies"
+
+
+    albufera_predictive_results(wd)
+
     
