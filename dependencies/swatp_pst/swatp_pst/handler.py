@@ -644,7 +644,7 @@ class Paddy(object):
                 c = 0
                 for line in data:
                     if line.split()[5] != "null" and line.split()[5].startswith(ll):
-                        new_line = self.replace_line(line, ndigits)
+                        new_line = self.replace_line_hrudata(line, ndigits)
                         data[c] = new_line
                     c += 1
         with open(os.path.join(self.wd, "hru-data.hru"), "w") as wf:
@@ -719,13 +719,131 @@ class Paddy(object):
         )
         return new_line
 
+    def conv_filecio(self):
+        with open(os.path.join(self.wd, 'backup', 'file.cio'), "r") as f:
+            data = f.readlines()
+            c = 0
+            modi = "notyet"
+            for line in data:
+                if line.split()[0] == "reservoir" and not "weir.res" in line.split():
+                    modi = "y"
+                    nc = len(line.split())
+                    ridx = line.split().index("null")
+                    newlist = line.split()
+                    newlist[ridx] = "weir.res"
+                    newline = []
+                    for i in newlist:
+                        newline.append(f'{i:<18s}')
+                    newline.append("\n")
+                    newline ="".join(newline)
+                    data[c] = newline
+                c += 1
+        if modi == "y":    
+            with open(os.path.join(self.wd, "file.cio"), "w") as wf:
+                wf.writelines(data)
+            new_file = os.path.join(self.wd, 'file.cio')
+            print(
+                f" {'>'*3} {os.path.basename(new_file)}" + 
+                " file is overwritten successfully!"
+                )
+        else:
+            new_file = os.path.join(self.wd, 'file.cio')
+            print(
+                f" {'>'*3} {os.path.basename(new_file)}" + 
+                " file is not overwritten!"
+                )
+
+    def conv_initialres(self):
+        with open(os.path.join(self.wd, 'backup',"initial.res"), "r") as fw:
+            data = fw.readlines()
+            fc = [line.split()[0] for line in data]
+        modi = 'n'
+        if "low_init" not in fc:
+            modi = 'y'
+            lowinit_line = (
+                f"{'low_init':<16s}"+ f"{'low_init':>18s}"+ f"{'no_ini':>18s}"+ f"{'no_ini':>18s}"+
+                f"{'null':>18s}"+ f"{'null':>18s}"+ f"{'null':>18s}"
+                "\n"                
+            )
+            data.append(lowinit_line)
+        if "high_init" not in fc:
+            modi = 'y'
+            highinit_line = (
+                f"{'high_init':<16s}"+ f"{'high_init':>18s}"+ f"{'low_ini':>18s}"+ f"{'low_ini':>18s}"+
+                f"{'null':>18s}"+ f"{'null':>18s}"+ f"{'null':>18s}"
+                "\n"                
+            )
+            data.append(highinit_line)
+        if modi == "y":    
+            with open("initial.res", "w") as wf:
+                wf.writelines(data)
+            new_file = os.path.join(self.wd, 'initial.res')
+            print(
+                f" {'>'*3} {os.path.basename(new_file)}" + 
+                " file is overwritten successfully!"
+                )
+        else:
+            new_file = os.path.join(self.wd, 'initial.res')
+            print(
+                f" {'>'*3} {os.path.basename(new_file)}" + 
+                " file is not overwritten!"
+                )
+
+    def conv_irrops(self):
+        with open(os.path.join(self.wd, 'backup',"irr.ops"), "r") as fw:
+            data = fw.readlines()
+            fc = [line.split()[0] for line in data if line !='\n']
+        print(fc)
+        modi = 'n'
+        if "ponding90" not in fc:
+            modi = 'y'
+            ponding90_line = (
+                f"{'ponding90':<16s}"+ f"{90:>18f}"+ f"{1:>18f}"+ f"{0:>18f}"+
+                f"{60:>18f}"+ f"{0:>18f}"+ f"{0:>18f}" + f"{0:>18f}"
+                "\n"                
+            )
+            data.append(ponding90_line)
+        if "ponding_off" not in fc:
+            modi = 'y'
+            ponding_off_line = (
+                f"{'ponding_off':<16s}"+ f"{0:>18f}"+ f"{1:>18f}"+ f"{0.1:>18f}"+
+                f"{0:>18f}"+ f"{0:>18f}"+ f"{0:>18f}" + f"{0:>18f}"
+                "\n"                
+            )
+            data.append(ponding_off_line)
+        if modi == "y":    
+            with open("irr.ops", "w") as wf:
+                wf.writelines(data)
+            new_file = os.path.join(self.wd, "irr.ops")
+            print(
+                f" {'>'*3} {os.path.basename(new_file)}" + 
+                " file is overwritten successfully!"
+                )
+        else:
+            new_file = os.path.join(self.wd, "irr.ops")
+            print(
+                f" {'>'*3} {os.path.basename(new_file)}" + 
+                " file is not overwritten!"
+                )
+        '''
+        '''
+
+    def conv_paddy(self):
+        # self.create_backup()
+        # self.conv_hrudata()
+        # self.conv_wetlandwet()
+        # self.conv_filecio()
+        self.conv_irrops()
+
+
+
 
 if __name__ == '__main__':
 
     # NOTE: paddy convert
-    wd =  "D:\\Projects\\Watersheds\\Ghana\\Analysis\\dawhenya\\prj02\\Scenarios\\Default\\TxtInOut"
+    wd =  "D:\\Projects\\Watersheds\\Ghana\\Analysis\\dawhenya\\prj03_paddy\\Scenarios\\Default\\TxtInOut"
     m1 = Paddy(wd)
-    m1.conv_wetlandwet()
+    m1.conv_paddy()
 
 
     # # NOTE: PADDY
