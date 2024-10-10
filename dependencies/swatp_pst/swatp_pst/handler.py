@@ -21,13 +21,10 @@ def create_swatp_pst_con(
             irr_cal=None,
             time_step=None
             ):
-
     if time_step is None:
         time_step = 'day'
     if irr_cal:
         irr_cal = "activated"
-
-
     col01 = [
         'prj_dir',
         'swatp_wd', 'cal_start', 'cal_end',
@@ -137,7 +134,7 @@ class SWATp(object):
         return pd.read_csv(
             "hru-data.hru",
             sep=r'\s+',
-            # skiprows=1
+            skiprows=1
         )        
 
     def read_hru_con(self):
@@ -161,12 +158,13 @@ class SWATp(object):
         hru_paddy = self.read_hru_data()
         hru_paddy.dropna(subset=['surf_stor'], inplace=True)
         hru_paddy = hru_paddy[hru_paddy['surf_stor'].str.contains('paddy')]
-        hru_paddy.set_index('HRU_NUMB', inplace=True)
+        hru_paddy.set_index('id', inplace=True)
         hru_paddy = pd.concat([hru_paddy, hru_area], axis=1)
         hru_paddy['hruid'] = hru_paddy.index
         hru_paddy.dropna(subset=['surf_stor'], axis=0, inplace=True)
         # tot_area = hru_paddy.loc[:, "area"].sum()
-        # hru_paddy["area_weighted"] =hru_paddy.loc[:, "area"]/ tot_area
+        # hru_paddy["area_weighted"] =hru_paddy.loc[:, "area"]/ tot_area, 
+        print(hru_paddy)
         return hru_paddy
 
 
@@ -309,9 +307,6 @@ class SWATp(object):
         print(' > Finished ...\n')
 
 
-
-
-
     def get_mon_irr(self):
         paddy_df = pd.DataFrame()
         paddy_hru_id = self.create_paddy_hru_id_database()
@@ -320,12 +315,14 @@ class SWATp(object):
             paddy_df[f"hru_{hruid}"] = df.loc[df["unit"]==hruid, "irr"].values
         paddy_df.index = pd.date_range(
             self.stdate_warmup, periods=len(paddy_df), freq="ME")
+        print(paddy_hru_id)
+        
         # filter fallow paddy land
         # paddy_df.drop(
         #     [col for col, val in paddy_df.sum().iteritems() if val == 0], 
         #     axis=1, inplace=True
         #     )
-        paddy_df.drop(columns=paddy_df.columns[paddy_df.sum()==0], inplace=True)
+        # paddy_df.drop(columns=paddy_df.columns[paddy_df.sum()==0], inplace=True)
         paddy_ids = [int(f"{pid[4:]}") for pid in paddy_df.columns]
         paddy_hru_id = paddy_hru_id.query('hruid in @paddy_ids')
         tot_area = paddy_hru_id.loc[:, "area"].sum()
@@ -366,6 +363,34 @@ class SWATp(object):
         mbig_df['lsuid'] = [int(i[3:]) for i in mbig_df.index]
         mbig_df.to_csv(f"lsu_{field}_mon_wb.csv", index=False)
         return mbig_df
+    
+
+    def get_hru_mon(self, field, stdate=None, eddate=None):
+        from warnings import simplefilter
+        simplefilter(action="ignore", category=pd.errors.PerformanceWarning)
+        hru_df = pd.DataFrame()
+        hru_mon_df = self.read_hru_wb_mon()
+        hruids = hru_mon_df.name.unique()
+        for hruid in hruids:
+            hru_df[f"{hruid}"] = hru_mon_df.loc[hru_mon_df["name"]==hruid, field].values
+        hru_df.index = pd.date_range(
+            self.stdate_warmup, periods=len(hru_df), freq="ME")
+        if stdate is not None:
+            dff = hru_df[stdate:eddate].astype(float)
+        else:
+            dff = hru_df.astype(float)
+        mbig_df = dff.groupby(dff.index.month).mean().T
+
+        mbig_df['hruid'] = [int(i[3:]) for i in mbig_df.index]
+        mbig_df.to_csv(f"hru_{field}_mon_wb.csv", index=False)
+        return mbig_df
+
+
+
+
+
+
+
 
     def get_lu_hf_wb(self):
         lu_hf = self.read_lu_wb_yr()
@@ -501,31 +526,6 @@ def init_setup(prj_dir, swatp_wd):
     os.chdir(main_opt_path)
     print(f"path to main_opt folder: {main_opt_path}")
 
-    # # create backup
-    # print(" Creating 'backup' folder ...",  end='\r', flush=True)
-    # if not os.path.isdir(os.path.join(main_opt_path, 'backup')):
-    #     os.makedirs(os.path.join(main_opt_path, 'backup'))
-    #     filelist = [f for f in os.listdir(swatwd) if os.path.isfile(os.path.join(swatwd, f))]
-        
-    #     # filelist =  os.listdir(swatwd)
-    #     for i in tqdm(filelist):
-    #         # print(i)
-    #         # if os.path.getsize(os.path.join(swatwd, i)) != 0:
-    #         shutil.copy2(os.path.join(swatwd, i), os.path.join(main_opt_path, 'backup'))
-    # print(" Creating 'backup' folder ..." + colored(suffix, 'green'))
-
-    # # create echo
-    # print(" Creating 'echo' folder ...",  end='\r', flush=True)
-    # if not os.path.isdir(os.path.join(main_opt_path, 'echo')):
-    #     os.makedirs(os.path.join(main_opt_path, 'echo'))
-    # print(" Creating 'echo' folder ..." + colored(suffix, 'green'))
-    # # create sufi2
-    # print(" Creating 'sufi2.in' folder ...",  end='\r', flush=True)
-    # if not os.path.isdir(os.path.join(main_opt_path, 'sufi2.in')):
-    #     os.makedirs(os.path.join(main_opt_path, 'sufi2.in'))
-    # print(" Creating 'sufi2.in' folder ..."  + colored(suffix, 'green'))
-
-
 
 class Paddy(object):
     def __init__(self, wd) -> None:
@@ -615,11 +615,15 @@ class Paddy(object):
 
     def create_backup(self, overwrite=False):
         filesToCopy = [
+            "file.cio",
             "hru-data.hru",
             "hydrology.wet",
-            "file.cio",
+            "hydrology.hyd",
+            "wetland.wet",
             "initial.res",
-            "wetland.wet"
+            "irr.ops",
+            "landuse.lum",
+            "plant.ini"
             ]
         suffix = ' passed'
         # print(" > Creating 'backup' folder in working directory ...",  end='\r', flush=True)
@@ -632,7 +636,6 @@ class Paddy(object):
                 shutil.copy2(os.path.join(os.getcwd(), j), os.path.join(backup_path, j))
                 print(" >>> '{}' file copied ...".format(j) + colored(suffix, 'green'))
         print(" > Creating 'backup' folder in working directory ..." + colored(suffix, 'green'))
-
 
     def conv_hrudata(self, lumlist=None):
         if lumlist is None: # landcode
@@ -680,10 +683,11 @@ class Paddy(object):
             stid = int(data[-1].split()[0]) + 1
             for paddy_obj in paddy_objs:
                 new_line = (
-                    f'{int(stid):8d}' + 
+                    f'{int(stid):8d}' 
                     f'  {paddy_obj:<16s}' 
                     f"{'high_init':>18s}" 
                     f"{'paddy':>18s}" 
+                    # f"{paddy_obj:>18s}" 
                     f"{'weir':>18s}" 
                     f"{'sedwet1':>18s}" 
                     f"{'nutwet1':>18s}\n" 
@@ -798,16 +802,16 @@ class Paddy(object):
         if "ponding90" not in fc:
             modi = 'y'
             ponding90_line = (
-                f"{'ponding90':<16s}"+ f"{90:>18f}"+ f"{1:>18f}"+ f"{0:>18f}"+
-                f"{60:>18f}"+ f"{0:>18f}"+ f"{0:>18f}" + f"{0:>18f}"
+                f"{'ponding90':<16s}"+ f"{90:>14.5f}"+ f"{1:>14.5f}"+ f"{0:>14.5f}"+
+                f"{60:>14.5f}"+ f"{0:>14.5f}"+ f"{0:>14.5f}" + f"{0:>14.5f}"
                 "\n"                
             )
             data.append(ponding90_line)
         if "ponding_off" not in fc:
             modi = 'y'
             ponding_off_line = (
-                f"{'ponding_off':<16s}"+ f"{0:>18f}"+ f"{1:>18f}"+ f"{0.1:>18f}"+
-                f"{0:>18f}"+ f"{0:>18f}"+ f"{0:>18f}" + f"{0:>18f}"
+                f"{'ponding_off':<16s}"+ f"{0:>14.5f}"+ f"{1:>14.5f}"+ f"{0.1:>14.5f}"+
+                f"{0:>14.5f}"+ f"{0:>14.5f}"+ f"{0:>14.5f}" + f"{0:>14.5f}"
                 "\n"                
             )
             data.append(ponding_off_line)
@@ -825,15 +829,219 @@ class Paddy(object):
                 f" {'>'*3} {os.path.basename(new_file)}" + 
                 " file is not overwritten!"
                 )
+
+    def conv_hydwet(self):
+        with open('hru-data.hru', "r") as f:
+            data = f.readlines()
+            paddy_objs = []
+            for line in data:
+                if len(line.split()) >=7 and line.split()[7].startswith("paddy"):
+                    paddy_objs.append(line.split()[7])
+
+        with open(os.path.join(self.wd, 'backup',"hydrology.wet"), "r") as fw:
+            data = fw.readlines()
+            # ndigits = len(str(data[-1].split()[0]))
+            # stid = int(data[-1].split()[0]) + 1
+            for paddy_obj in paddy_objs:
+                new_line = (
+                    # f'{int(stid):8d}' + 
+                    f'{paddy_obj:<16s}' 
+                    f"{1:>14.5f}" 
+                    f"{180:>14.5f}" 
+                    f"{1:>14.5f}" 
+                    f"{180:>14.5f}" 
+                    f"{0.1:>14.5f}" 
+                    f"{0.8:>14.5f}" 
+                    f"{1:>14.5f}" 
+                    f"{1:>14.5f}" 
+                    f"{1:>14.5f}" 
+                    f"{0.5:>14.5f}\n" 
+                )
+                data.append(new_line)
+                # stid += 1
+
+        with open("hydrology.wet", "w") as wf:
+            wf.writelines(data)
+    # print(paddy_objs)
+
         '''
+        with open(os.path.join(self.wd, 'backup', 'wetland.wet'), "r") as f:
+            data = f.readlines()
+            ndigits = len(str(data[-1].split()[0]))
+            for ll in lumlist:
+                c = 0
+                for line in data:
+                    if line.split()[5] != "null" and line.split()[5].startswith(ll):
+                        new_line = self.replace_line(line, ndigits)
+                        data[c] = new_line
+                    c += 1
         '''
 
+    def conv_landlum(self):
+        with open(os.path.join(self.wd, 'backup',"landuse.lum"), "r") as fw:
+            data = fw.readlines()
+            fc = [line.split()[0] for line in data if line !='\n']
+        print(fc[2:])
+        modi = 'n'
+        if "rice_paddy_lum" not in fc:
+            newlist = [
+                'rice_paddy_lum', 'null', 'rice120_comm', 'paddy', 'legr_strow_p', 'ter_1-2_sodout', 'null', 'null', 'chisplow_nores',
+                ] + ['null']*5
+            newline = []
+            for i in newlist:
+                if i == 'rice_paddy_lum':
+                    newline.append(f'{i:<20s}')
+                elif i == 'paddy':
+                    newline.append(f'{i:>43s}')
+                else:
+                    newline.append(f'{i:>18s}')
+            newline.append("\n")
+            newline ="".join(newline)            
+            data.append(newline)
+            modi = 'y'
+        if modi == "y":    
+            with open("landuse.lum", "w") as wf:
+                wf.writelines(data)
+            new_file = os.path.join(self.wd, "landuse.lum")
+            print(
+                f" {'>'*3} {os.path.basename(new_file)}" + 
+                " file is overwritten successfully!"
+                )
+        else:
+            new_file = os.path.join(self.wd, "landuse.lum")
+            print(
+                f" {'>'*3} {os.path.basename(new_file)}" + 
+                " file is not overwritten!"
+                )
+
+    def conv_plantin(self):
+        inf = "plant.ini"
+        with open(os.path.join(self.wd, 'backup',inf), "r") as fw:
+            data = fw.readlines()
+            fc = [line.split()[0] for line in data if line !='\n']
+        print(fc[2:])
+        modi = 'n'
+        if "rice120_comm" not in fc:
+            newlist = [
+                'rice120_comm', 1, 1]
+            newlist2 = [
+                'rice120', 'n', 0, 0, 0, 0, 0, 10000
+                ]           
+            newline = []
+            for i in newlist:
+                if i == 'rice120_comm':
+                    newline.append(f'{i:<16s}')
+                else:
+                    newline.append(f'{i:>10d}')
+            newline.append("\n")
+            newline ="".join(newline)
+            newline2 = []
+            for i in newlist2:
+                if i == 'rice120':
+                    newline2.append(f'{i:>44s}')
+                elif i == "n" or i == "y":
+                    newline2.append(f'{i:>14s}')
+                else:
+                    newline2.append(f'{i:>14.5f}')
+            newline2.append("\n")
+            newline2 ="".join(newline2)
+            data.append(newline)
+            data.append(newline2)
+            modi = 'y'
+        if modi == "y":    
+            with open(inf, "w") as wf:
+                wf.writelines(data)
+            new_file = os.path.join(self.wd, inf)
+            print(
+                f" {'>'*3} {os.path.basename(new_file)}" + 
+                " file is overwritten successfully!"
+                )
+        else:
+            new_file = os.path.join(self.wd, inf)
+            print(
+                f" {'>'*3} {os.path.basename(new_file)}" + 
+                " file is not overwritten!"
+                )
+
+    def conv_hyd_perco(self, perco=None):
+        if perco is None:
+            perco = 0.0001
+        # get paddy hru
+        with open('hru-data.hru', "r") as f:
+            data = f.readlines()
+            paddy_objs = []
+            for line in data:
+                if len(line.split()) >=7 and line.split()[7].startswith("paddy"):
+                    paddy_objs.append(line.split()[3])
+
+        with open(os.path.join(self.wd, 'backup', 'hydrology.hyd'), "r") as f:
+            data = f.readlines()
+            c = 0
+            for line in data:
+                if line.split()[0] in paddy_objs:
+                    new_line = self.replace_line_hyd(line, perco)
+                    data[c] = new_line
+                c += 1
+        with open(os.path.join(self.wd, "hydrology.hyd"), "w") as wf:
+            wf.writelines(data)
+        new_file = os.path.join(self.wd, 'hydrology.hyd')
+        print(
+            f" {'>'*3} {os.path.basename(new_file)}" + 
+            " file is overwritten successfully!"
+            )
+
+    def replace_line_hyd(self, line, perco):
+        parts = line.split()
+        newline = []
+        for i in range(len(parts)):
+            if i == 0:
+                newline.append(f'{parts[i]:<16s}')
+            elif i == 10:
+                newline.append(f'{perco:>14.5f}')
+            else:
+                newline.append(f"{float(parts[i]):>14.5f}" )
+        newline.append("\n")
+        newline ="".join(newline)            
+        return newline
+
+
+    def copy_nfiles_paddy(self):
+        suffix = ' passed'
+        cfiles = ['weir.res', 'puddle.ops']
+        for cfile in cfiles:
+            if not os.path.isfile(cfile):
+                shutil.copy2(os.path.join(opt_files_path, cfile), os.path.join(self.wd, cfile))
+                print(" >>> '{}' file copied ...".format(cfile) + colored(suffix, 'green'))
+            else:
+                print(" >>> '{}' file already exist ...".format(cfile) + colored(suffix, 'green'))
+
+
     def conv_paddy(self):
-        # self.create_backup()
-        # self.conv_hrudata()
-        # self.conv_wetlandwet()
-        # self.conv_filecio()
+        self.create_backup()
+        self.conv_hrudata()
+        self.conv_wetlandwet()
+        self.conv_filecio()
+        self.conv_initialres()
         self.conv_irrops()
+        self.conv_hydwet()
+        self.conv_landlum()
+        self.conv_plantin()
+        self.conv_hyd_perco()
+        self.copy_nfiles_paddy()
+
+    def filter_paddy(self, pid=None):
+        if pid is None:
+            suffix = "it will read all data"
+            print(" > provide paddy id ... or " + colored(suffix, 'red'))
+            df = pd.read_csv("paddy_daily.csv")
+            print(df)
+        else:
+            df = pd.read_csv("paddy_daily.csv")
+            df.columns = [i.strip() for i in df.columns]
+            df = df.loc[df["HRU"]==pid]
+            df.to_csv(f"paddy_daily_{pid:d}.csv", index=False)
+            print(df)
+            
 
 
 
@@ -841,10 +1049,22 @@ class Paddy(object):
 if __name__ == '__main__':
 
     # NOTE: paddy convert
-    wd =  "D:\\Projects\\Watersheds\\Ghana\\Analysis\\dawhenya\\prj03_paddy\\Scenarios\\Default\\TxtInOut"
+    wd =  "D:\\Projects\\Watersheds\\Ghana\\Analysis\\dawhenya\\prj05_paddy\\Scenarios\\Default\\TxtInOut"
     m1 = Paddy(wd)
-    m1.conv_paddy()
+    m1.filter_paddy(2899)
+    # m1.conv_hyd_perco(perco=0.1)
+    # m1 = SWATp(wd)
+    # fields = ["wateryld", "perc", "et", "sw_ave", "latq_runon"]
+    # for fd in fields:
+    #     m1.get_lu_mon(fd)
+    #     print(fd)
 
+
+
+    # m2 = SWATp(wd)
+    # fields = ["wateryld", "perc", "et", "sw_ave", "latq_runon"]
+    # for fd in fields:
+    #     print(m2.get_hru_mon(fd))
 
     # # NOTE: PADDY
     # wd =  "d:\\Projects\\Watersheds\\Ghana\\Analysis\\botanga\\prj01\\Scenarios\\Default\\TxtInOut_rice_f"
