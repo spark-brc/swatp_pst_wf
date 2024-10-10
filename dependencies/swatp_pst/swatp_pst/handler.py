@@ -646,7 +646,11 @@ class Paddy(object):
             for ll in lumlist:
                 c = 0
                 for line in data:
-                    if line.split()[5] != "null" and line.split()[5].startswith(ll):
+                    if (
+                        (len(line.split()) >=6) and 
+                        (line.split()[5] != "null") and 
+                        (line.split()[5].startswith(ll))
+                    ):
                         new_line = self.replace_line_hrudata(line, ndigits)
                         data[c] = new_line
                     c += 1
@@ -1049,9 +1053,11 @@ class Paddy(object):
 if __name__ == '__main__':
 
     # NOTE: paddy convert
-    wd =  "D:\\Projects\\Watersheds\\Ghana\\Analysis\\dawhenya\\prj05_paddy\\Scenarios\\Default\\TxtInOut"
+    # wd =  "D:\\Projects\\Watersheds\\Ghana\\Analysis\\dawhenya\\prj05_paddy\\Scenarios\\Default\\TxtInOut"
+    wd =  "D:\\Projects\\Watersheds\\Ghana\\Analysis\\dawhenya\\prj03\\Scenarios\\Default\\TxtInOut_org"
     m1 = Paddy(wd)
-    m1.filter_paddy(2899)
+    m1.conv_hrudata()
+    # m1.filter_paddy(2899)
     # m1.conv_hyd_perco(perco=0.1)
     # m1 = SWATp(wd)
     # fields = ["wateryld", "perc", "et", "sw_ave", "latq_runon"]
