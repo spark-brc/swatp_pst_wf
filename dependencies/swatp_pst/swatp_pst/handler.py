@@ -1041,6 +1041,9 @@ class Paddy(object):
             df = df.loc[df["HRU"]==pid]
             df.to_csv(f"paddy_daily_{pid:d}.csv", index=False)
             print(df)
+
+    def viz_pp(self):
+        print('test')
             
 
 
