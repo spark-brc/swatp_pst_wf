@@ -6,11 +6,13 @@ import pyemu
 import os
 import matplotlib.dates as mdates
 from matplotlib.ticker import FormatStrFormatter, FixedLocator
-from swatp_pst.handler import SWATp
+# from swatp_pst.handler import SWATp
 from swatp_pst import objfns
 import datetime
 import scipy.stats as st
 from scipy import stats
+from swatp_pst import handler
+from tqdm import tqdm
 
 # uncertainty
 def single_plot_tseries_ensembles(
@@ -589,7 +591,7 @@ def plot_flow_cal_val_hist(ax, flow_df, calidates, validates):
 
 
 def plot_wb_mon_cal_val_hist(ax, wd, colnam, calidates, validates):
-    m1 = SWATp(wd)
+    m1 = handler.SWATp(wd)
     start_day = m1.stdate_warmup
     df = m1.read_basin_wb_mon()
     df = df.loc[:, colnam]
@@ -611,7 +613,7 @@ def plot_wb_mon_cal_val_hist(ax, wd, colnam, calidates, validates):
         ), alpha=0.5, density=True,edgecolor='white')
 
 def get_average_annual_wb(wd, colnam, calidates=None, validates=None):
-    m1 = SWATp(wd)
+    m1 = handler.SWATp(wd)
     start_day = m1.stdate_warmup
     df = m1.read_basin_wb_yr()
     df = df.loc[:, colnam]
@@ -626,7 +628,7 @@ def get_average_annual_wb(wd, colnam, calidates=None, validates=None):
 
 # data comes from hanlder module and SWATMFout class
 def create_stf_sim_obd_df(wd, cha_id, obd_file, obd_col):
-    m1 = SWATp(wd)
+    m1 = handler.SWATp(wd)
     start_day = m1.stdate_warmup
     sim = m1.read_cha_morph_mon()
     sim = sim.loc[sim["gis_id"] == cha_id]
@@ -642,7 +644,7 @@ def create_stf_sim_obd_df(wd, cha_id, obd_file, obd_col):
     return opt_df
 
 def create_pcp_df(wd, cha_id):
-    m1 = SWATp(wd)
+    m1 = handler.SWATp(wd)
     start_day = m1.stdate_warmup
     sim = m1.read_pcp_data()
     sim = sim.loc[sim["gis_id"] == cha_id]
@@ -1536,9 +1538,12 @@ def albufera_predictive_results(wd):
     # sfdf2 = read_sobol_sfi(wd2, pst_file2)
 
 
-'''
-class Paddy(Paddy):
-    print(os.getcwd())
+# '''
+class Paddy(object):
+    def __init__(self, wd):
+        self.wd = wd
+        os.chdir(self.wd)
+
     def plot_paddy_daily(self, df):
         cmap = plt.get_cmap("tab10")
         nums = len(df.columns)
@@ -1569,15 +1574,98 @@ class Paddy(Paddy):
         plt.tight_layout()
         plt.show()
 
-    
-'''
+
+    def heatunit_days(self, inf, month, wd=None, cropBHU=None):
+        if wd is None:
+            wd = os.getcwd()
+        if cropBHU is None:
+            cropBHU = 0
+        df = pd.read_csv(
+            os.path.join(wd, inf), 
+            skiprows=3, names=['yr', 'doy', 'tmax', 'tmin'], na_values=-999,
+            sep=r'\s+')
+        df['date'] = pd.to_datetime(df['yr'] * 1000 + df['doy'], format='%Y%j')
+        df.index = df['date']
+        df.drop('date', axis=1, inplace=True)
+        df = df.loc[(df.index.month==month)]
+        days = df.index.day.unique().tolist()
+        return days
+
+
+    def plot_violin2(self, inf, month, wd=None, cropBHU=None, width=None, height=None):
+        if wd is None:
+            wd = os.getcwd()
+        if cropBHU is None:
+            cropBHU = 0
+        # Boxplot
+        # f, ax = plt.subplots(3, 4, figsize=(12,8), sharex=True, sharey=True)
+        days = handler.Paddy(wd).heatunit_days(inf, month, cropBHU=cropBHU)
+        if width is not None:
+            f, axes = plt.subplots(
+                nrows=1, ncols=len(days), figsize=(width,height), sharey=True
+                )
+        else:
+            f, axes = plt.subplots(nrows=1, ncols=len(days), sharey=True)
+        x_names = [str(i) for  i in days]
+        # plot. Set color of marker edge
+        flierprops = dict(
+                        marker='o', 
+                        markerfacecolor='#fc0384', 
+                        markersize=7,
+                        # linestyle='None',
+                        # markeredgecolor='none',
+                        alpha=0.3)
+        # ax.boxplot(data, flierprops=flierprops)
+        # os.chdir(wd)
+
+        for ax, day in tqdm(zip(axes, days), total=len(days)):
+            df = handler.Paddy(wd).generate_heatunit(inf, month, day, cropBHU=cropBHU)
+            r = ax.violinplot(
+                df.loc[:, "FPHU0"].values,  
+                widths=(0.5),
+                showmeans=True, showextrema=True, showmedians=False,
+                # quantiles=[[0.25, 0.75]]*len(days),
+                quantiles=[[0.25, 0.75]],
+                bw_method='silverman'
+                )
+            r['cmeans'].set_color('r')
+            r['cquantiles'].set_color('r')
+            r['cquantiles'].set_linestyle(':')
+            # r['cquantiles'].set_linewidth(3)
+            # colors = ['#c40243', "#04b0db", '#038f18', ]
+            # for c, pc in zip(colors, r['bodies']):
+            #     pc.set_facecolor(c)
+            # #     pc.set_edgecolor('black')
+            #     pc.set_alpha(0.4)
+
+            ax.set_xticks([1])
+            # ax.set_xticklabels(df_m.keys(), rotation=90)
+            ax.set_xticklabels([str(day)])
+            # ax.set_xticklabels(x_names)
+            ax.tick_params(axis='both', labelsize=8)
+            ax.spines['top'].set_visible(False)
+            ax.spines['right'].set_visible(False)
+            ax.grid(axis='y')
+            
+            # ax.set_xticklabels([str(day)])
+        # ax.spines['bottom'].set_visible(False)
+        # ax.set_ylabel('CH$_4$ emission $(g\;CH_{4}-C\; m^{-2}\cdot d^{-1})$', fontsize=14)
+        # plt.xticks([0])
+        plt.tight_layout()
+        lastfolder = os.path.basename(os.path.normpath(os.getcwd()))
+        plt.savefig(os.path.join(os.getcwd(), f'HUI_{lastfolder}.png'), dpi=300, bbox_inches="tight")
+        plt.show()
+
+
+
+
+
+
+# '''
 
 if __name__ == '__main__':
 
     # NOTE: paddy convert
     wd =  "D:\\Projects\\Watersheds\\Albufera\\2nd\\alb_rw_ies"
-
-
     albufera_predictive_results(wd)
-
     

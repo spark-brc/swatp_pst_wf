@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-import os
+import os, sys
 import numpy as np
 import datetime as dt
 from datetime import datetime
@@ -9,11 +9,15 @@ import calendar
 import shutil
 from tqdm import tqdm
 from termcolor import colored
+from shutil import copyfile
 
 opt_files_path = os.path.join(
                     os.path.dirname(os.path.abspath( __file__ )),
                     'opt_files')
 foward_path = os.path.dirname(os.path.abspath( __file__ ))
+from swatp_pst import analyzer
+
+
 
 
 def create_swatp_pst_con(
@@ -90,6 +94,134 @@ def init_setup(prj_dir, swatp_wd):
     os.chdir(main_opt_path)
     print(f"path to main_opt folder: {main_opt_path}")
 
+
+# from cjfx
+def file_name(path_, extension=True):
+    if extension:
+        fn = os.path.basename(path_)
+    else:
+        fn = os.path.basename(path_).split(".")[0]
+    return(fn)
+
+def read_from(filename, decode_codec = None, v=False):
+    '''
+    a function to read ascii files
+    '''
+    try:
+        if not decode_codec is None: g = open(filename, 'rb')
+        else: g = open(filename, 'r')
+    except:
+        print(
+            "\t! error reading {0}, make sure the file exists".format(filename))
+        return
+
+    file_text = g.readlines()
+    
+    if not decode_codec is None: file_text = [line.decode(decode_codec) for line in file_text]
+
+    if v:
+        print("\t> read {0}".format(file_name(filename)))
+    g.close
+    return file_text
+
+def get_file_size(file_path):
+    return float(os.path.getsize(file_path))/1012
+
+def error(text_):
+    print("\t! {string_}".format(string_=text_))
+
+def create_path(path_name, v=False):
+    path_name = os.path.dirname(path_name)
+    if path_name == '':
+        path_name = './'
+    if not os.path.isdir(path_name):
+        os.makedirs(path_name)
+        if v:
+            print(f"\t> created path: {path_name}")
+    return path_name
+
+# from cjfx
+def copy_file(filename, destination_path, delete_source=False, v = False, replace = True):
+    '''
+    a function to copy files
+    '''
+    if not replace:
+        if exists(destination_path):
+            if v:
+                print(f"\t - file exists, skipping")
+            return
+    if not exists(filename):
+        if not v:
+            return
+        print("\t> The file you want to copy does not exist")
+        print(f"\t    - {filename}\n")
+        ans = input("\t> Press  E then ENTER to Exit or C then ENTER to continue: ")
+        counter = 0
+        while (not ans.lower() == "c") and (not ans.lower() == "e"):
+            ans = input("\t> Please, press E then ENTER to Exit or C then ENTER to continue: ")
+            if counter > 2:
+                print("\t! Learn to read instrunctions!!!!")
+            counter += 1
+        if ans.lower() == 'e': quit()
+        if ans.lower() == 'c':
+            write_to("log.txt", f"{filename}\n", mode='append')
+            return
+    if v:
+        if delete_source:
+            print(f"\t - [{get_file_size(filename)}] moving {filename} to \n\t\t{destination_path}")
+        else:
+            # print(f"\t - [{get_file_size(filename)}] copying {filename} to \n\t\t{destination_path}")
+            sys.stdout.write('\rcopying ' + filename + '                        ')
+            sys.stdout.flush()
+
+    if not os.path.isdir(os.path.dirname(destination_path)):
+        try:
+            os.makedirs(os.path.dirname(destination_path))
+        except:
+            pass
+    copyfile(filename, destination_path)
+    if delete_source:
+        try:
+            os.remove(filename)
+        except:
+            error('coule not remove {fl}, make sure it is not in use'.format(fl=filename))
+
+def write_to(filename, text_to_write, v=False, mode = "overwrite"):
+    '''
+    a function to write to file
+    modes: overwrite/o; append/a
+    '''
+    try:
+        if not os.path.isdir(os.path.dirname(filename)):
+            os.makedirs(os.path.dirname(filename))
+            if v:
+                print("! the directory {0} has been created".format(
+                    os.path.dirname(filename)))
+    except:
+        pass
+
+    if (mode == "overwrite") or (mode == "o"):
+        g = open(filename, 'w', encoding="utf-8")
+    elif (mode == "append") or (mode == "a"):
+        g = open(filename, 'a', encoding="utf-8")
+    try:
+        g.write(text_to_write)
+        if v:
+            print('\n\t> file saved to ' + filename)
+    except PermissionError:
+        print("\t> error writing to {0}, make sure the file is not open in another program".format(
+            filename))
+        response = input("\t> continue with the error? (Y/N): ")
+        if response == "N" or response == "n":
+            sys.exit()
+    g.close
+
+def exists(path_):
+    if os.path.isdir(path_):
+        return True
+    if os.path.isfile(path_):
+        return True
+    return False
 
 class SWATp(object):
     def __init__(self, wd):
@@ -290,7 +422,6 @@ class SWATp(object):
         print(' > Finished ...\n')
 
 
-
     def extract_day_stf_albu(self, chs, cali_start_day, cali_end_day):
         sim_stf_f = self.read_cha_morph_day(flo="flo_in")
         start_day = self.stdate_warmup
@@ -385,13 +516,6 @@ class SWATp(object):
         mbig_df.to_csv(f"hru_{field}_mon_wb.csv", index=False)
         return mbig_df
 
-
-
-
-
-
-
-
     def get_lu_hf_wb(self):
         lu_hf = self.read_lu_wb_yr()
         # filter >=2017
@@ -464,8 +588,6 @@ class SWATp(object):
             fdp_wt[f'{col}'] = fdp_df[f'{col}'] * fdp_df['weight_area']
             # fdp_wt = pd.concat([fdp_wt, fdp_df[f'{col}'] * fdp_df['weight_area']], axis=1)
         fdp_sum = fdp_wt.sum(axis=0)
-
-
         tot_df = pd.concat([hill_sum, fdp_sum], axis=1)
         tot_df.columns = ["hillslope", "floodplain"]
         print(tot_df)
@@ -1038,25 +1160,109 @@ class Paddy(object):
             suffix = "it will read all data"
             print(" > provide paddy id ... or " + colored(suffix, 'red'))
             df = pd.read_csv("paddy_daily.csv")
-            print(df)
+            print(df.head())
         else:
             df = pd.read_csv("paddy_daily.csv")
             df.columns = [i.strip() for i in df.columns]
             df = df.loc[df["HRU"]==pid]
             df.to_csv(f"paddy_daily_{pid:d}.csv", index=False)
-            print(df)
-            
+            print(df.head())
+        return df
+
+    def viz_pp(self):
+        print('test')
 
 
+    #NOTE: read txt file, original tmp input file
+    def generate_heatunit_org(wd, inf, cropBHU, month, day):
+        df = pd.read_csv(os.path.join(wd, inf), skiprows=1, names=['tmax', 'tmin'], na_values=-999)
+        stdate = read_from(os.path.join(wd, inf))[0]
+        df.index = pd.date_range(start=stdate, periods=len(df))
+        df['tmean'] = (df['tmin'] + df['tmax'])/2
+        df["HU"] = df['tmean'] - cropBHU
+        df.loc[df['HU'] < 0, 'HU'] = 0
+        df[f"PHU{cropBHU}"] = df.groupby(df.index.year)["HU"].cumsum()
+        
+        phu0 = df.loc[(df.index.month==month) & (df.index.day==day)] 
+        tphu0 = df.loc[(df.index.month==12) & (df.index.day==31)] 
+
+        dff = pd.DataFrame(index=df.index.year.unique(), columns=["PHU0", "TPHU0"])
+        dff["PHU0"] = phu0.loc[:, "PHU0"].values
+        dff["TPHU0"] = tphu0.loc[:, "PHU0"].values
+        dff["FPHU0"] = dff["PHU0"] / dff["TPHU0"]
+
+        dff.to_csv(os.path.join(wd, 'test.csv')) 
+        return dff
+
+
+    def heatunit_days(self, inf, month, wd=None, cropBHU=None):
+        if wd is None:
+            wd = os.getcwd()
+        if cropBHU is None:
+            cropBHU = 0
+        df = pd.read_csv(
+            os.path.join(wd, inf), 
+            skiprows=3, names=['yr', 'doy', 'tmax', 'tmin'], na_values=-999,
+            sep=r'\s+')
+        df['date'] = pd.to_datetime(df['yr'] * 1000 + df['doy'], format='%Y%j')
+        df.index = df['date']
+        df.drop('date', axis=1, inplace=True)
+        df = df.loc[(df.index.month==month)]
+        days = df.index.day.unique().tolist()
+        return days
+
+    def generate_heatunit(self, inf, month, day, cropBHU=None, wd=None):
+        if wd is None:
+            wd = os.getcwd()
+        if cropBHU is None:
+            cropBHU = 0
+        df = pd.read_csv(
+            os.path.join(wd, inf), 
+            skiprows=3, names=['yr', 'doy', 'tmax', 'tmin'], na_values=-999,
+            sep=r'\s+')
+        df['date'] = pd.to_datetime(df['yr'] * 1000 + df['doy'], format='%Y%j')
+        df.index = df['date']
+        df.drop('date', axis=1, inplace=True)
+        df['tmean'] = (df['tmin'] + df['tmax'])/2
+        df["HU"] = df['tmean'] - cropBHU
+        df.loc[df['HU'] < 0, 'HU'] = 0
+        df[f"PHU{cropBHU}"] = df.groupby(df.index.year)["HU"].cumsum()
+        
+        if day in df.index.day:
+            phu0 = df.loc[(df.index.month==month) & (df.index.day==day)]
+        tphu0 = df.loc[(df.index.month==12) & (df.index.day==31)] 
+        tphu0 = tphu0[tphu0["yr"].isin(phu0.loc[:, 'yr'])]
+        
+        # yrs = phu0.index.tolist()
+        # print(tphu0[tphu0["yr"].isin(phu0.loc[:, 'yr'])])
+        # tphu0 = tphu0.loc[['1984-02-29', '1988-02-29', '1992-02-29', '1996-02-29']]
+        # print(tphu0.index)
+        # # print(phu0)
+
+        dff = pd.DataFrame(index=phu0.index.year.unique(), columns=["PHU0", "TPHU0"])
+        dff["PHU0"] = phu0.loc[:, "PHU0"].values
+        dff["TPHU0"] = tphu0.loc[:, "PHU0"].values
+        dff["FPHU0"] = dff["PHU0"] / dff["TPHU0"]
+        dff.to_csv(os.path.join(wd, 'test.csv')) 
+        return dff
 
 
 if __name__ == '__main__':
 
     # NOTE: paddy convert
     # wd =  "D:\\Projects\\Watersheds\\Ghana\\Analysis\\dawhenya\\prj05_paddy\\Scenarios\\Default\\TxtInOut"
-    wd =  "D:\\Projects\\Watersheds\\Ghana\\Analysis\\dawhenya\\prj03\\Scenarios\\Default\\TxtInOut_org"
+    wd = "D:\\Projects\\Watersheds\\Ghana\\Analysis\\dawhenya\\prj05_paddy\\Scenarios\\Default\\TxtInOut02"
     m1 = Paddy(wd)
-    m1.conv_hrudata()
+    mv1 = analyzer.Paddy(wd)
+    inf = "AF_430278_TMP.tmp"
+    # df = m1.generate_heatunit(inf, 2, 29)
+    # print(df)
+    mv1.plot_violin2(inf, 4)
+    # print(df)
+
+
+
+    # m1.conv_hrudata()
     # m1.filter_paddy(2899)
     # m1.conv_hyd_perco(perco=0.1)
     # m1 = SWATp(wd)
