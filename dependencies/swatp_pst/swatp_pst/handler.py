@@ -18,8 +18,6 @@ foward_path = os.path.dirname(os.path.abspath( __file__ ))
 from swatp_pst import analyzer
 
 
-
-
 def create_swatp_pst_con(
             prj_dir, swatp_wd, cal_start, cal_end, chs, 
             irr_cal=None,
@@ -283,6 +281,14 @@ class SWATp(object):
             skiprows=[0,2]
         )        
     
+    def read_hru_pw_yr(self):
+        return pd.read_csv(
+            "hru_pw_yr.txt",
+            sep=r'\s+',
+            skiprows=[0,2]
+        )     
+
+
     def create_paddy_hru_id_database(self):
         hru_area = self.read_hru_con()
         hru_area = hru_area.loc[:, ["id", "area"]]
@@ -649,8 +655,9 @@ def init_setup(prj_dir, swatp_wd):
     print(f"path to main_opt folder: {main_opt_path}")
 
 
-class Paddy(object):
-    def __init__(self, wd) -> None:
+class Paddy(SWATp):
+    def __init__(self, wd, *args, **kwargs):
+        super().__init__(wd, *args, **kwargs)
         self.wd = wd
         os.chdir(self.wd)
         self.stdate, self.enddate, self.stdate_warmup = self.define_sim_period()
@@ -956,6 +963,16 @@ class Paddy(object):
                 " file is not overwritten!"
                 )
 
+    def get_paddy_objs(self):
+        with open('hru-data.hru', "r") as f:
+            data = f.readlines()
+            paddy_objs = []
+            for line in data:
+                if len(line.split()) >=7 and line.split()[7].startswith("paddy"):
+                    paddy_objs.append([line.split()[1], line.split()[7]])
+            paddy_objs = np.array(paddy_objs)
+        return paddy_objs
+
     def conv_hydwet(self):
         with open('hru-data.hru', "r") as f:
             data = f.readlines()
@@ -963,6 +980,7 @@ class Paddy(object):
             for line in data:
                 if len(line.split()) >=7 and line.split()[7].startswith("paddy"):
                     paddy_objs.append(line.split()[7])
+
 
         with open(os.path.join(self.wd, 'backup',"hydrology.wet"), "r") as fw:
             data = fw.readlines()
@@ -1133,7 +1151,7 @@ class Paddy(object):
 
     def copy_nfiles_paddy(self):
         suffix = ' passed'
-        cfiles = ['weir.res', 'puddle.ops']
+        cfiles = ['weir.res', 'puddle.ops', 'swatplus.exe']
         for cfile in cfiles:
             if not os.path.isfile(cfile):
                 shutil.copy2(os.path.join(opt_files_path, cfile), os.path.join(self.wd, cfile))
@@ -1246,22 +1264,39 @@ class Paddy(object):
         dff.to_csv(os.path.join(wd, 'test.csv')) 
         return dff
 
+    def get_paddy_stress_df(self):
+        paddy_objs = self.get_paddy_objs()[:, 0] # get hru name
+        columns = ['name', 'strsw', 'strsa', 'strstmp', 'strsn', 'strsp', 'strss']
+        df = self.read_hru_pw_yr()
+        df = df[columns]
+        df = df[df['name'].isin(paddy_objs)]
+        df = df.groupby(df['name']).mean()
+        return df
+
+
 
 if __name__ == '__main__':
 
     # NOTE: paddy convert
     # wd =  "D:\\Projects\\Watersheds\\Ghana\\Analysis\\dawhenya\\prj05_paddy\\Scenarios\\Default\\TxtInOut"
-    wd = "D:\\Projects\\Watersheds\\Ghana\\Analysis\\dawhenya\\prj05_paddy\\Scenarios\\Default\\TxtInOut02"
+    wd = "D:\\Projects\\Watersheds\\Ghana\\Analysis\\dawhenya\\prj05_paddy\\Scenarios\\Default\\TxtInOut"
     m1 = Paddy(wd)
-    mv1 = analyzer.Paddy(wd)
-    inf = "AF_430278_TMP.tmp"
+    # inf = "AF_430278_TMP.tmp"
     # df = m1.generate_heatunit(inf, 2, 29)
     # print(df)
-    mv1.plot_violin2(inf, 4)
-    # print(df)
+    # mv1.plot_violin2(inf, 4)
+    df = m1.get_paddy_stress_df()
+    mv1 = analyzer.SWATp(m1.wd)
+    for c in df.columns:
+        mv1.plot_stress(df, stress=c, h=2)
 
 
 
+    print(df)
+
+
+
+    # NOTE: filter paddy
     # m1.conv_hrudata()
     # m1.filter_paddy(2899)
     # m1.conv_hyd_perco(perco=0.1)

@@ -14,6 +14,7 @@ from scipy import stats
 from swatp_pst import handler
 from tqdm import tqdm
 
+
 # uncertainty
 def single_plot_tseries_ensembles(
                     pst, pr_oe, pt_oe, width=10, height=4, dot=True,
@@ -450,9 +451,6 @@ def plot_tseries_ensembles(
     plt.savefig(f'tensemble_{obgnam}.png', bbox_inches='tight', dpi=300)
     # plt.show()
     # '''
-
-
-
 
 def plot_onetone_ensembles(
                     pst, pr_oe, pt_oe, width=5, height=4.5, dot=True,
@@ -1538,11 +1536,78 @@ def albufera_predictive_results(wd):
     # sfdf2 = read_sobol_sfi(wd2, pst_file2)
 
 
-# '''
-class Paddy(object):
+
+class SWATp(handler.Paddy):
     def __init__(self, wd):
-        self.wd = wd
-        os.chdir(self.wd)
+        super().__init__(wd)
+        os.chdir(wd)
+
+    def plot_stress(self, df, stress=None, w=12, h=4):
+        """plot stress for crop
+
+        :param df: dataframe from handler.get_paddy_stress_df
+        :type df: dataframe
+        :param stress: stress type, defaults to None, strsw
+        :type stress: string, optional
+        :return: bar charts for stress
+        :rtype: figre
+        """
+        if stress is None:
+            stress = "strsw"
+
+        N = len(df.columns)
+        ind = np.arange(N)  # the x locations for the groups
+        width = 0.4
+
+        fig, ax = plt.subplots(figsize=(w,h))
+        # Width of a bar 
+        error_kw=dict(lw=1, capsize=2, capthick=1, alpha=0.5)
+
+        # tcolor = sftsm + sttsm
+        # colors = plt.cm.rainbow(tcolor/max(tcolor))
+        # tphicolor = sfphi.iloc[0, 1:].values + stphi.iloc[0, 1:].values
+        # # phico = plt.cm.rainbow(tphicolor/max(tphicolor))
+        # # ax.plot(np.NaN, np.NaN, '-', color='none', label='Variance based')
+
+        # ax.bar(
+        #     df.index, df.strsw, width, 
+        #     color="C0", label=r"First order $S_i - variance$", 
+        #     error_kw=error_kw
+        #     )
+        ax.bar(
+            df.index, df.loc[:, stress], width, 
+            color="C0", label=r"First order $S_i - variance$", 
+            error_kw=error_kw
+            )      
+
+        # ax.bar(
+        #     ind, sttsm, width, bottom=sftsm,
+        #     color="C0", yerr=sfts_cfis, label=r"Total order $S_{Ti} - variance$", error_kw=error_kw,
+        #     alpha=0.5
+        #     )
+        # # ax.plot(np.NaN, np.NaN, '-', color='none', label=r'Objective function $(phi)$')
+        # ax.bar(
+        #     ind + 0.3, sfphi.iloc[0, 1:].values, phiwidth, 
+        #     color="C1", label=r"First order $S_i$ - objective function",
+        #     )
+        # ax.bar(
+        #     ind + 0.3, stphi.iloc[0, 1:].values, phiwidth, 
+        #     bottom=sfphi.iloc[0, 1:].values,
+        #     color='C1', label=r"Total order $S_{Ti} - objective function$", alpha=0.5
+        #     )
+        ax.margins(x=0.01)
+        ax.tick_params(axis='x', labelrotation=90)
+        fig.tight_layout()
+        plt.savefig(f'stress_{stress}.png', bbox_inches='tight', dpi=300)
+        plt.show()
+        print(os.getcwd())
+
+
+# '''
+class Paddy(handler.Paddy):
+    def __init__(self, wd):
+        super().__init__(wd)
+        os.chdir(wd)
 
     def plot_paddy_daily(self, df):
         cmap = plt.get_cmap("tab10")
