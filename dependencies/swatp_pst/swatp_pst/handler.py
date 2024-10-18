@@ -10,12 +10,14 @@ import shutil
 from tqdm import tqdm
 from termcolor import colored
 from shutil import copyfile
+from swatp_pst import analyzer
+
+
 
 opt_files_path = os.path.join(
                     os.path.dirname(os.path.abspath( __file__ )),
                     'opt_files')
 foward_path = os.path.dirname(os.path.abspath( __file__ ))
-from swatp_pst import analyzer
 
 
 def create_swatp_pst_con(
@@ -396,6 +398,15 @@ class SWATp(object):
             names=["name", "area"]
         )
 
+    def read_crop_yld_aa(self):
+        return pd.read_csv(
+            "crop_yld_aa.txt",
+            sep=r'\s+',
+            skiprows=[0,1,2,3]            
+        )
+
+
+
     def extract_mon_stf(self, chs, cali_start_day, cali_end_day):
         sim_stf_f = self.read_cha_morph_mon()
         start_day = self.stdate_warmup
@@ -442,6 +453,19 @@ class SWATp(object):
                 float_format='%.7e')
             print(' >>> stf_{:03d}.txt file has been created...'.format(i))
         print(' > Finished ...\n')
+
+    def extract_crop_aa(self, crops):
+        sim_stf_f = self.read_crop_yld_aa()
+        for i in crops:
+            # sim_stf_f = self.read_cha_morph_mon()
+            sim_stf_ff = sim_stf_f.loc[sim_stf_f["PLANTNM"] == i]
+            sim_stf_ff = sim_stf_ff.drop(['jday', 'mon', 'day', 'yr'], axis=1)
+            print(sim_stf_ff)
+            sim_stf_ff.to_csv(
+                f'crop_aa_{i}.txt', sep='\t', index=False, header=False,
+                float_format='%.7e')
+            print(f'crop_aa_{i}.txt file has been created...')
+        print('Finished ...')
 
 
     def get_mon_irr(self):
@@ -1277,7 +1301,6 @@ class Paddy(SWATp):
 
 if __name__ == '__main__':
 
-    # NOTE: paddy convert
     # wd =  "D:\\Projects\\Watersheds\\Ghana\\Analysis\\dawhenya\\prj05_paddy\\Scenarios\\Default\\TxtInOut"
     wd = "D:\\Projects\\Watersheds\\Ghana\\Analysis\\dawhenya\\prj05_paddy\\Scenarios\\Default\\TxtInOut"
     m1 = Paddy(wd)
@@ -1285,16 +1308,19 @@ if __name__ == '__main__':
     # df = m1.generate_heatunit(inf, 2, 29)
     # print(df)
     # mv1.plot_violin2(inf, 4)
-    df = m1.get_paddy_stress_df()
-    mv1 = analyzer.SWATp(m1.wd)
-    for c in df.columns:
-        mv1.plot_stress(df, stress=c, h=2)
+
+    # NOTE: extract crop
+    m1.extract_crop_aa(['rice_dwn'])
+    
 
 
 
-    print(df)
-
-
+    # NOTE: get paddy stress bar
+    # df = m1.get_paddy_stress_df()
+    # mv1 = analyzer.SWATp(m1.wd)
+    # for c in df.columns:
+    #     mv1.plot_stress(df, stress=c, h=2)
+    # print(df)
 
     # NOTE: filter paddy
     # m1.conv_hrudata()
@@ -1305,9 +1331,6 @@ if __name__ == '__main__':
     # for fd in fields:
     #     m1.get_lu_mon(fd)
     #     print(fd)
-
-
-
     # m2 = SWATp(wd)
     # fields = ["wateryld", "perc", "et", "sw_ave", "latq_runon"]
     # for fd in fields:

@@ -1,14 +1,16 @@
 import pandas as pd
-from swatp_pst.handler import SWATp
+from swatp_pst import handler
 import calendar
 import numpy as np
 import os
 import pyemu
 
 
-class PstUtil(SWATp):
+class PstUtil:
     def __init__(self, wd):
-        super().__init__(wd)
+        self.wd = wd
+        os.chdir(self.wd)
+
 
     # def extract_mon_stf(self, channels, cali_start_day, cali_end_day):
     #     sim_stf_f = self.read_cha_morph_mon()
@@ -128,6 +130,40 @@ class PstUtil(SWATp):
         print('{}.ins file has been created...'.format(irr_extract_file))
         return result['{}_ins'.format(col_name)]
 
+    def crop_aa_obd_to_ins(self, crop_aa_extract_file):
+        """extract a simulated streamflow from the output.rch file,
+            store it in each channel file.
+
+        Args:
+            - rch_file (`str`): the path and name of the existing output file
+            - channels (`list`): channel number in a list, e.g. [9, 60]
+            - start_day ('str'): simulation start day after warmup period, e.g. '1/1/1993'
+            - end_day ('str'): simulation end day e.g. '12/31/2000'
+            - time_step (`str`): day, month, year
+
+        Example:
+            pest_utils.extract_month_stf('path', [9, 60], '1/1/1993', '12/31/2000')
+        """ 
+
+        stf_sim = pd.read_csv(
+                            crop_aa_extract_file,
+                            sep=r'\s+',
+                            names=["hruid", "crop", "mass", "c", 'n', 'p']
+                            )
+        stf_sim['ins'] = (
+                        'l1 w w  !' + stf_sim["hruid"].map('{:05d}'.format) +
+                        stf_sim["crop"].map(str) + '! w w w'
+                        )
+        with open(crop_aa_extract_file+'.ins', "w", newline='') as f:
+            f.write("pif ~" + "\n")
+            stf_sim['ins'].to_csv(f, sep='\t', encoding='utf-8', index=False, header=False)
+        print('{}.ins file has been created...'.format(crop_aa_extract_file))
+        return stf_sim['ins']
+
+
+
+
+
 
     def read_cal(self):
         return pd.read_csv(
@@ -201,14 +237,67 @@ class PstUtil(SWATp):
             par = cal_adj.loc[i, "cal_parm"]
             abs_min = cal_db.loc[cal_db["name"]==par, "abs_min"]
             print(abs_min)
-            
-        
 
+    def read_cal(self):
+        return pd.read_csv(
+                        'calibration.cal',
+                        sep=r'\s+',
+                        skiprows=3,
+                        header=None
+                        )       
         # df_par = self.read_cal()
 
+    def plant_to_tpl_file(self, crop):
+        """write a template file for a SWAT+ parameter value file (calibration.cal).
 
+        Args:
+            cal_file (`str`): the path and name of the existing model.in file
+            tpl_file (`str`, optional):  template file to write. If None, use
+                `cal_file` +".tpl". Default is None
+        Note:
+            Uses names in the first column in the pval file as par names.
 
+        Example:
+            pest_utils.model_in_to_template_file('path')
 
+        Returns:
+            **pandas.DataFrame**: a dataFrame with template file information
+        """
+        plt_file = 'plants.plt'
+        tpl_file = plt_file + ".tpl"
+        with open(plt_file, "r") as inf:
+            data = inf.readlines()
+            c = 0
+            colnams = data[1].split()
+            for line in data:
+                if line.split()[0] == crop:
+                    new_line = self.replace_line_plt(line, colnams)
+                    data[c] = new_line
+                c += 1
+        with open(tpl_file, "w") as wf:
+            wf.write('ptf ~\n')
+            wf.writelines(data)
+        new_file = os.path.join(self.wd, tpl_file)
+        print(
+            f" {'>'*3} {os.path.basename(new_file)}" + 
+            " file is created ..."
+            )
+
+    def replace_line_plt(self, line, colnams):
+        parts = line.split()
+        newline = []
+        for i in range(len(parts)):
+            if i == 0:
+                newline.append(f'{parts[i]:<16s}')
+            elif i == 1 or i == 2:
+                newline.append(f'{parts[i]:>18s}')
+            elif (i > 2) and i < (len(parts) -1):
+                newline.append(f" ~{colnams[i]:>11s}~" )
+            else:
+                newline.append(f"  {'rice':<14s}" )
+        newline.append("\n")
+        newline ="".join(newline)            
+        return newline
 
 def get_last_day_of_month(df):
     for i in range(len(df)):
@@ -225,19 +314,24 @@ def get_last_day_of_month(df):
 
 if __name__ == '__main__':
     # wd = "/Users/seonggyu.park/Documents/projects/tools/swatp-pest_wf/models/TxtInOut_Imsil_rye_rot_r1"
-    wd = "/Users/seonggyu.park/Documents/projects/jj_test/main_opt"
-    cns =  [1]
-    cali_start_day = "1/1/2013"
-    cali_end_day = "12/31/2023"
-    obd_file = "singi_obs_q1_colnam.csv"
-    obd_colnam = "cha01"
-    cha_ext_file = "stf_001.txt"
+    # NOTE: for jj work
+    # wd = "/Users/seonggyu.park/Documents/projects/jj_test/main_opt"
+    # cns =  [1]
+    # cali_start_day = "1/1/2013"
+    # cali_end_day = "12/31/2023"
+    # obd_file = "singi_obs_q1_colnam.csv"
+    # obd_colnam = "cha01"
+    # cha_ext_file = "stf_001.txt"
 
+    # m1 = PstUtil(wd)
+    # io_files = pyemu.helpers.parse_dir_for_io_files('.')
+    # pst = pyemu.Pst.from_io_files(*io_files)
+    # par = pst.parameter_data
+    # m1.update_par_inits_rgs(par)
+    # print(par)
+
+    #NOTE: create template file for plant
+    wd = "D:\\Projects\\Watersheds\\Ghana\\Analysis\\dawhenya\\prj05_paddy\\Scenarios\\Default\\TxtInOut"
     m1 = PstUtil(wd)
-    io_files = pyemu.helpers.parse_dir_for_io_files('.')
-    pst = pyemu.Pst.from_io_files(*io_files)
-    par = pst.parameter_data
-    m1.update_par_inits_rgs(par)
-
-    print(par)
-
+    m1.plant_to_tpl_file('rice_dwn')
+    m1.crop_aa_obd_to_ins("crop_aa_rice_dwn.txt")

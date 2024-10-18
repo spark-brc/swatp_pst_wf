@@ -1537,9 +1537,8 @@ def albufera_predictive_results(wd):
 
 
 
-class SWATp(handler.Paddy):
+class SWATp:
     def __init__(self, wd):
-        super().__init__(wd)
         os.chdir(wd)
 
     def plot_stress(self, df, stress=None, w=12, h=4):
@@ -1604,7 +1603,7 @@ class SWATp(handler.Paddy):
 
 
 # '''
-class Paddy(handler.Paddy):
+class Paddy:
     def __init__(self, wd):
         super().__init__(wd)
         os.chdir(wd)
