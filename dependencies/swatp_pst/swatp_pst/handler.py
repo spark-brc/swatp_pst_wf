@@ -11,9 +11,9 @@ from tqdm import tqdm
 from termcolor import colored
 from shutil import copyfile
 from swatp_pst import analyzer
+from warnings import simplefilter
 
-
-
+simplefilter(action="ignore", category=pd.errors.PerformanceWarning)
 opt_files_path = os.path.join(
                     os.path.dirname(os.path.abspath( __file__ )),
                     'opt_files')
@@ -405,6 +405,121 @@ class SWATp(object):
             skiprows=[0,1,2,3]            
         )
 
+    def read_hru_lsu(self):
+        return pd.read_csv(
+                    "hru_lsu.csv",
+                    usecols=[0, 1],
+                    )
+    
+    def get_hru_lsu_df(self):
+        df = self.read_hru_lsu()
+        counts = df['runame'].value_counts()
+        return counts
+
+    def read_hru_con(self):
+        return pd.read_csv(
+                    "hru.con",
+                    sep=r'\s+',
+                    skiprows=[0]     
+                    )
+    
+    def read_hru_data(self):
+        return pd.read_csv(
+                    "hru-data.hru",
+                    sep=r'\s+',
+                    skiprows=[0]     
+                    )        
+
+    def get_hru_area(self):
+        df = self.read_hru_con()
+        areas = df.loc[:, 'area'].tolist()
+        return areas
+    
+    def get_landuse(self):
+        ha = self.read_hru_con().loc[:, ["name", "area"]]
+        ha.index = ha.name
+        hd = self.read_hru_data().loc[:, ["name", "lu_mgt"]]
+        hd.index = hd.name
+        hd.fillna("barr_lum", inplace=True)
+        df = pd.concat([ha, hd], axis=1)
+        df.drop("name", axis=1, inplace=True)
+
+        df = df.groupby('lu_mgt').sum()
+        tot_area = df["area"].sum()
+        df['perct'] = (df['area']/tot_area) * 100
+        return df
+
+    def read_basin_pw_mon(self):
+        return pd.read_csv(
+                        "basin_pw_mon.txt",
+                        sep=r'\s+',
+                        skiprows=[0,2]   
+                        )
+    
+    def get_monthly_temps(self):
+        df = self.read_basin_pw_mon()
+        start_day = self.stdate_warmup
+        df = df.loc[:, ["tmx", "tmn", "tmpav"]]
+        df.index = pd.date_range(start=start_day, periods=len(df), freq="ME")
+        df = df.groupby(df.index.month).mean()
+        return df
+
+
+    def read_basin_wb_mon(self):
+        return pd.read_csv(
+                        "basin_wb_mon.txt",
+                        sep=r'\s+',
+                        skiprows=[0,2]   
+                        )
+
+    def get_monthly_precip(self):
+        df = self.read_basin_wb_mon()
+        start_day = self.stdate_warmup
+        df = df.loc[:, "precip"]
+        df.index = pd.date_range(start=start_day, periods=len(df), freq="ME")
+        df = df.groupby(df.index.month).mean()
+        return df
+   
+    def monthly_weather(self):
+        df = pd.concat([self.get_monthly_precip(), self.get_monthly_temps()], axis=1)
+        return df
+        
+    def get_monthly_irr(self):
+        df = self.read_basin_wb_mon()
+        start_day = self.stdate_warmup
+        df = df.loc[:, "irr"]
+        df.index = pd.date_range(start=start_day, periods=len(df), freq="ME")
+        df = df.groupby(df.index.month).mean()
+        return df
+
+    def monthly_weather_irr(self):
+        df = pd.concat(
+            [
+                self.get_monthly_precip(), 
+                self.get_monthly_temps(), 
+                self.get_monthly_irr(), 
+                ], axis=1)
+        return df
+
+    def read_basin_crop_yr(self, crop="rice"):
+        df = pd.read_csv("basin_crop_yld_yr.txt", sep=r"\s+", index_col=False, skiprows=[0])
+        df = df.loc[df["plant_name"]==crop]
+        df.index = df["year"]
+        return df
+    
+    def read_yield_obd(self, filenam):
+        df = pd.read_csv(filenam, na_values=-999, index_col=0)
+        return df
+
+    def get_crop_yld_sim_obd(self, filenam, crop="rice"):
+        df = pd.concat(
+            [self.read_basin_crop_yr(crop).loc[:, "yld(t/ha)"], self.read_yield_obd(filenam)], axis=1
+        )
+        df.dropna(how='all', inplace=True)
+        return df
+
+
+
 
 
     def extract_mon_stf(self, chs, cali_start_day, cali_end_day):
@@ -478,12 +593,6 @@ class SWATp(object):
             self.stdate_warmup, periods=len(paddy_df), freq="ME")
         print(paddy_hru_id)
         
-        # filter fallow paddy land
-        # paddy_df.drop(
-        #     [col for col, val in paddy_df.sum().iteritems() if val == 0], 
-        #     axis=1, inplace=True
-        #     )
-        # paddy_df.drop(columns=paddy_df.columns[paddy_df.sum()==0], inplace=True)
         paddy_ids = [int(f"{pid[4:]}") for pid in paddy_df.columns]
         paddy_hru_id = paddy_hru_id.query('hruid in @paddy_ids')
         tot_area = paddy_hru_id.loc[:, "area"].sum()
@@ -507,8 +616,7 @@ class SWATp(object):
         return paddy_df
 
     def get_lu_mon(self, field, stdate=None, eddate=None):
-        from warnings import simplefilter
-        simplefilter(action="ignore", category=pd.errors.PerformanceWarning)
+        suffix = "passed"
         lu_df = pd.DataFrame()
         lu_mon_df = self.read_lu_wb_mon()
         luids = lu_mon_df.name.unique()
@@ -523,9 +631,9 @@ class SWATp(object):
         mbig_df = dff.groupby(dff.index.month).mean().T
         mbig_df['lsuid'] = [int(i[3:]) for i in mbig_df.index]
         mbig_df.to_csv(f"lsu_{field}_mon_wb.csv", index=False)
+        print(f' > lsu_{field}_mon_wb.csv file has been created... '+ colored(suffix, 'green'))
         return mbig_df
     
-
     def get_hru_mon(self, field, stdate=None, eddate=None):
         from warnings import simplefilter
         simplefilter(action="ignore", category=pd.errors.PerformanceWarning)
@@ -546,10 +654,10 @@ class SWATp(object):
         mbig_df.to_csv(f"hru_{field}_mon_wb.csv", index=False)
         return mbig_df
 
-    def get_lu_hf_wb(self):
+    def get_lu_hf_wb_(self):
         lu_hf = self.read_lu_wb_yr()
         # filter >=2017
-        # lu_hf = lu_hf.loc[lu_hf['yr']>=2013]
+        lu_hf = lu_hf.loc[lu_hf['yr']>=2013]
         cols = [
                 "name", "yr",
                 "precip", "surq_gen", "latq", "wateryld", "perc", 
@@ -584,13 +692,16 @@ class SWATp(object):
         tot_df.columns = ["hillslope", "floodplain"]
         tot_df.to_csv("hf.csv")
         print(os.getcwd())
+
+        print(tot_df)
+        print(lu_hf)
         return tot_df
 
 
     def get_lu_hf_wb(self):
         lu_hf = self.read_lu_wb_aa()
         # filter >=2017
-        # lu_hf = lu_hf.loc[lu_hf['yr']>=2013]
+        lu_hf = lu_hf.loc[lu_hf['yr']>=2017]
         cols = [
                 "name", "yr",
                 "precip", "surq_gen", "latq", "wateryld", "perc", 
@@ -736,7 +847,8 @@ class Paddy(SWATp):
         df = df.loc[df["gis_id"]==1]
         df.index = pd.date_range(self.stdate_warmup, periods=len(df))
         return df
-    
+
+
     def read_yield_obd(self):
         inf = "YIELD & PRODUCTION - DISTRICT DATA_csir request.xlsx"
         years, yields = [], []
@@ -1309,12 +1421,21 @@ if __name__ == '__main__':
     # print(df)
     # mv1.plot_violin2(inf, 4)
 
-    # NOTE: extract crop
-    m1.extract_crop_aa(['rice_dwn'])
+    # # NOTE: extract crop
+    # m1.extract_crop_aa(['rice_dwn'])
     
+    # NOTE: filter paddy
+    # m1.filter_paddy(2899)
+    # df = m1.get_hru_lsu_df()
+    sitenam = "Dawhenya"
+    # print(type(df))
 
+    df = m1.get_hru_area()
+    # df = [x for x in df if x < 300]
+    fig, axes = plt.subplots(1, 2, figsize=(3, 5))
+    axes[0] = analyzer.SWATp.violin_hru_lsu(axes[0], df, sitenam)
 
-
+    plt.show()
     # NOTE: get paddy stress bar
     # df = m1.get_paddy_stress_df()
     # mv1 = analyzer.SWATp(m1.wd)
@@ -1324,7 +1445,6 @@ if __name__ == '__main__':
 
     # NOTE: filter paddy
     # m1.conv_hrudata()
-    # m1.filter_paddy(2899)
     # m1.conv_hyd_perco(perco=0.1)
     # m1 = SWATp(wd)
     # fields = ["wateryld", "perc", "et", "sw_ave", "latq_runon"]

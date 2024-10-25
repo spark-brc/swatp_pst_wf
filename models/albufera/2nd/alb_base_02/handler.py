@@ -11,10 +11,10 @@ import shutil
 from tqdm import tqdm
 from termcolor import colored
 
-pt_files_path = os.path.join(
-                    os.path.dirname(os.path.abspath( C:\swatmf\dependencies\swatp_pst\swatp_pst')),
-                    'opt_files')
-foward_path = os.path.dirname(os.path.abspath(C:\TxtInOut_Albuferajune24"))
+# pt_files_path = os.path.join(
+#                     os.path.dirname(os.path.abspath( C:\swatmf\dependencies\swatp_pst\swatp_pst')),
+#                     'opt_files')
+# foward_path = os.path.dirname(os.path.abspath(C:\TxtInOut_Albuferajune24"))
 
 
 def create_swatp_pst_con(
@@ -477,6 +477,7 @@ if __name__ == '__main__':
     # wd = "D:\\Projects\\Watersheds\\Koksilah\\analysis\\koksilah_swatmf\\SWAT-MODFLOW"
 
     m1 = SWATp(wd)
+    m1.get_lu_hf_wb()
     # cns =  [1]
     # cali_start_day = "1/1/2013"
     # cali_end_day = "12/31/2023"
@@ -488,6 +489,3 @@ if __name__ == '__main__':
     #     m1.get_lu_mon(fd, stdate="1/1/2017", eddate="12/31/2023")
     #     print(fd)
 
-    m1.get_lu_hf_wb()
-
-    # print(dff)
