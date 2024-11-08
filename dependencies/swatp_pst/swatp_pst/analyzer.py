@@ -1662,7 +1662,9 @@ class SWATp:
         df = df.loc[df["perct"]>threshold]
         labels = [x[:-4] if x.endswith('_lum') else x for x in df.index]
         ax.pie(
-            df.area, labels=labels, autopct='%1.1f%%',
+            df.area, 
+            # labels=labels, 
+            autopct='%1.1f%%',
             pctdistance=1.15, labeldistance=1.3, textprops={'fontsize': 10},
             colors=plt.cm.Pastel2.colors)
         ax.axis('equal')
@@ -1687,13 +1689,13 @@ class SWATp:
 
     def bar_weather_irr(ax, ax1, ax2, df):
 
-        ax1.plot(df.index, df.tmpav, 'r', zorder=2)
-        ax1.fill_between(df.index, df.tmn, df.tmx, color = 'pink', alpha = 0.6)
         ax.bar(df.index, df.precip, zorder=1, width = 0.7)
         ax2.spines['right'].set_position(('outward', 60))
-        ax2.bar(df.index, df.irr, zorder=3, width = 0.7, color='C2')
+        ax2.bar(df.index, df.loc[:, "tot_irr"], zorder=1, width = 0.7, color='C2')
         ax2.set_ylabel('Irrigation $(mm/month)$', color='C2', fontsize=12)
         ax2.tick_params(axis='y', labelcolor='C2')
+        ax1.plot(df.index, df.tmpav, 'r', zorder=5)
+        ax1.fill_between(df.index, df.tmn, df.tmx, color = 'pink', alpha = 0.6, zorder=5)
 
         xlabels = ['Jan','Feb','Mar','Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep',
            'Oct', 'Nov', 'Dec']
@@ -1708,7 +1710,6 @@ class SWATp:
         ax2.tick_params(axis='both', labelsize=10)
         ax.set_ylabel("Precipitation $(mm/month)$",fontsize=12, color='C0')
         ax1.set_ylabel("Temperature $(C^0)$",fontsize=12, color='crimson')
-
         return ax
 
 

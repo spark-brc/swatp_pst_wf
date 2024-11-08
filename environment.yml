@@ -18,6 +18,8 @@ dependencies:
   - pyshp
   - psutil
   - git
+  - geopandas
+  - netCDF4
   - nbconvert
   - pip:
     # - -e ./dependencies/flopy
@@ -29,3 +31,4 @@ dependencies:
     # - git+https://github.com/pypest/pyemu.git@develop
     - termcolor
     - tqdm
+    - wget

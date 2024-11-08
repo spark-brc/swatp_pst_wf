@@ -18,6 +18,7 @@ opt_files_path = os.path.join(
                     os.path.dirname(os.path.abspath( __file__ )),
                     'opt_files')
 foward_path = os.path.dirname(os.path.abspath( __file__ ))
+suffix = "passed"
 
 
 def create_swatp_pst_con(
@@ -224,8 +225,9 @@ def exists(path_):
     return False
 
 class SWATp(object):
-    def __init__(self, wd):
-        os.chdir(wd)
+    def __init__(self, working_dir):
+        self.working_dir = working_dir
+        os.chdir(self.working_dir)
         self.stdate, self.enddate, self.stdate_warmup = self.define_sim_period()
 
     def define_sim_period(self):
@@ -304,7 +306,7 @@ class SWATp(object):
         hru_paddy.dropna(subset=['surf_stor'], axis=0, inplace=True)
         # tot_area = hru_paddy.loc[:, "area"].sum()
         # hru_paddy["area_weighted"] =hru_paddy.loc[:, "area"]/ tot_area, 
-        print(hru_paddy)
+        # print(hru_paddy)
         return hru_paddy
 
 
@@ -493,11 +495,13 @@ class SWATp(object):
         return df
 
     def monthly_weather_irr(self):
+        tot_irr = self.get_mon_irr()
+        tot_irr = tot_irr.loc[:, "tot_irr"].groupby(tot_irr.index.month).mean()
         df = pd.concat(
             [
                 self.get_monthly_precip(), 
-                self.get_monthly_temps(), 
-                self.get_monthly_irr(), 
+                self.get_monthly_temps(),
+                tot_irr 
                 ], axis=1)
         return df
 
@@ -591,7 +595,7 @@ class SWATp(object):
             paddy_df[f"hru_{hruid}"] = df.loc[df["unit"]==hruid, "irr"].values
         paddy_df.index = pd.date_range(
             self.stdate_warmup, periods=len(paddy_df), freq="ME")
-        print(paddy_hru_id)
+        # print(paddy_df)
         
         paddy_ids = [int(f"{pid[4:]}") for pid in paddy_df.columns]
         paddy_hru_id = paddy_hru_id.query('hruid in @paddy_ids')
@@ -632,8 +636,19 @@ class SWATp(object):
         mbig_df['lsuid'] = [int(i[3:]) for i in mbig_df.index]
         mbig_df.to_csv(f"lsu_{field}_mon_wb.csv", index=False)
         print(f' > lsu_{field}_mon_wb.csv file has been created... '+ colored(suffix, 'green'))
+        print(os.getcwd())
         return mbig_df
-    
+
+    def get_lu_wb_aa(self):
+        suffix = "OK"
+        columns = ["name", "wateryld", "perc", "et", "sw_ave"]
+        lu_aa_df = self.read_lu_wb_aa().loc[:, columns]
+        lu_aa_df['lsuid'] = [int(i[3:]) for i in lu_aa_df["name"]]
+        lu_aa_df.drop("name", axis=1, inplace=True)
+        lu_aa_df.to_csv(f"lsu_aa_wb.csv", index=False)
+        print(f' > lsu_aa_wb.csv file has been created... '+ colored(suffix, 'green'))
+
+
     def get_hru_mon(self, field, stdate=None, eddate=None):
         from warnings import simplefilter
         simplefilter(action="ignore", category=pd.errors.PerformanceWarning)
@@ -677,8 +692,6 @@ class SWATp(object):
             hill_wt[f'{col}'] = hill_df[f'{col}'] * hill_df['weight_area']
             # hill_wt = pd.concat([hill_wt, hill_df[f'{col}'] * hill_df['weight_area']], axis=1)
         hill_sum = hill_wt.sum(axis=0)
-
-
         fdp_df = lu_hf.loc[lu_hf.index.str.strip().str[-1]=='1']
         fdp_totarea = fdp_df['area'].sum()
         fdp_df['weight_area'] = fdp_df['area'] / fdp_totarea
@@ -739,6 +752,82 @@ class SWATp(object):
         """
         print(lu_hf)
 
+class CliScenario:
+    def __init__(self, working_dir):
+        self.working_dir = working_dir
+
+    def read_lu_wb_csv(self, scn_dir, field):
+        df = pd.read_csv(
+            os.path.join(self.working_dir, scn_dir, f"lsu_{field}_mon_wb.csv"))
+        df[f"MJ_{scn_dir}"] = (df["5"] + df["6"])/2
+        df[f"JD_{scn_dir}"] = (df["1"] + df["12"])/2
+        df = df[[f"MJ_{scn_dir}", f"JD_{scn_dir}", "lsuid"]]
+
+        # print(df)
+        return df
+
+
+    def get_lu_wb_mon_scns(self, scn_dirs, field):
+        dff = pd.DataFrame()
+        for sd in scn_dirs:
+            df = self.read_lu_wb_csv(sd, field)
+            dff = pd.concat([dff, df], axis=1)
+        dff = dff.loc[:,~dff.columns.duplicated()].copy()
+        # basecols = ["hist", "ssp245"]
+        # base_cols = dff.loc[:, dff.columns.str.contains('and'.join(basecols), case=False)]
+        mjdf = dff.loc[:, dff.columns.str.contains('MJ', case=False)]
+        mjbase = mjdf.loc[:, mjdf.columns.str.contains('hist', case=False)]
+        mjscn = mjdf.loc[:,~mjdf.columns.str.contains('hist', case=False)] 
+        mjpct = pd.DataFrame()
+        for i in mjscn.columns:
+            mjpct[f"pct_{i}"] = ((mjscn[i] - mjbase.iloc[:, 0]) /mjbase.iloc[:, 0]) * 100
+        # mjpct = pd.concat([mjpct, mjbase.iloc[:, 0], dff["lsuid"]], axis=1)
+        jddf = dff.loc[:, dff.columns.str.contains('JD', case=False)]
+        jdbase = jddf.loc[:, jddf.columns.str.contains('hist', case=False)]
+        jdscn = jddf.loc[:,~jddf.columns.str.contains('hist', case=False)] 
+
+        jdpct = pd.DataFrame()
+        for i in jdscn.columns:
+            jdpct[f"pct_{i}"] = ((jdscn[i] - jdbase.iloc[:, 0]) /jdbase.iloc[:, 0]) * 100
+
+        totdf = pd.DataFrame()
+        totdf = pd.concat([dff["lsuid"], mjbase.iloc[:, 0], mjpct, jdbase.iloc[:, 0], jdpct], axis=1)
+        totdf.replace([np.inf, -np.inf], np.nan, inplace=True)
+
+        totdf.to_csv(os.path.join(self.working_dir, f"lsu_{field}_wb_mon_scn.csv"), index=False)
+        print(f' > lsu_{field}_wb_mon_scn.csv file has been created... '+ colored(suffix, 'green'))
+
+    def read_lu_wb_aa_csv(self, scn_dir):
+        df = pd.read_csv(
+            os.path.join(self.working_dir, scn_dir, f"lsu_aa_wb.csv"))
+        df.columns = [f"{scn_dir}_{i}" if i != "lsuid" else i for i in df.columns]
+        # print(df)
+        return df
+    
+    def get_lu_wb_aa_scns(self, scn_dirs):
+        dff = pd.DataFrame()
+        for sd in scn_dirs:
+            df = self.read_lu_wb_aa_csv(sd)
+            dff = pd.concat([dff, df], axis=1)
+        dff = dff.loc[:,~dff.columns.duplicated()].copy()
+        fields = ["wateryld", "perc", "et", "sw_ave"]
+        for f in fields:
+            totdf = dff.loc[:, dff.columns.str.contains(f, case=False)]
+            basedf = totdf.loc[:, totdf.columns.str.contains('hist', case=False)]
+            scndf = totdf.loc[:,~totdf.columns.str.contains('hist', case=False)] 
+            pctdf = pd.DataFrame()
+            pctdf['lsuid'] = dff.loc[:, "lsuid"]
+            pctdf['base'] = basedf.iloc[:, 0]
+
+            # for j in scndf.columns:
+            #     pctdf[f"pct_{j}"] = ((scndf[j] - basedf.iloc[:, 0]) /basedf.iloc[:, 0]) * 100
+            #     pctdf.to_csv(os.path.join(self.working_dir, f"lsu_{f}_wb_aa_scn.csv"), index=False)
+            #     print(f' > lsu_{f}_wb_aa_scn.csv file has been created... '+ colored(suffix, 'green'))
+            for j in scndf.columns:
+                pctdf[f"pct_{j}"] = ((scndf[j] - basedf.iloc[:, 0]) /basedf.iloc[:, 0]) * 100
+            pctdf.replace([np.inf, -np.inf], np.nan, inplace=True)
+            pctdf.to_csv(os.path.join(self.working_dir, f"lsu_{f}_wb_aa_scn.csv"), float_format= '%.2f', index=False)
+            print(f' > lsu_{f}_wb_aa_scn.csv file has been created... '+ colored(suffix, 'green'))
 
 def get_last_day_of_month(df):
     for i in range(len(df)):
@@ -847,7 +936,6 @@ class Paddy(SWATp):
         df = df.loc[df["gis_id"]==1]
         df.index = pd.date_range(self.stdate_warmup, periods=len(df))
         return df
-
 
     def read_yield_obd(self):
         inf = "YIELD & PRODUCTION - DISTRICT DATA_csir request.xlsx"
@@ -1408,7 +1496,15 @@ class Paddy(SWATp):
         df = df[df['name'].isin(paddy_objs)]
         df = df.groupby(df['name']).mean()
         return df
-
+    
+    def get_crop_yld(self):
+        paddy_objs = self.get_paddy_objs()[:, 0] # get hru name
+        columns = ['yr', 'name', "yield"]
+        df = self.read_hru_pw_yr()
+        df = df[columns]
+        df = df[df['name'].isin(paddy_objs)]
+        df = df.loc[df["yr"]==2020]
+        return df
 
 
 if __name__ == '__main__':
@@ -1427,6 +1523,7 @@ if __name__ == '__main__':
     # NOTE: filter paddy
     # m1.filter_paddy(2899)
     # df = m1.get_hru_lsu_df()
+
     sitenam = "Dawhenya"
     # print(type(df))
 
