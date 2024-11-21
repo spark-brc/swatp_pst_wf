@@ -12,8 +12,9 @@ import psutil
 from datetime import datetime
 import matplotlib.pyplot as plt
 import itertools
-from swatp_pst import handler
-
+from swatp_pst import handler, analyzer
+import scipy.stats as scs
+import spei as si
 
 class ClimateDataDownloader:
     def __init__(self, working_dir, dataset_name, model_name, ssp_of_interest,
@@ -552,7 +553,7 @@ class ClimateAnalyzer:
         df = self.get_pcps()
         df = df[["ssp245_pcp", "ssp585_pcp"]]
         base = df['1/1/1980':'12/31/2014'].loc[:, "ssp245_pcp"]
-        base.name = "base"
+        base.name = "Historical"
         nf = df['1/1/2015':'12/31/2040'].loc[:, ["ssp245_pcp", "ssp585_pcp"]]
         nf.columns = ["ssp245_nf", "ssp585_nf"]
         mf = df['1/1/2041':'12/31/2070'].loc[:, ["ssp245_pcp", "ssp585_pcp"]]
@@ -569,8 +570,6 @@ class ClimateAnalyzer:
         ax1.tick_params(labelcolor='none', top=False, bottom=False, left=False, right=False)
         month_names = ['Jan','Feb','Mar','Apr','May','Jun',
                     'Jul','Aug','Sep','Oct','Nov','Dec']
-        
-        
         for i, ax in enumerate(axes.flat):
             df_m = dff.loc[dff.index.month==i+1]
             data = [df_m[i].dropna() for i in df_m.columns]
@@ -812,9 +811,6 @@ class ClimateAnalyzer:
         # for chirps vs fgoals
         df = df.sort_index().loc['1/1/1983':'12/31/2014', ['chirps_pcp', 'ssp245_pcp', 'ssp585_pcp']]
         msdf = df.resample('ME').sum()
-        
-
-        print(msdf)
 
         fig, axes = plt.subplots(2, 5, figsize=(12, 5), sharex=True, sharey=True)
         ax1 = fig.add_subplot(111, frameon=False)
@@ -874,6 +870,217 @@ class ClimateAnalyzer:
             m1 = handler.SWATp(os.path.join(working_dir, scn))
             m1.get_lu_wb_aa()
 
+    def scenario_fdc_org(self, df):
+        # df from get_streamdischarge_scns
+        # from get_stf_sim_obd
+        fig, ax = plt.subplots()
+        for col in df.columns:
+
+        # odd, oeexd = handler.convert_fdc_data(df.iloc[:, 1].values)
+            sdd, seexd = analyzer.convert_fdc_data(df.loc[:, col].dropna().values)
+
+            ax.plot(seexd*100, sdd, lw=2, label=col)
+            # ax.scatter(seexd*100, sdd, label=col)
+            # ax.plot(oeexd*100, odd, lw=2, label="obd")
+            ax.set_yscale('log')
+        # ax.set_xlabel(r"Exceedence [%]", fontsize=12)
+        # ax.set_ylabel(r"Flow rate $[m^3/s]$", fontsize=12)
+        ax.margins(0.01)
+        # ax.tick_params(axis='both', labelsize=12)
+        plt.legend(fontsize=12, loc="lower left")
+        # ax.text(
+        #     1, 0.8, f'rel{rel_idx}', fontsize=10,
+        #     horizontalalignment='right',
+            # transform=ax.transAxes)
+        plt.tight_layout()
+        # plt.savefig(f'fdc_{obgnme}.png', bbox_inches='tight', dpi=300)
+        plt.show()    
+
+    def scenario_fdc(self, df):
+        """plot fdc for stream discharge
+
+        :param df: data read from read_stf_scns function
+        :type df: dataframe
+        """
+
+        from scipy.ndimage import gaussian_filter1d
+        # df from get_streamdischarge_scns
+        # from get_stf_sim_obd
+        fig, ax = plt.subplots(figsize=(7,6))
+        for col in df.columns:
+            sdd, seexd = analyzer.convert_fdc_data(df.loc[:, col].dropna().values)
+            ysmoothed = gaussian_filter1d(sdd, sigma=2)
+            if col == "base":
+                col = "Historical"
+            ax.plot(seexd*100, ysmoothed, lw=2, label=col)
+            ax.set_yscale('log')
+            # ax.set_xscale('log')
+        ax.set_xlabel(r"Exceedence [%]", fontsize=12)
+        ax.set_ylabel(r"Flow rate $[m^3/s]$", fontsize=12)
+        ax.margins(0.01)
+        ax.tick_params(axis='both', labelsize=12)
+        plt.legend(fontsize=12, loc="lower left")
+        obgnme = "dawhenya"
+        plt.tight_layout()
+        plt.savefig(os.path.join(self.working_dir, f'fdc_{obgnme}.png'), bbox_inches='tight', dpi=300)
+        plt.show()    
+
+    def scenario_fdc_details(self, df):
+        from scipy.ndimage import gaussian_filter1d
+        # df from get_streamdischarge_scns
+        # from get_stf_sim_obd
+        fig, axes = plt.subplots(
+            1, 3, figsize=(5, 5), 
+            gridspec_kw={'width_ratios': [1, 3, 1], 
+                        # 'wspace': 0.2
+                        }
+            )
+        for ax in axes:
+            for col in df.columns:
+                sdd, seexd = analyzer.convert_fdc_data(df.loc[:, col].dropna().values)
+                ysmoothed = gaussian_filter1d(sdd, sigma=2)
+                ax.plot(seexd*100, ysmoothed, lw=2, label=col)
+        # ax.set_xlabel(r"Exceedence [%]", fontsize=12)
+        # ax.set_ylabel(r"Flow rate $[m^3/month]$", fontsize=12)
+        axes[0].set_xlim(-1, 10)
+        # axes[0].set_ylim(250, 1500) #Mun
+        axes[0].set_ylim(5, 40)
+
+        axes[1].set_xlim(45, 55)
+        # axes[1].set_ylim(100, 160) # mun
+        axes[1].set_ylim(1.5, 3.5)
+        axes[2].set_xlim(90, 101)
+        # axes[2].set_ylim(15, 80)# mun
+        axes[2].set_ylim(0.04, 0.5)
+        axes[2].yaxis.tick_right()
+        for ax in axes:
+            ax.tick_params(axis='both', labelsize=12)
+            ax.set_yscale('log')
+            ax.margins(0.01)
+        axes[1].tick_params(axis='y', which='minor', rotation=90)
+        # ax.spines[['left', 'top']].set_visible(False)
+        # ax.xaxis.tick_bottom()
+        obgnme = "dawhenya"
+        # fig.subplots_adjust(wspace=0.1)
+        plt.tight_layout()
+        plt.savefig(os.path.join(self.working_dir, f'fdc_small_{obgnme}.png'), bbox_inches='tight', dpi=300)
+        plt.show()
+
+
+    def plot_violin_fdc_details(self, working_dir, chaid):
+        cs = handler.CliScenario(working_dir)
+        df = cs.read_stf_scns(chaid)
+        # 10 percent
+        dff = pd.DataFrame()
+        for col in df.columns:
+            data, exd = analyzer.convert_fdc_data(df.loc[:, col].dropna().values)
+            idx_ext = np.argmax(exd * 100 > 10)
+            value_ext = data[idx_ext-1]
+            ext_df = df.loc[df[col]>value_ext, col]
+            dff = pd.concat([dff, ext_df], axis=1)
+        dff.drop("ssp585_hist", axis=1, inplace=True)
+        dff.rename({'ssp245_hist': 'base'}, axis=1, inplace=True)
+        data = [dff[i].dropna() for i in dff.columns]
+
+
+
+        # 90 percent
+        dff90 = pd.DataFrame()
+        for col in df.columns:
+            data90, exd90 = analyzer.convert_fdc_data(df.loc[:, col].dropna().values)
+            idx_ext90 = np.argmax(exd90 * 100 > 90)
+            value_ext90 = data90[idx_ext90-1]
+            ext_df90 = df.loc[df[col]<value_ext90, col]
+            dff90 = pd.concat([dff90, ext_df90], axis=1)
+        dff90.drop("ssp585_hist", axis=1, inplace=True)
+        dff90.rename({'ssp245_hist': 'base'}, axis=1, inplace=True)
+        data90 = [dff90[i].dropna() for i in dff90.columns]
+
+        xlabels = ["Historical" if xc == "base" else xc for xc in dff.columns]
+
+        f, axes = plt.subplots(2, 1, figsize=(5,7), sharex=True)
+        # ax.boxplot(data, flierprops=flierprops)
+        r = axes[0].violinplot(
+            data,  widths=0.7, showmeans=True, showextrema=True,
+            # bw_method='silverman'
+            )
+        r90 = axes[1].violinplot(
+            data90,  widths=0.7, showmeans=True, showextrema=True,
+            # bw_method='silverman'
+            )
+        r['cmeans'].set_color('r')
+        r90['cmeans'].set_color('r')
+
+
+        # Set the color of the violin patches
+        colors = [f"C{i}" for i in range(8)]
+        for pc, color in zip(r['bodies'], colors):
+            pc.set_facecolor(color)
+        for pc, color in zip(r90['bodies'], colors):
+            pc.set_facecolor(color)
+        for ax in axes:
+            ax.set_xticks([i+1 for i in range(len(xlabels))])
+            ax.set_xticklabels(xlabels, rotation=90)
+            ax.tick_params(axis='both', labelsize=12)
+        plt.tight_layout()
+        plt.savefig(os.path.join(working_dir, 'fdc_violin_details.png'), dpi=300, bbox_inches="tight")
+        plt.show()
+
+    def extreme_events(self, df, ext_th): # number of extreme events annual
+        for col in df.columns:
+            data, exd = analyzer.convert_fdc_data(df.loc[:, col].dropna().values)
+            idx_ext = np.argmax(exd * 100 > ext_th)
+            value_ext = data[idx_ext-1]
+        dft = pd.DataFrame()
+        # extreme
+        ext_df = df[df >value_ext].groupby(df.index.year).agg('count')
+
+        return ext_df
+
+    def spi(self, df, colnam, interval=90):
+        series = df.loc[:, colnam].rolling(interval, min_periods=interval).sum().dropna()
+        return series
+
+
+    def extreme_events2(self, df, ext_val):
+        ext_df = df[df >ext_val].groupby(df.index.year).agg('count').mean()
+        return ext_df
+        # print(ext_df)
+
+
+
+
+
+
+
+    # def plot_bar_landuse_wb(self):
+
+def get_extreme_events():
+    # working_dir = "D:\\Projects\\Watersheds\\Ghana\\Analysis\\climate_scenarios\\dawhenya\\FGOALS-g3_SWAT_files"
+    working_dir = "D:\\Projects\\Watersheds\\Mun\\climate_scenarios\\FGOALS-g3_SWAT_files"
+    ca = ClimateAnalyzer(working_dir)
+    df = ca.get_pcps()
+    timesets = [
+        ("1/1/1985", "12/31/2014"),
+        ("1/1/2015", "12/31/2040"),
+        ("1/1/2041", "12/31/2070"),
+        ("1/1/2071", "12/31/2100"),
+    ]
+    # set 5% threshold from fdc in historical data
+    hist_df = df[f"{timesets[0][0]}":f"{timesets[0][1]}"]    
+    data, exd = analyzer.convert_fdc_data(hist_df.iloc[:, 0].dropna().values)
+    idx_ext = np.argmax(exd * 100 > 5)
+    value_ext = data[idx_ext-1]
+    print(idx_ext)
+    print(value_ext)
+
+    for ts in timesets:
+        edf = ca.extreme_events2(df[f"{ts[0]}":f"{ts[1]}"], value_ext)
+        print(edf)
+
+
+
+
 
 
 
@@ -893,19 +1100,9 @@ def test():
     sn.get_lu_wb_aa_scns(scns)
 
 
-# Example usage
-if __name__ == "__main__":
-    
-    # working_dir = "D:\\Projects\\Watersheds\\Ghana\\Analysis\\climate_scenarios\\dawhenya\\FGOALS-g3_SWAT_files"
-    # m1 = ClimateAnalyzer(working_dir)
-    # m1.plot_pcps()
-    # cli_down()
-
-    # fields = ["wateryld", "perc", "et", "sw_ave", "latq_runon"]
-    # # for f in fields:
-    # #     m1.get_lu_mon(f)
-
-    working_dir = "D:\\Projects\\Watersheds\\Ghana\\Analysis\\dawhenya\\prj05_paddy\\Scenarios\\Default"
+def fdc_figures():
+    # working_dir = "D:\\Projects\\Watersheds\\Ghana\\Analysis\\dawhenya\\prj05_paddy\\Scenarios\\Default"
+    working_dir = "D:\\Projects\\Watersheds\\Mun\\Mun_river_082024\\Scenarios\\Default"
     # scns = []
     # for sc in ["245", "585"]:
     #     for cset in ["hist", "near", "mid", "far"]:
@@ -916,13 +1113,90 @@ if __name__ == "__main__":
             scns.append(f"ssp{sc}_{cset}")
     
     sn = handler.CliScenario(working_dir)
-    sn.get_lu_wb_aa_scns(scns)
-    
-    # for scn in scns:
-    #     m1 = handler.SWATp(os.path.join(working_dir, scn))
-    #     m1.read_lu_wb_aa_csv()
+    # sn.extract_stf_day_scns(working_dir, scns, 1, timestep='day')
 
-    
+    # read scns file
+    df = sn.read_stf_scns(1)
+    df.drop("ssp585_hist", axis=1, inplace=True)
+    df.rename({'ssp245_hist': 'base'}, axis=1, inplace=True)
+    ClimateAnalyzer(working_dir).scenario_fdc(df)
+    ClimateAnalyzer(working_dir).plot_violin_fdc_details(working_dir, 1)
+
+
+def spi_figure():
+    working_dir = "D:\\Projects\\Watersheds\\Ghana\\Analysis\\climate_scenarios\\dawhenya\\FGOALS-g3_SWAT_files"
+    # working_dir = "D:\\Projects\\Watersheds\\Mun\\climate_scenarios\\FGOALS-g3_SWAT_files"
+    sc = ClimateAnalyzer(working_dir)
+    df = sc.get_pcps()
+    series = sc.spi(df, "ssp585_pcp")
+    # spi3_gamma = si.spi(series, dist=scs.gamma, fit_freq="ME")
+    spi3_pearson = si.spi(series, dist=scs.pearson3, fit_freq="ME")
+    f, ax = plt.subplots(4, 1, figsize=(12, 8))
+    # choose a colormap to your liking:
+    si.plot.si(spi3_pearson, ax=ax[0], cmap="vik_r")
+    si.plot.si(spi3_pearson, ax=ax[1], cmap="vik_r")
+    si.plot.si(spi3_pearson, ax=ax[2], cmap="vik_r")
+    si.plot.si(spi3_pearson, ax=ax[3], cmap="vik_r")
+    ax[0].set_xlim(pd.to_datetime(["1985", "2014"]))
+    ax[1].set_xlim(pd.to_datetime(["2015", "2040"]))
+    ax[2].set_xlim(pd.to_datetime(["2041", "2070"]))
+    ax[3].set_xlim(pd.to_datetime(["2071", "2100"]))
+    [x.grid() for x in ax]
+    [ax[i].set_ylabel(n, fontsize=14) for i, n in enumerate(["Historical", "Near Future", "Mid-Future", "Far Future"])];
+    for axx in ax:
+        axx.tick_params(axis='both', labelsize=12)
+    plt.tight_layout()
+    plt.savefig(os.path.join(working_dir, 'spi.png'), dpi=300, bbox_inches="tight")
+    plt.show()
+
+
+def spi_probability():
+    working_dir = "D:\\Projects\\Watersheds\\Ghana\\Analysis\\climate_scenarios\\dawhenya\\FGOALS-g3_SWAT_files"
+    # working_dir = "D:\\Projects\\Watersheds\\Mun\\climate_scenarios\\FGOALS-g3_SWAT_files"
+    sc = ClimateAnalyzer(working_dir)
+    df = sc.get_pcps()
+    series = sc.spi(df, "ssp245_pcp")
+    spi3_pearson = si.spi(series, dist=scs.pearson3, fit_freq="ME")
+    timesets = [
+        ("1/1/1985", "12/31/2014"),
+        ("1/1/2015", "12/31/2040"),
+        ("1/1/2041", "12/31/2071"),
+        ("1/1/2071", "12/31/2100"),
+    ]
+    for ts in timesets:
+        print(ts)
+        spi3_p_clip = spi3_pearson[f"{ts[0]}":f"{ts[1]}"]
+        # Define the ranges
+        ranges = [
+            (-10, -2), (-2, -1.5), (-1.5, -1.0), (-1.0, 1.0),
+            (1.0, 1.5), (1.5, 2.0), (2.0, 10)]
+
+        # Calculate probabilities for each range
+        for r in reversed(ranges):
+            prob = len(spi3_p_clip[(spi3_p_clip >= r[0]) & (spi3_p_clip < r[1])]) / len(spi3_p_clip)
+            print(f"Probability in range {r}: {prob*100:.1f}")
+
+# Example usage
+if __name__ == "__main__":
+    working_dir = "D:\\Projects\\Watersheds\\Ghana\\Analysis\\climate_scenarios\\dawhenya\\FGOALS-g3_SWAT_files"
+    # working_dir = "D:\\Projects\\Watersheds\\Mun\\climate_scenarios\\FGOALS-g3_SWAT_files"
+    # # sn = handler.CliScenario(working_dir)
+    # # # sn.extract_stf_day_scns(working_dir, scns, 1, timestep='day')
+
+    # # # read scns file
+    # # df = sn.read_stf_scns(1)
+    # # df.drop("ssp585_hist", axis=1, inplace=True)
+    # # df.rename({'ssp245_hist': 'base'}, axis=1, inplace=True)
+    # # ClimateAnalyzer(working_dir).scenario_fdc(df)
+
+    sc = ClimateAnalyzer(working_dir)
+    sc.plot_pcps()
+    # sc.plot_temps()
+
+    # get_extreme_events()
+    # spi_figure()
+
+
 
 
 

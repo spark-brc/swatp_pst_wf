@@ -186,6 +186,27 @@ def single_plot_tseries_ensembles_plots_added(
 
 #     # return pr_oe_min
 
+def single_fdc(df):
+    # from get_stf_sim_obd
+    fig, ax = plt.subplots()
+    odd, oeexd = convert_fdc_data(df.iloc[:, 1].values)
+    sdd, seexd = convert_fdc_data(df.iloc[:, 0].values)
+    ax.plot(seexd*100, sdd, lw=2, label="sim")
+    ax.plot(oeexd*100, odd, lw=2, label="obd")
+    ax.set_yscale('log')
+    # ax.set_xlabel(r"Exceedence [%]", fontsize=12)
+    # ax.set_ylabel(r"Flow rate $[m^3/s]$", fontsize=12)
+    ax.margins(0.01)
+    # ax.tick_params(axis='both', labelsize=12)
+    # plt.legend(fontsize=12, loc="lower left")
+    # ax.text(
+    #     1, 0.8, f'rel{rel_idx}', fontsize=10,
+    #     horizontalalignment='right',
+        # transform=ax.transAxes)
+    plt.tight_layout()
+    # plt.savefig(f'fdc_{obgnme}.png', bbox_inches='tight', dpi=300)
+    plt.show()
+
 def single_plot_fdc_added(
                     pst,
                     df,

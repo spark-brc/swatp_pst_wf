@@ -1,4 +1,5 @@
 import pandas as pd
+from pandas import DataFrame, Series
 import numpy as np
 import matplotlib.pyplot as plt
 import os, sys
@@ -12,13 +13,14 @@ from termcolor import colored
 from shutil import copyfile
 from swatp_pst import analyzer
 from warnings import simplefilter
+import matplotlib.gridspec as gridspec
 
 simplefilter(action="ignore", category=pd.errors.PerformanceWarning)
 opt_files_path = os.path.join(
                     os.path.dirname(os.path.abspath( __file__ )),
                     'opt_files')
 foward_path = os.path.dirname(os.path.abspath( __file__ ))
-suffix = "passed"
+suffix = "OK"
 
 
 def create_swatp_pst_con(
@@ -284,7 +286,15 @@ class SWATp(object):
             sep=r'\s+',
             skiprows=[0,2]
         )        
-    
+
+    def read_hru_wb_aa(self):
+        return pd.read_csv(
+            "hru_wb_aa.txt",
+            sep=r'\s+',
+            skiprows=[0,2]
+        )      
+
+
     def read_hru_pw_yr(self):
         return pd.read_csv(
             "hru_pw_yr.txt",
@@ -321,14 +331,26 @@ class SWATp(object):
             skiprows=[0,2],
             usecols=["gis_id", flo]
             )
-
-    # def read_cha_morph_day(self):
-    #     return pd.read_csv(
-    #         "channel_sdmorph_day.txt",
-    #         sep=r'\s+',
-    #         skiprows=[0,2],
-    #         usecols=["gis_id", "flo_out"]
-    #         )
+    
+    def read_cha_sd_day(self, flo=None):
+        if flo is None:
+            flo = "flo_out"
+        if flo == "flo_in":
+            flo = "flo_in"
+        return pd.read_csv(
+            "channel_sd_day.txt",
+            sep=r'\s+',
+            skiprows=[0,2],
+            usecols=["gis_id", flo]
+            )
+    
+    def read_cha_sd_mon(self):
+        return pd.read_csv(
+            "channel_sd_mon.txt",
+            sep=r'\s+',
+            skiprows=[0,2],
+            usecols=["gis_id", "flo_out"]
+            )
 
 
     def read_cha_morph_mon(self):
@@ -353,6 +375,58 @@ class SWATp(object):
             skiprows=[0,2]            
         )   
 
+
+    def read_basin_wb_aa(self):
+        return pd.read_csv(
+            "basin_wb_aa.txt",
+            sep=r'\s+',
+            header=None,
+            skiprows=[0, 2]            
+        )   
+
+    def read_basin_wb_aa2(self) -> Series:
+        """read basin wb aa file and make as series
+
+        :return: s
+        :rtype: Series
+        """
+        with open("basin_wb_aa.txt", "r") as f:
+            data = f.readlines()
+        firstline = data[1].strip().split()
+        flen = len(firstline)
+        secondline = data[3].strip().split()
+        secondline = secondline[:flen]
+        s = pd.Series(secondline, firstline)
+        return s
+
+    def read_basin_aqu_aa(self) -> Series:
+        with open("basin_aqu_aa.txt", "r") as f:
+            data = f.readlines()
+        firstline = data[1].strip().split()
+        flen = len(firstline)
+        secondline = data[3].strip().split()
+        secondline = secondline[:flen]
+        s = pd.Series(secondline, firstline)
+        return s        
+
+
+    def read_basin_sed_aa(self) -> Series:
+        """read basin wb aa file and make as series
+
+        :return: s
+        :rtype: Series
+        """
+        with open("basin_ls_aa.txt", "r") as f:
+            data = f.readlines()
+        firstline = data[1].strip().split()
+        flen = len(firstline)
+        secondline = data[3].strip().split()
+        secondline = secondline[:flen]
+        s = pd.Series(secondline, firstline)
+        return s
+
+
+
     def read_cha_obd(self, obd_file):
         return pd.read_csv(
             obd_file,
@@ -365,7 +439,7 @@ class SWATp(object):
         return pd.read_csv(
             "channel_sd_mon.txt",
             sep=r'\s+',
-            skiprows=[0,2],
+            # skiprows=[0,2],
             usecols=["gis_id", "area", "precip", ]
             )
     
@@ -521,10 +595,6 @@ class SWATp(object):
         )
         df.dropna(how='all', inplace=True)
         return df
-
-
-
-
 
     def extract_mon_stf(self, chs, cali_start_day, cali_end_day):
         sim_stf_f = self.read_cha_morph_mon()
@@ -752,6 +822,38 @@ class SWATp(object):
         """
         print(lu_hf)
 
+    def get_landuse_wb_aa(
+            self, field:str
+            ) -> Series:
+        """_summary_
+
+        :param field: water balance type
+        :type field: str
+        :return: weighted water balace
+        :rtype: Series
+        """
+        dff = pd.DataFrame()
+        df = self.read_hru_wb_aa()
+        df.set_index('name', inplace=True)
+        hru_area = self.read_hru_con()
+        hru_area.set_index('name', inplace=True)
+        hru_data = self.read_hru_data()
+        hru_data.set_index('name', inplace=True)
+        hru_data["lu_type"] = [str(i)[:-4] if i !=np.nan else i for i in hru_data["lu_mgt"]]
+        # hru_data = hru_data["lu_type"]
+        dff = pd.concat(
+            [hru_data["lu_type"], 
+             hru_area["area"],
+             df[f"{field}"]
+             ], axis=1)
+        # weight by area
+        tot_area = dff.loc[:, "area"].sum()
+        dff["area_weighted"] =dff.loc[:, "area"]/ tot_area
+        dff[f"{field}_weigthed"] = dff[field] * dff["area_weighted"]
+        fdf = dff.groupby(dff["lu_type"]).sum()
+        return fdf.iloc[:, -1]
+        
+
 class CliScenario:
     def __init__(self, working_dir):
         self.working_dir = working_dir
@@ -765,7 +867,6 @@ class CliScenario:
 
         # print(df)
         return df
-
 
     def get_lu_wb_mon_scns(self, scn_dirs, field):
         dff = pd.DataFrame()
@@ -828,6 +929,101 @@ class CliScenario:
             pctdf.replace([np.inf, -np.inf], np.nan, inplace=True)
             pctdf.to_csv(os.path.join(self.working_dir, f"lsu_{f}_wb_aa_scn.csv"), float_format= '%.2f', index=False)
             print(f' > lsu_{f}_wb_aa_scn.csv file has been created... '+ colored(suffix, 'green'))
+
+    def get_basin_wb_aa_scns(
+            self, 
+            scn_dirs: list,
+        ) -> DataFrame:
+        # waterbalance info
+        wdf = pd.DataFrame()
+        for sd in scn_dirs:
+            smodel = SWATp(os.path.join(self.working_dir, sd))
+            s = smodel.read_basin_wb_aa2()
+            s.name = f"{sd}"
+            wdf = pd.concat([wdf, s], axis=1)
+        # sediment
+        sdf = pd.DataFrame()
+        for sd in scn_dirs:
+            smodel = SWATp(os.path.join(self.working_dir, sd))
+            s = smodel.read_basin_sed_aa()
+            s.name = f"{sd}"
+            sdf = pd.concat([sdf, s], axis=1)   
+        # sediment
+        aqdf = pd.DataFrame()
+        for sd in scn_dirs:
+            smodel = SWATp(os.path.join(self.working_dir, sd))
+            s = smodel.read_basin_aqu_aa()
+            s.name = f"{sd}"
+            aqdf = pd.concat([aqdf, s], axis=1)  
+            
+        wdf = pd.concat([wdf, sdf, aqdf], axis=0)
+        wdf.to_csv(os.path.join(self.working_dir, "basin_wb_aa_scns.csv"))
+        return wdf
+
+
+    def get_streamdischarge_scns(self, scn_dirs, chaid, timestep="day"):        
+        dff = pd.DataFrame()
+        for scn_dir in scn_dirs:
+            m1 = SWATp(os.path.join(self.working_dir, scn_dir))
+            if timestep == "day":
+                freq = "D"
+                df = m1.read_cha_morph_day()
+            elif timestep == "month":
+                freq = "ME"
+                df = m1.read_cha_morph_mon()
+            start_day = m1.stdate_warmup
+            df = df.loc[df["gis_id"] == chaid]
+            df = df.drop(['gis_id'], axis=1)
+            df.index = pd.date_range(start_day, periods=len(df.flo_out), freq=freq)
+            df.columns = [f"{scn_dir}"]
+            dff = pd.concat([dff, df], axis=1)
+            print(f"  ... {scn_dir} ... " + colored(suffix, 'green'))
+        return dff
+
+    def extract_stf_day_scns(self, scn_dirs, chaid, timestep="day"):        
+        dff = pd.DataFrame()
+        for scn_dir in scn_dirs:
+            m1 = SWATp(os.path.join(self.working_dir, scn_dir))
+            if timestep == "day":
+                freq = "D"
+                df = m1.read_cha_sd_day()
+            elif timestep == "month":
+                freq = "ME"
+                df = m1.read_cha_sd_mon()
+            start_day = m1.stdate_warmup
+            df = df.loc[df["gis_id"] == chaid]
+            df = df.drop(['gis_id'], axis=1)
+            df.index = pd.date_range(start_day, periods=len(df.flo_out), freq=freq)
+            df.columns = [f"{scn_dir}"]
+            dff = pd.concat([dff, df], axis=1)
+            print(f"  ... {scn_dir} ... " + colored(suffix, 'green'))
+        dff.to_csv(
+            os.path.join(self.working_dir,'stf_{:03d}_day_scns.csv'.format(chaid)),
+            encoding='utf-8', index=True, header=True,
+            float_format='%.5e', na_rep='-999')
+        print(' >>> stf_{:03d}_day_scns.csv file has been created...'.format(chaid))
+        print(' > Finished ...\n')
+        return dff
+
+    def read_stf_scns(self, chaid, timestep="day"):
+        if timestep == "day":
+            cha_extract_file = f"stf_{chaid:03d}_day_scns.csv"
+        stf_sim = pd.read_csv(
+                            os.path.join(self.working_dir, cha_extract_file),
+                            index_col=0,
+                            parse_dates=True,
+                            na_values=-999)
+        return stf_sim
+
+    def get_landuse_wb_aa_scns(self, scn_dirs, field) -> DataFrame:
+        dff = pd.DataFrame()
+        for scn_dir in scn_dirs:
+            m1 = SWATp(os.path.join(self.working_dir, scn_dir))
+            df = m1.get_landuse_wb_aa(field)
+            df.name = scn_dir
+            dff = pd.concat([dff, df], axis=1)
+        dff.to_csv(os.path.join(self.working_dir, f"landuse_{field}_aa_scns.csv"))
+        return dff
 
 def get_last_day_of_month(df):
     for i in range(len(df)):
@@ -1507,97 +1703,344 @@ class Paddy(SWATp):
         return df
 
 
+class Executes:
+
+    def combined():
+        # NOTE: PADDY
+        wd =  "d:\\Projects\\Watersheds\\Ghana\\Analysis\\botanga\\prj01\\Scenarios\\Default\\TxtInOut_rice_f"
+        m1 = Paddy(wd)
+
+        '''
+        '''
+        df = m1.read_paddy_daily()
+        cols = ["Precip", "Irrig", "Seep", "ET", "PET", 'WeirH', 'Wtrdep', 'WeirQ','LAI']
+        df = df.loc[:,  cols]
+        df = df["1/1/2019":"12/31/2020"]
+        print(df)
+        analyzer.Paddy(wd).plot_paddy_daily(df)
+
+        dfs = m1.read_lsunit_wb_yr()
+        dfs = dfs.loc[:,  "precip"]
+        dfo = m1.read_pcp_obd()
+        print(dfs)
+
+        dfs = pd.concat([dfs, dfo], axis=1)
+        analyzer.Paddy(wd).plot_prep(dfs)
+        # print(analyzer.Paddy(wd).stdate)
+
+        dfy = m1.read_basin_pw_day()
+        dfy = dfy.loc[:,  "yield"].resample('YE').sum() * 0.001
+        dfyo = m1.read_yield_obd()
+        dfy = pd.concat([dfy, dfyo], axis=1)
+
+        print(dfy)
+        analyzer.Paddy(wd).plot_yield(dfy)
+    
+
+        # NOTE: extract crop
+        m1.extract_crop_aa(['rice_dwn'])
+
+        # NOTE: filter paddy
+        # m1.filter_paddy(2899)
+        # df = m1.get_hru_lsu_df()
+
+        sitenam = "Dawhenya"
+        # print(type(df))
+
+        df = m1.get_hru_area()
+        # df = [x for x in df if x < 300]
+        fig, axes = plt.subplots(1, 2, figsize=(3, 5))
+        axes[0] = analyzer.SWATp.violin_hru_lsu(axes[0], df, sitenam)
+
+        plt.show()
+
+
+        # NOTE: get paddy stress bar
+        df = m1.get_paddy_stress_df()
+        mv1 = analyzer.SWATp(m1.wd)
+        for c in df.columns:
+            mv1.plot_stress(df, stress=c, h=2)
+        print(df)
+
+        # NOTE: filter paddy
+        m1.conv_hrudata()
+        m1.conv_hyd_perco(perco=0.1)
+        m1 = SWATp(wd)
+        fields = ["wateryld", "perc", "et", "sw_ave", "latq_runon"]
+        for fd in fields:
+            m1.get_lu_mon(fd)
+            print(fd)
+        m2 = SWATp(wd)
+        fields = ["wateryld", "perc", "et", "sw_ave", "latq_runon"]
+        for fd in fields:
+            print(m2.get_hru_mon(fd))
+
+
+
+
+        # NOTE: get landuse hf waterbalance
+        wd = "D:\\jj\\opt_3rd\\calibrated_model_v02"
+        # wd = "D:\\Projects\\Watersheds\\Koksilah\\analysis\\koksilah_swatmf\\SWAT-MODFLOW"
+
+        m1 = SWATp(wd)
+        # cns =  [1]
+        # cali_start_day = "1/1/2013"
+        # cali_end_day = "12/31/2023"
+        # obd_file = "singi_obs_q1_colnam.csv"
+        # obd_colnam = "cha01"
+        # cha_ext_file = "stf_001.txt"
+        # fields = ["wateryld", "perc", "et", "sw_ave", "latq_runon"]
+        # for fd in fields:
+        #     m1.get_lu_mon(fd, stdate="1/1/2017", eddate="12/31/2023")
+        #     print(fd)
+
+        m1.get_lu_hf_wb()
+
+
+    def landuse_wb_figure():
+        # wd = "D:\\Projects\\Watersheds\\Ghana\\Analysis\\dawhenya\\prj05_paddy\\Scenarios\\Default"
+        wd = "D:\\Projects\\Watersheds\\Mun\\Mun_river_082024\\Scenarios\\Default"
+        m1 = CliScenario(wd)
+
+        scns = []
+        for sc in ["245", "585"]:
+            for cset in ["hist", "near", "mid", "far"]:
+                scns.append(f"ssp{sc}_{cset}")
+
+        fields = ["wateryld", "perc", "et", "sw_ave"]
+        # ldtypes = ["crwo", "fomi", "rice_paddy", "urbn"] # dawhenya
+        ldtypes = ["tfoe", "tagr", "rice140", "tswi"]
+        colors = [f"C{i}" for i in range(8)]
+
+
+        
+        wyld = m1.get_landuse_wb_aa_scns(scns, "wateryld").loc[ldtypes]
+        etdf = m1.get_landuse_wb_aa_scns(scns, "et").loc[ldtypes]
+        percdf = m1.get_landuse_wb_aa_scns(scns, "perc").loc[ldtypes]
+        swdf = m1.get_landuse_wb_aa_scns(scns, "sw_ave").loc[ldtypes]
+
+        totdf = [etdf, wyld, swdf, percdf]
+
+        # dff.drop("ssp585_hist", axis=1, inplace=True)
+        # dff.rename({'ssp245_hist': 'base'}, axis=1, inplace=True)
+        for ld in ldtypes:
+            print(ld)
+            f, axes = plt.subplots(4, 1, figsize=(4, 5), sharex=True)
+            for i , ax in enumerate(axes.flat):
+                cdf = totdf[i].copy()
+                cdf.drop("ssp585_hist", axis=1, inplace=True)
+                cdf.rename({'ssp245_hist': 'Historical'}, axis=1, inplace=True)
+                xlabels = [x for x in cdf.columns]
+                bar_container = ax.bar(cdf.columns, cdf.loc[ld], color=colors, alpha=0.5)
+
+
+                pcs = Executes.percent_change(cdf, ld)
+                print(pcs)
+                pcs = [""] + [f"{p:.1f}" for p in pcs]
+
+                # bar_container = ax.bar(fruit_names, fruit_counts)
+                # ax.set(ylabel='pints sold', title='Gelato sales by flavor', ylim=(0, 8000))
+                label_colors = []
+                for pc in pcs:
+                    try:
+                        val = float(pc)
+                        if val > 50:
+                            colr = "#ff0000"
+                        elif val <=50 and val >=25:
+                            colr = "#ff8b00"
+                        elif val < 25 and val > -25:
+                            colr = "g"
+                        elif val <= -25 and val >= -50:
+                            colr = "#3d89ff"
+                        elif val < -50:
+                            colr = "b"
+                        else:
+                            colr = "k"
+                    except ValueError as verr:
+                        val = pc
+                        colr = "k"
+                        pass 
+                    label_colors.append(colr)
+                
+                print(label_colors)
+
+                labels = ax.bar_label(
+                        bar_container, labels=pcs,
+                        # padding=-10, 
+                        color=colr, 
+                        fontsize=10)
+                for (label, lcolor) in zip(labels, label_colors):
+                    label.set_color(lcolor)
+                ax.margins(y=0.3)
+                ax.tick_params(axis='both', labelsize=12)
+                ax.set_xticks([i for i in range(len(xlabels))])
+                ax.set_xticklabels(xlabels, rotation=90)
+            plt.tight_layout()
+            plt.savefig(os.path.join(wd, f'{ld}_wb_scns.png'), dpi=300, bbox_inches="tight")
+
+            plt.show()
+
+
+
+
+    def landuse_wb_figure_not():
+        # wd = "D:\\Projects\\Watersheds\\Ghana\\Analysis\\dawhenya\\prj05_paddy\\Scenarios\\Default"
+        wd = "D:\\Projects\\Watersheds\\Mun\\Mun_river_082024\\Scenarios\\Default"
+        m1 = CliScenario(wd)
+
+        scns = []
+        for sc in ["245", "585"]:
+            for cset in ["hist", "near", "mid", "far"]:
+                scns.append(f"ssp{sc}_{cset}")
+
+        fields = ["wateryld", "perc", "et", "sw_ave"]
+        ldtypes = ["crwo", "fomi", "rice_paddy", "urbn"]
+        colors = [f"C{i}" for i in range(8)]
+
+
+        
+        wyld = m1.get_landuse_wb_aa_scns(scns, "wateryld").loc[ldtypes]
+        etdf = m1.get_landuse_wb_aa_scns(scns, "et").loc[ldtypes]
+        percdf = m1.get_landuse_wb_aa_scns(scns, "perc").loc[ldtypes]
+        swdf = m1.get_landuse_wb_aa_scns(scns, "sw_ave").loc[ldtypes]
+
+        totdf = [etdf, wyld, swdf, percdf]
+
+        # dff.drop("ssp585_hist", axis=1, inplace=True)
+        # dff.rename({'ssp245_hist': 'base'}, axis=1, inplace=True)
+        for ld in ldtypes:
+            print(ld)
+            f, axes = plt.subplots(4, 1, figsize=(4, 5), sharex=True)
+            for i , ax in enumerate(axes.flat):
+                cdf = totdf[i].copy()
+                cdf.drop("ssp585_hist", axis=1, inplace=True)
+                cdf.rename({'ssp245_hist': 'Historical'}, axis=1, inplace=True)
+                xlabels = [x for x in cdf.columns]
+
+
+                for col in range(7):
+
+                    bar_container = ax.bar(cdf.columns, cdf.loc[ld], color=colors, alpha=0.5)
+
+
+                    pcs = Executes.percent_change(cdf, ld)
+                    print(pcs)
+                    pcs = [""] + [f"{p:.1f}" for p in pcs]
+
+                    # bar_container = ax.bar(fruit_names, fruit_counts)
+                    # ax.set(ylabel='pints sold', title='Gelato sales by flavor', ylim=(0, 8000))
+                    label_colors = []
+                    for pc in pcs:
+                        try:
+                            val = float(pc)
+                            if val > 50:
+                                colr = "#ff0000"
+                            elif val <=50 and val >=25:
+                                colr = "#ff8b00"
+                            elif val < 25 and val > -25:
+                                colr = "g"
+                            elif val <= -25 and val >= -50:
+                                colr = "#3d89ff"
+                            elif val < -50:
+                                colr = "#b"
+                            else:
+                                colr = "k"
+                        except ValueError as verr:
+                            val = pc
+                            colr = "k"
+                            pass 
+                        label_colors.append(colr)
+                    print(label_colors)
+
+
+                    # for bar, color, pc in zip(bar_container, label_colors, pcs):
+                    ax.bar_label(
+                            bar_container, labels=pc,
+                            # padding=-10, 
+                            color=colr, 
+                            fontsize=10)
+
+
+                ax.margins(y=0.3)
+                ax.tick_params(axis='both', labelsize=12)
+                ax.set_xticks([i for i in range(len(xlabels))])
+                ax.set_xticklabels(xlabels, rotation=90)
+            plt.tight_layout()  
+            plt.show()
+
+
+
+    def percent_change(cdf, ld):
+        base = cdf.loc[ld, cdf.columns[0]]
+        s2nf = cdf.loc[ld, cdf.columns[1]]
+        s2mf = cdf.loc[ld, cdf.columns[2]]
+        s2ff = cdf.loc[ld, cdf.columns[3]]
+        s5nf = cdf.loc[ld, cdf.columns[4]]
+        s5mf = cdf.loc[ld, cdf.columns[5]]
+        s5ff = cdf.loc[ld, cdf.columns[6]]
+
+        percs = []
+        for i in range(1, 7):
+            pc =  (
+                (cdf.loc[ld, cdf.columns[i]] - cdf.loc[ld, cdf.columns[0]])/
+                cdf.loc[ld, cdf.columns[0]])*100
+            percs.append(pc)
+        return percs
+
+        # fig = plt.figure(figsize=(10, 10))
+        # outer = gridspec.GridSpec(2, 2, wspace=0.2, hspace=0.2)
+
+        # for i in range(4):
+        #     inner = gridspec.GridSpecFromSubplotSpec(4, 1,
+        #                     subplot_spec=outer[i], wspace=0.1, hspace=0.1)
+
+        #     for j in range(4):
+        #         ax = plt.Subplot(fig, inner[j])
+        #         cdf = totdf[j]
+        #         ax.bar(cdf.columns, cdf.loc[ldtypes[i]])
+        #         # t = ax.text(0.5,0.5, 'outer=%d, inner=%d' % (i, j))
+        #         # t.set_ha('center')
+        #         ax.set_xticks([])
+        #         ax.set_yticks([])
+        #         fig.add_subplot(ax)
+
+        # plt.show()
+
+
+    def example():
+        colors = ["k", "r", "g"]
+
+        fig, axe = plt.subplots()
+        bars = axe.bar(["A", "B", "C"], height=[4, 6, 2], color=colors, label="Data")
+        labels = axe.bar_label(bars, fontsize=10, fontweight=700, fmt="%.1f")
+        for (label, color) in zip(labels, colors):
+            label.set_color(color)
+        axe.axhline(4, linestyle="-.", color="black", label="Limit")
+        axe.legend()
+        plt.show()
+
+
+
 if __name__ == '__main__':
 
+
+    # wd = "D:\\Projects\\Watersheds\\Ghana\\Analysis\\dawhenya\\prj05_paddy\\Scenarios\\Default"
+    # m1 = CliScenario(wd)
+
+    # scns = []
+    # for sc in ["245", "585"]:
+    #     for cset in ["hist", "near", "mid", "far"]:
+    #         scns.append(f"ssp{sc}_{cset}")
+
     # wd =  "D:\\Projects\\Watersheds\\Ghana\\Analysis\\dawhenya\\prj05_paddy\\Scenarios\\Default\\TxtInOut"
-    wd = "D:\\Projects\\Watersheds\\Ghana\\Analysis\\dawhenya\\prj05_paddy\\Scenarios\\Default\\TxtInOut"
-    m1 = Paddy(wd)
-    # inf = "AF_430278_TMP.tmp"
-    # df = m1.generate_heatunit(inf, 2, 29)
-    # print(df)
-    # mv1.plot_violin2(inf, 4)
+    # m1 = SWATp(wd)
+    # print(m1.get_landuse_wb_aa("wateryld"))
 
-    # # NOTE: extract crop
-    # m1.extract_crop_aa(['rice_dwn'])
+    # print(hru_area)
+
+    Executes.landuse_wb_figure()
+
     
-    # NOTE: filter paddy
-    # m1.filter_paddy(2899)
-    # df = m1.get_hru_lsu_df()
-
-    sitenam = "Dawhenya"
-    # print(type(df))
-
-    df = m1.get_hru_area()
-    # df = [x for x in df if x < 300]
-    fig, axes = plt.subplots(1, 2, figsize=(3, 5))
-    axes[0] = analyzer.SWATp.violin_hru_lsu(axes[0], df, sitenam)
-
-    plt.show()
-    # NOTE: get paddy stress bar
-    # df = m1.get_paddy_stress_df()
-    # mv1 = analyzer.SWATp(m1.wd)
-    # for c in df.columns:
-    #     mv1.plot_stress(df, stress=c, h=2)
-    # print(df)
-
-    # NOTE: filter paddy
-    # m1.conv_hrudata()
-    # m1.conv_hyd_perco(perco=0.1)
-    # m1 = SWATp(wd)
-    # fields = ["wateryld", "perc", "et", "sw_ave", "latq_runon"]
-    # for fd in fields:
-    #     m1.get_lu_mon(fd)
-    #     print(fd)
-    # m2 = SWATp(wd)
-    # fields = ["wateryld", "perc", "et", "sw_ave", "latq_runon"]
-    # for fd in fields:
-    #     print(m2.get_hru_mon(fd))
-
-    # # NOTE: PADDY
-    # wd =  "d:\\Projects\\Watersheds\\Ghana\\Analysis\\botanga\\prj01\\Scenarios\\Default\\TxtInOut_rice_f"
-    # m1 = Paddy(wd)
-
-    # '''
-    # '''
-    # df = m1.read_paddy_daily()
-    # cols = ["Precip", "Irrig", "Seep", "ET", "PET", 'WeirH', 'Wtrdep', 'WeirQ','LAI']
-    # df = df.loc[:,  cols]
-    # df = df["1/1/2019":"12/31/2020"]
-    # print(df)
-    # analyzer.Paddy(wd).plot_paddy_daily(df)
-
-    # dfs = m1.read_lsunit_wb_yr()
-    # dfs = dfs.loc[:,  "precip"]
-    # dfo = m1.read_pcp_obd()
-    # print(dfs)
-
-    # dfs = pd.concat([dfs, dfo], axis=1)
-    # analyzer.Paddy(wd).plot_prep(dfs)
-    # # print(analyzer.Paddy(wd).stdate)
-
-    # dfy = m1.read_basin_pw_day()
-    # dfy = dfy.loc[:,  "yield"].resample('YE').sum() * 0.001
-    # dfyo = m1.read_yield_obd()
-    # dfy = pd.concat([dfy, dfyo], axis=1)
-
-    # print(dfy)
-    # analyzer.Paddy(wd).plot_yield(dfy)
+    
 
 
-    # # NOTE: get landuse hf waterbalance
-    # wd = "D:\\jj\\opt_3rd\\calibrated_model_v02"
-    # # wd = "D:\\Projects\\Watersheds\\Koksilah\\analysis\\koksilah_swatmf\\SWAT-MODFLOW"
-
-    # m1 = SWATp(wd)
-    # # cns =  [1]
-    # # cali_start_day = "1/1/2013"
-    # # cali_end_day = "12/31/2023"
-    # # obd_file = "singi_obs_q1_colnam.csv"
-    # # obd_colnam = "cha01"
-    # # cha_ext_file = "stf_001.txt"
-    # # fields = ["wateryld", "perc", "et", "sw_ave", "latq_runon"]
-    # # for fd in fields:
-    # #     m1.get_lu_mon(fd, stdate="1/1/2017", eddate="12/31/2023")
-    # #     print(fd)
-
-    # m1.get_lu_hf_wb()
