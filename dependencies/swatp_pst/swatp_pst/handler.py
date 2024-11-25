@@ -1844,15 +1844,15 @@ class Executes:
                 for pc in pcs:
                     try:
                         val = float(pc)
-                        if val > 50:
+                        if val > 15:
                             colr = "#ff0000"
-                        elif val <=50 and val >=25:
+                        elif val <=15 and val >=10:
                             colr = "#ff8b00"
-                        elif val < 25 and val > -25:
+                        elif val < 10 and val > -10:
                             colr = "g"
-                        elif val <= -25 and val >= -50:
+                        elif val <= -10 and val >= -15:
                             colr = "#3d89ff"
-                        elif val < -50:
+                        elif val < -15:
                             colr = "b"
                         else:
                             colr = "k"

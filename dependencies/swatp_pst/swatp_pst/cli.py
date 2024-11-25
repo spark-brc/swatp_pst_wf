@@ -561,7 +561,7 @@ class ClimateAnalyzer:
         ff = df['1/1/2071':'12/31/2099'].loc[:, ["ssp245_pcp", "ssp585_pcp"]]
         ff.columns = ["ssp245_ff", "ssp585_ff"]
         dff = pd.concat([base, nf, mf, ff], axis=1)
-        xlabels = [x for x in dff.columns]
+        xlabels = ["Historical" if x == "base" else x for x in dff.columns]
 
 
         # Boxplot
@@ -1080,11 +1080,6 @@ def get_extreme_events():
 
 
 
-
-
-
-
-
 def test():
     #NOTE create scn files monthly base
     working_dir = "D:\\Projects\\Watersheds\\Ghana\\Analysis\\dawhenya\\prj05_paddy\\Scenarios\\Default"
@@ -1124,8 +1119,8 @@ def fdc_figures():
 
 
 def spi_figure():
-    working_dir = "D:\\Projects\\Watersheds\\Ghana\\Analysis\\climate_scenarios\\dawhenya\\FGOALS-g3_SWAT_files"
-    # working_dir = "D:\\Projects\\Watersheds\\Mun\\climate_scenarios\\FGOALS-g3_SWAT_files"
+    # working_dir = "D:\\Projects\\Watersheds\\Ghana\\Analysis\\climate_scenarios\\dawhenya\\FGOALS-g3_SWAT_files"
+    working_dir = "D:\\Projects\\Watersheds\\Mun\\climate_scenarios\\FGOALS-g3_SWAT_files"
     sc = ClimateAnalyzer(working_dir)
     df = sc.get_pcps()
     series = sc.spi(df, "ssp585_pcp")
@@ -1146,7 +1141,7 @@ def spi_figure():
     for axx in ax:
         axx.tick_params(axis='both', labelsize=12)
     plt.tight_layout()
-    plt.savefig(os.path.join(working_dir, 'spi.png'), dpi=300, bbox_inches="tight")
+    plt.savefig(os.path.join(working_dir, 'spi_585.png'), dpi=300, bbox_inches="tight")
     plt.show()
 
 
@@ -1178,8 +1173,8 @@ def spi_probability():
 
 # Example usage
 if __name__ == "__main__":
-    working_dir = "D:\\Projects\\Watersheds\\Ghana\\Analysis\\climate_scenarios\\dawhenya\\FGOALS-g3_SWAT_files"
-    # working_dir = "D:\\Projects\\Watersheds\\Mun\\climate_scenarios\\FGOALS-g3_SWAT_files"
+    # working_dir = "D:\\Projects\\Watersheds\\Ghana\\Analysis\\climate_scenarios\\dawhenya\\FGOALS-g3_SWAT_files"
+    working_dir = "D:\\Projects\\Watersheds\\Mun\\climate_scenarios\\FGOALS-g3_SWAT_files"
     # # sn = handler.CliScenario(working_dir)
     # # # sn.extract_stf_day_scns(working_dir, scns, 1, timestep='day')
 
