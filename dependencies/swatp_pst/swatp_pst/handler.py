@@ -847,8 +847,8 @@ class SWATp(object):
              df[f"{field}"]
              ], axis=1)
         # weight by area
-        tot_area = dff.loc[:, "area"].sum()
-        dff["area_weighted"] =dff.loc[:, "area"]/ tot_area
+        dff["total_area"] = dff.groupby("lu_type")["area"].transform("sum")
+        dff["area_weighted"] =dff["area"]/ dff["total_area"]        
         dff[f"{field}_weigthed"] = dff[field] * dff["area_weighted"]
         fdf = dff.groupby(dff["lu_type"]).sum()
         return fdf.iloc[:, -1]
@@ -1798,8 +1798,8 @@ class Executes:
 
 
     def landuse_wb_figure():
-        # wd = "D:\\Projects\\Watersheds\\Ghana\\Analysis\\dawhenya\\prj05_paddy\\Scenarios\\Default"
-        wd = "D:\\Projects\\Watersheds\\Mun\\Mun_river_082024\\Scenarios\\Default"
+        wd = "D:\\Projects\\Watersheds\\Ghana\\Analysis\\dawhenya\\prj05_paddy\\Scenarios\\Default"
+        # wd = "D:\\Projects\\Watersheds\\Mun\\Mun_river_082024\\Scenarios\\Default"
         m1 = CliScenario(wd)
 
         scns = []
@@ -1808,17 +1808,14 @@ class Executes:
                 scns.append(f"ssp{sc}_{cset}")
 
         fields = ["wateryld", "perc", "et", "sw_ave"]
-        # ldtypes = ["crwo", "fomi", "rice_paddy", "urbn"] # dawhenya
-        ldtypes = ["tfoe", "tagr", "rice140", "tswi"]
+        ldtypes = ["crwo", "fomi", "rice_paddy", "urbn"] # dawhenya
+        # ldtypes = ["tfoe", "tagr", "rice140", "tswi"]
         colors = [f"C{i}" for i in range(8)]
 
-
-        
         wyld = m1.get_landuse_wb_aa_scns(scns, "wateryld").loc[ldtypes]
         etdf = m1.get_landuse_wb_aa_scns(scns, "et").loc[ldtypes]
         percdf = m1.get_landuse_wb_aa_scns(scns, "perc").loc[ldtypes]
         swdf = m1.get_landuse_wb_aa_scns(scns, "sw_ave").loc[ldtypes]
-
         totdf = [etdf, wyld, swdf, percdf]
 
         # dff.drop("ssp585_hist", axis=1, inplace=True)
@@ -1844,16 +1841,30 @@ class Executes:
                 for pc in pcs:
                     try:
                         val = float(pc)
-                        if val > 15:
+                        # NOTE: Mun
+                        # if val > 15:
+                        #     colr = "#ff0000"
+                        # elif val <=15 and val >=10:
+                        #     colr = "#ff8b00"
+                        # elif val < 10 and val > -10:
+                        #     colr = "g"
+                        # elif val <= -10 and val >= -15:
+                        #     colr = "#3d89ff"
+                        # elif val < -15:
+                        #     colr = "b"
+
+                        # NOTE: dawhenya
+                        if val > 50:
                             colr = "#ff0000"
-                        elif val <=15 and val >=10:
+                        elif val <=50 and val >=20:
                             colr = "#ff8b00"
-                        elif val < 10 and val > -10:
+                        elif val < 20 and val > -20:
                             colr = "g"
-                        elif val <= -10 and val >= -15:
+                        elif val <= -20 and val >= -50:
                             colr = "#3d89ff"
-                        elif val < -15:
+                        elif val < -50:
                             colr = "b"
+
                         else:
                             colr = "k"
                     except ValueError as verr:
@@ -1877,9 +1888,7 @@ class Executes:
                 ax.set_xticklabels(xlabels, rotation=90)
             plt.tight_layout()
             plt.savefig(os.path.join(wd, f'{ld}_wb_scns.png'), dpi=300, bbox_inches="tight")
-
             plt.show()
-
 
 
 

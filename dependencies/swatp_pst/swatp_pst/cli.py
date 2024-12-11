@@ -16,6 +16,7 @@ from swatp_pst import handler, analyzer
 import scipy.stats as scs
 import spei as si
 
+
 class ClimateDataDownloader:
     def __init__(self, working_dir, dataset_name, model_name, ssp_of_interest,
                  meta_data_format, variables_of_interest, versions_avail):
@@ -1034,7 +1035,6 @@ class ClimateAnalyzer:
         dft = pd.DataFrame()
         # extreme
         ext_df = df[df >value_ext].groupby(df.index.year).agg('count')
-
         return ext_df
 
     def spi(self, df, colnam, interval=90):
@@ -1046,13 +1046,6 @@ class ClimateAnalyzer:
         ext_df = df[df >ext_val].groupby(df.index.year).agg('count').mean()
         return ext_df
         # print(ext_df)
-
-
-
-
-
-
-
     # def plot_bar_landuse_wb(self):
 
 def get_extreme_events():
@@ -1078,8 +1071,6 @@ def get_extreme_events():
         edf = ca.extreme_events2(df[f"{ts[0]}":f"{ts[1]}"], value_ext)
         print(edf)
 
-
-
 def test():
     #NOTE create scn files monthly base
     working_dir = "D:\\Projects\\Watersheds\\Ghana\\Analysis\\dawhenya\\prj05_paddy\\Scenarios\\Default"
@@ -1089,11 +1080,8 @@ def test():
     for sc in ["245", "585"]:
         for cset in ["hist", "near", "mid", "far"]:
             scns.append(f"ssp{sc}_{cset}")
-
     # sn.read_lu_wb_csv(scns[0], fields[0])
-
     sn.get_lu_wb_aa_scns(scns)
-
 
 def fdc_figures():
     # working_dir = "D:\\Projects\\Watersheds\\Ghana\\Analysis\\dawhenya\\prj05_paddy\\Scenarios\\Default"

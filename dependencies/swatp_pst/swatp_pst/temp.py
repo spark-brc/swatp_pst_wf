@@ -10,6 +10,7 @@ from matplotlib.sankey import Sankey
 
 from swatp_pst.handler import SWATp
 
+
 def fig():
 
     fig = go.Figure(data=[go.Sankey(
