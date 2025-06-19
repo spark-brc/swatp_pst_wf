@@ -1755,7 +1755,7 @@ class SWATp:
 # '''
 class Paddy:
     def __init__(self, wd):
-        super().__init__(wd)
+        # super().__init__(wd)
         os.chdir(wd)
 
     def plot_paddy_daily(self, df):
@@ -1767,8 +1767,31 @@ class Paddy:
             ax.legend(loc="upper left", fontsize=12)
         
             ax.tick_params(axis='both', labelsize=12)
+            ax.tick_params(axis='x', labelrotation=45)
         plt.tight_layout()
         plt.show()
+
+    def plot_paddy_daily_bar(self, df):
+        cmap = plt.get_cmap("tab10")
+        nums = len(df.columns)
+        fig, axes = plt.subplots(nrows=nums, sharex=True, figsize=(9, 13))
+        for i, (col, ax) in enumerate(zip(df.columns, axes)):
+            ax.bar(df.index, df[col], color=cmap(i), label=col, width=0.7)
+            ax.bar_label(
+                ax.containers[0], label_type='center', padding=5, fontsize=10,
+                bbox=dict(
+                    facecolor='white', alpha=0.8, 
+                    # edgecolor='none'
+                    ))
+            ax.legend(loc="upper left", fontsize=12)
+
+            ax.tick_params(axis='both', labelsize=12)
+            ax.tick_params(axis='x', labelrotation=45)
+        plt.tight_layout()
+        plt.show()
+
+
+
 
     def plot_yield(self, df):
         fig, ax = plt.subplots()

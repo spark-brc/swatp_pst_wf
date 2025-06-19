@@ -525,6 +525,17 @@ class SWATp(object):
         df['perct'] = (df['area']/tot_area) * 100
         return df
 
+    def get_rice_hru_info(self, lum_name="rice_lum"):
+        ha = self.read_hru_con().loc[:, ["id", "name", "area"]]
+        ha.index = ha.name
+        hd = self.read_hru_data().loc[:, ["id", "name", "lu_mgt"]]
+        hd.index = hd.name
+        hd.fillna("barr_lum", inplace=True)
+        df = pd.concat([ha, hd], axis=1)
+        df = df.loc[:,~df.columns.duplicated()].copy()
+        # df.drop("name", axis=1, inplace=True)
+        return df.loc[df['lu_mgt'] == lum_name]
+
     def read_basin_pw_mon(self):
         return pd.read_csv(
                         "basin_pw_mon.txt",
@@ -1115,13 +1126,12 @@ class Paddy(SWATp):
         # endDate_warmup = eddate_warmup.strftime("%m/%d/%Y")
         return startDate, endDate, startDate_warmup
 
-    def read_paddy_daily(self, hruid=None):
-        if hruid is None:
-            hruid = 1 
-        df = pd.read_csv("paddy_daily.csv", index_col=False)
+    def read_paddy_daily(self, hruid=1):
+        df = pd.read_csv("paddy_test.csv", index_col=False)
         df = df.rename(columns=lambda x: x.strip())
-        df = df.loc[df["HRU"]==1]
-        df.index = pd.date_range(self.stdate_warmup, periods=len(df))
+        df = df.loc[df["HRU"]==hruid]
+        df.index = pd.date_range(self.stdate, periods=len(df))
+        # print(self.stdate, self.enddate, self.stdate_warmup)
         return df
 
     def read_basin_pw_day(self, hruid=None):
