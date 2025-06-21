@@ -250,6 +250,7 @@ class PstUtil(SWATp):
                                     header=False,
                                     justify="left"))
         # '''
+
         return cal_df
 
 
@@ -260,9 +261,12 @@ class PstUtil(SWATp):
                         skiprows=2,
                         )     
 
-    def update_par_inits_rgs(self, precal_df):
+
+    # NOTE: I am working on this function
+    def update_par_inits_rgs(self, adjust_par):
         
         cal_adj = self.read_cal()
+        cal_adj.rename(columns={0: "cal_parm", 1: "chg_type", 2: "cal_val"}, inplace=True)
         cal_db = self.read_cal_parms()
         for i in cal_adj.index:
             par = cal_adj.loc[i, "cal_parm"]
