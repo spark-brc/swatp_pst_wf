@@ -20,8 +20,6 @@ def time_stamp(des):
     print(time + ' |  {} ...'.format(des))
     print(35*'+ ' + '\n')
 
-
-
 def execute_swatp():
     des = "running model"
     time_stamp(des)
@@ -32,7 +30,6 @@ def extract_stf_results(subs, sim_start, warmup, cal_start, cal_end):
     des = "simulation successfully completed | extracting monthly simulated streamflow"
     time_stamp(des)
     SWATp(wd).extract_mon_stf(subs, sim_start, warmup, cal_start, cal_end)
-
 
 
 

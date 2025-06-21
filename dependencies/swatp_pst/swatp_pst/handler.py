@@ -437,6 +437,49 @@ class SWATp(object):
             print(' >>> stf_{:03d}.txt file has been created...'.format(i))
         print(' > Finished ...\n')
 
+    def extract_sim_waterlevel(self, start_day, end_day, time_step="day"):
+        """extract a simulated depth to water using modflow.obs and gwflow_state_obs_head,
+            store it in each channel file.
+
+        Args:
+            - rch_file (`str`): the path and name of the existing output file
+            - channels (`list`): channel number in a list, e.g. [9, 60]
+            - start_day ('str'): simulation start day after warmup period, e.g. '1/1/1985'
+            - end_day ('str'): simulation end day e.g. '12/31/2000'
+
+        Example:
+            pest_utils.extract_depth_to_water('path', [9, 60], '1/1/1993', '12/31/2000')
+        """
+        if not os.path.exists('gwflow_state_obs_head'):
+            raise Exception("'gwflow_state_obs_head' file not found")
+        
+        # get grid ids
+        with open("gwflow_state_obs_head", 'r') as inf:
+            data = inf.readlines()
+        gridIds = data[1].split()[1:]
+        mf_sim = pd.read_csv(
+                            'gwflow_state_obs_head', skiprows=3, sep=r'\s+',
+                            header=None
+                            )
+        mf_sim = mf_sim.iloc[:, 2:]
+        mf_sim.columns = gridIds
+        
+
+        mf_sim.index = pd.date_range(start_day, periods=len(mf_sim))
+        if time_step == "day":
+            mf_sim = mf_sim[start_day:end_day]
+        if time_step == "month":
+            mf_sim = mf_sim[start_day:end_day].resample('M').mean()
+        for i in mf_sim.columns:  # use land surface elevation to get depth to water
+            (mf_sim.loc[:, i]).to_csv(
+                            'gwl_{}.txt'.format(i), sep='\t', encoding='utf-8',
+                            index=True, header=False, float_format='%.7e'
+                            )
+            print(' >>> gwl_{}.txt file has been created...'.format(i))
+        print(' >>> Finished ...')
+
+
+
 
     def get_mon_irr(self):
         paddy_df = pd.DataFrame()

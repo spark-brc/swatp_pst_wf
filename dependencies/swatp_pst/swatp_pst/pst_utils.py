@@ -129,6 +129,73 @@ class PstUtil(SWATp):
         return result['{}_ins'.format(col_name)]
 
 
+    def mf_obd_to_ins(
+            self, wt_file, col_name, cal_start, cal_end,
+            time_step="day", gType="waterlevel"
+            ):
+        """extract a simulated groundwater levels from the  file,
+            store it in each channel file.
+
+        Args:
+            - rch_file (`str`): the path and name of the existing output file
+            - channels (`list`): channel number in a list, e.g. [9, 60]
+            - start_day ('str'): simulation start day after warmup period, e.g. '1/1/1993'
+            - end_day ('str'): simulation end day e.g. '12/31/2000'
+
+        Example:
+            pest_utils.extract_month_str('path', [9, 60], '1/1/1993', '12/31/2000')
+        """ 
+        if gType != "waterlevel":
+            gwlType = "dtw"
+            if time_step == "day":
+                mf_obd_file = f"{gwlType}_day.obd.csv"
+            if time_step == "month":
+                mf_obd_file = f"{gwlType}_mon.obd.csv"
+        else:
+            gwlType = "gwl"
+            if time_step == "day":
+                mf_obd_file = f"{gwlType}_day.obd.csv"
+            if time_step == "month":
+                mf_obd_file = f"{gwlType}_mon.obd.csv"            
+
+        mf_obd = pd.read_csv(
+                            mf_obd_file,
+                            usecols=['date', col_name],
+                            index_col=0,
+                            na_values=[-999, ""],
+                            parse_dates=True,
+                            )
+        mf_obd = mf_obd[cal_start:cal_end]
+
+        wt_sim = pd.read_csv(
+                            wt_file,
+                            delim_whitespace=True,
+                            names=["date", "stf_sim"],
+                            index_col=0,
+                            parse_dates=True)
+
+        result = pd.concat([mf_obd, wt_sim], axis=1)
+
+        result['tdate'] = pd.to_datetime(result.index)
+        result['day'] = result['tdate'].dt.day
+        result['month'] = result['tdate'].dt.month
+        result['year'] = result['tdate'].dt.year
+        result['ins'] = (
+                        'l1 w !{}_'.format(col_name) + result["year"].map(str) +
+                        result["month"].map('{:02d}'.format) +
+                        result["day"].map('{:02d}'.format) + '!'
+                        )
+        result['{}_ins'.format(col_name)] = np.where(result[col_name].isnull(), 'l1', result['ins'])
+
+        with open(wt_file+'.ins', "w", newline='') as f:
+            f.write("pif ~" + "\n")
+            result['{}_ins'.format(col_name)].to_csv(f, sep='\t', encoding='utf-8', index=False, header=False)
+        print('{}.ins file has been created...'.format(wt_file))
+
+        return result['{}_ins'.format(col_name)]
+
+
+
     def read_cal(self):
         return pd.read_csv(
                         'calibration.cal',
