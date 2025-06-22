@@ -11,7 +11,6 @@ from enum import Enum
 from pathlib import Path
 from shutil import copyfile
 from typing import Union
-from warnings import warn
 
 
 # internal handled exceptions
@@ -450,42 +449,16 @@ class PackageContainer:
     """
 
     modflow_packages = []
-    packages_by_abbr = {}
+    packages_by_abbr: dict[str, type] = {}
     modflow_models = []
     models_by_type = {}
 
-    def __init__(self, simulation_data, name):
-        self.type = "PackageContainer"
-        self.simulation_data = simulation_data
-        self.name = name
-        self._packagelist = []
+    def __init__(self, simulation_data):
+        self._simulation_data = simulation_data
+        self.packagelist = []
         self.package_type_dict = {}
         self.package_name_dict = {}
         self.package_filename_dict = {}
-
-    @property
-    def package_key_dict(self):
-        warnings.warn(
-            "package_key_dict has been deprecated, use "
-            "package_type_dict instead",
-            category=DeprecationWarning,
-        )
-        return self.package_type_dict
-
-    @staticmethod
-    def package_list():
-        """Static method that returns the list of available packages.
-        For internal FloPy use only, not intended for end users.
-
-        Returns a list of MFPackage subclasses
-        """
-        # all packages except "group" classes
-        package_list = []
-        for abbr, package in sorted(PackageContainer.packages_by_abbr.items()):
-            # don't store packages "group" classes
-            if not abbr.endswith("packages"):
-                package_list.append(package)
-        return package_list
 
     @staticmethod
     def package_factory(package_type: str, model_type: str):
@@ -554,9 +527,9 @@ class PackageContainer:
         """Returns a list of package names."""
         return list(self.package_name_dict.keys())
 
-    def _add_package(self, package, path):
+    def add_package(self, package):
         # put in packages list and update lookup dictionaries
-        self._packagelist.append(package)
+        self.packagelist.append(package)
         if package.package_name is not None:
             self.package_name_dict[package.package_name.lower()] = package
         if package.filename is not None:
@@ -565,9 +538,9 @@ class PackageContainer:
             self.package_type_dict[package.package_type.lower()] = []
         self.package_type_dict[package.package_type.lower()].append(package)
 
-    def _remove_package(self, package):
-        if package in self._packagelist:
-            self._packagelist.remove(package)
+    def remove_package(self, package):
+        if package in self.packagelist:
+            self.packagelist.remove(package)
         if (
             package.package_name is not None
             and package.package_name.lower() in self.package_name_dict
@@ -587,7 +560,7 @@ class PackageContainer:
 
         # collect keys of items to be removed from main dictionary
         items_to_remove = []
-        for key in self.simulation_data.mfdata:
+        for key in self._simulation_data.mfdata:
             is_subkey = True
             for pitem, ditem in zip(package.path, key):
                 if pitem != ditem:
@@ -598,7 +571,7 @@ class PackageContainer:
 
         # remove items from main dictionary
         for key in items_to_remove:
-            del self.simulation_data.mfdata[key]
+            del self._simulation_data.mfdata[key]
 
     def _rename_package(self, package, new_name):
         # fix package_name_dict key
@@ -609,7 +582,7 @@ class PackageContainer:
             del self.package_name_dict[package.package_name.lower()]
         self.package_name_dict[new_name.lower()] = package
         # get keys to fix in main dictionary
-        main_dict = self.simulation_data.mfdata
+        main_dict = self._simulation_data.mfdata
         items_to_fix = []
         for key in main_dict:
             is_subkey = True
@@ -648,7 +621,7 @@ class PackageContainer:
 
         """
         if name is None:
-            return self._packagelist[:]
+            return self.packagelist[:]
 
         # search for full package name
         if name.lower() in self.package_name_dict and not type_only:
@@ -669,7 +642,7 @@ class PackageContainer:
 
         # search for partial and case-insensitive package name
         if not type_only:
-            for pp in self._packagelist:
+            for pp in self.packagelist:
                 if pp.package_name is not None:
                     # get first package of the type requested
                     package_name = pp.package_name.lower()
@@ -679,11 +652,6 @@ class PackageContainer:
                         return pp
 
         return None
-
-    def register_package(self, package):
-        """Base method for registering a package.  Should be overridden."""
-        path = (package.package_name,)
-        return (path, None)
 
     @staticmethod
     def _load_only_dict(load_only):

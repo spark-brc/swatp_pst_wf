@@ -146,17 +146,22 @@ class PstUtil(SWATp):
             pest_utils.extract_month_str('path', [9, 60], '1/1/1993', '12/31/2000')
         """ 
         if gType != "waterlevel":
+            print("gType should be waterlevel")
             gwlType = "dtw"
             if time_step == "day":
                 mf_obd_file = f"{gwlType}_day.obd.csv"
             if time_step == "month":
                 mf_obd_file = f"{gwlType}_mon.obd.csv"
         else:
+            print("gType is waterlevel")
             gwlType = "gwl"
             if time_step == "day":
                 mf_obd_file = f"{gwlType}_day.obd.csv"
             if time_step == "month":
-                mf_obd_file = f"{gwlType}_mon.obd.csv"            
+                mf_obd_file = f"{gwlType}_mon.obd.csv"   
+
+
+        print(gwlType, mf_obd_file)         
 
         mf_obd = pd.read_csv(
                             mf_obd_file,

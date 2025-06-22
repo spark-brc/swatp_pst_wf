@@ -63,8 +63,7 @@ class Pvd:
             file = file.with_suffix(".vtu")
 
         record = (
-            f'<DataSet timestep="{timevalue}" group="" '
-            f'part="0" file="{file.name}"/>\n'
+            f'<DataSet timestep="{timevalue}" group="" part="0" file="{file.name}"/>\n'
         )
         self.__data.append(record)
 
@@ -141,9 +140,7 @@ class Vtk:
         vtk = import_optional_dependency("vtk")
 
         if model is None and modelgrid is None:
-            raise AssertionError(
-                "A model or modelgrid must be provided to use Vtk"
-            )
+            raise AssertionError("A model or modelgrid must be provided to use Vtk")
 
         elif model is not None:
             self.modelgrid = model.modelgrid
@@ -421,28 +418,21 @@ class Vtk:
                             adji = (adjk * self.ncpl) + i
                             zv = self.top[adji] * self.vertical_exageration
                         else:
-                            zv = (
-                                self.botm[adjk - 1][i]
-                                * self.vertical_exageration
-                            )
+                            zv = self.botm[adjk - 1][i] * self.vertical_exageration
 
                     points.append([xv, yv, zv])
                     v1 += 1
 
                 cell_faces = [
-                    [v for v in range(v0, v1)],
+                    list(range(v0, v1)),
                     [v + self.nvpl for v in range(v0, v1)],
                 ]
 
                 for v in range(v0, v1):
                     if v != v1 - 1:
-                        cell_faces.append(
-                            [v + 1, v, v + self.nvpl, v + self.nvpl + 1]
-                        )
+                        cell_faces.append([v + 1, v, v + self.nvpl, v + self.nvpl + 1])
                     else:
-                        cell_faces.append(
-                            [v0, v, v + self.nvpl, v0 + self.nvpl]
-                        )
+                        cell_faces.append([v0, v, v + self.nvpl, v0 + self.nvpl])
 
                 v0 = v1
                 faces.append(cell_faces)
@@ -574,8 +564,7 @@ class Vtk:
 
             pts = []
             for v in v1:
-                # ix = np.where(v2 == v)
-                ix = np.where((v2.T[0] == v[0]) & (v2.T[1] == v[1]))
+                ix = np.asarray((v2.T[0] == v[0]) & (v2.T[1] == v[1])).nonzero()
                 if len(ix[0]) > 0 and len(pts) < 2:
                     pts.append(v2[ix[0][0]])
 
@@ -613,9 +602,7 @@ class Vtk:
             polygon.GetPointIds().SetNumberOfIds(4)
             for ix, iv in enumerate(face):
                 polygon.GetPointIds().SetId(ix, iv)
-            polydata.InsertNextCell(
-                polygon.GetCellType(), polygon.GetPointIds()
-            )
+            polydata.InsertNextCell(polygon.GetCellType(), polygon.GetPointIds())
 
         # and then set the hydchr data
         vtk_arr = numpy_support.numpy_to_vtk(
@@ -653,7 +640,7 @@ class Vtk:
                     ps_array[pt] = array[value["idx"][ix]]
         else:
             ps_graph = self._point_scalar_numpy_graph.copy()
-            idxs = np.where(np.isnan(array))
+            idxs = np.asarray(np.isnan(array)).nonzero()
             not_graphed = np.isin(ps_graph, idxs[0])
             ps_graph[not_graphed] = -1
             ps_array = np.where(ps_graph >= 0, array[ps_graph], np.nan)
@@ -799,8 +786,8 @@ class Vtk:
         if not self._vtk_geometry_set:
             self._set_vtk_grid_geometry()
 
-        k = list(d.keys())[0]
-        transient = dict()
+        k = next(iter(d.keys()))
+        transient = {}
         if isinstance(d[k], DataInterface):
             if d[k].data_type in (DataType.array2d, DataType.array3d):
                 if name is None:
@@ -819,9 +806,7 @@ class Vtk:
                     transient[kper] = array
         else:
             if name is None:
-                raise ValueError(
-                    "name must be specified when providing numpy arrays"
-                )
+                raise ValueError("name must be specified when providing numpy arrays")
             for kper, trarray in d.items():
                 if trarray.size != self.nnodes:
                     array = np.zeros(self.nnodes) * np.nan
@@ -856,7 +841,7 @@ class Vtk:
         mfl = mflist.array
         if isinstance(mfl, dict):
             for arr_name, arr4d in mflist.array.items():
-                d = {kper: array for kper, array in enumerate(arr4d)}
+                d = dict(enumerate(arr4d))
                 name = f"{pkg_name}_{arr_name}"
                 self.add_transient_array(d, name)
         else:
@@ -910,9 +895,7 @@ class Vtk:
                     tv[ix, : self.ncpl] = q
                 vector = tv
             else:
-                raise AssertionError(
-                    "Size of vector must be 3 * nnodes or 3 * ncpl"
-                )
+                raise AssertionError("Size of vector must be 3 * nnodes or 3 * ncpl")
         else:
             vector = np.reshape(vector, (3, self.nnodes))
 
@@ -953,7 +936,7 @@ class Vtk:
             self._set_vtk_grid_geometry()
 
         if self.__transient_data:
-            k = list(self.__transient_data.keys())[0]
+            k = next(iter(self.__transient_data.keys()))
             if len(d) != len(self.__transient_data[k]):
                 print(
                     "Transient vector not same size as transient arrays time "
@@ -966,10 +949,7 @@ class Vtk:
                 if not isinstance(value, np.ndarray):
                     value = np.array(value)
 
-                if (
-                    value.size != 3 * self.ncpl
-                    or value.size != 3 * self.nnodes
-                ):
+                if value.size != 3 * self.ncpl or value.size != 3 * self.nnodes:
                     raise AssertionError(
                         "Size of vector must be 3 * nnodes or 3 * ncpl"
                     )
@@ -1040,7 +1020,7 @@ class Vtk:
                                 value.transient_2ds, item, masked_values
                             )
                         else:
-                            d = {ix: i for ix, i in enumerate(value.array)}
+                            d = dict(enumerate(value.array))
                             self.add_transient_array(d, item, masked_values)
 
                 elif value.data_type == DataType.transient3d:
@@ -1105,11 +1085,7 @@ class Vtk:
             if len(pathlines) == 0:
                 return
             pathlines = [
-                (
-                    pl.to_records(index=False)
-                    if isinstance(pl, pd.DataFrame)
-                    else pl
-                )
+                (pl.to_records(index=False) if isinstance(pl, pd.DataFrame) else pl)
                 for pl in pathlines
             ]
             fields = pathlines[0].dtype.names
@@ -1134,9 +1110,7 @@ class Vtk:
             }
             if all(k in pathlines.dtype.names for k in mpx_fields):
                 pids = np.unique(pathlines.particleid)
-                pathlines = [
-                    pathlines[pathlines.particleid == pid] for pid in pids
-                ]
+                pathlines = [pathlines[pathlines.particleid == pid] for pid in pids]
             elif all(k in pathlines.dtype.names for k in prt_fields):
                 pls = []
                 for imdl in np.unique(pathlines.imdl):
@@ -1147,15 +1121,14 @@ class Vtk:
                                 & (pathlines.iprp == iprp)
                                 & (pathlines.irpt == irpt)
                             ]
-                            pls.extend(
-                                [pl[pl.trelease == t] for t in np.unique(pl.t)]
-                            )
+                            pls.extend([pl[pl.trelease == t] for t in np.unique(pl.t)])
                 pathlines = pls
             else:
                 raise ValueError("Unrecognized pathline dtype")
         else:
             raise ValueError(
-                "Unsupported pathline format, expected array, recarray, dataframe, or list"
+                "Unsupported pathline format, expected array, recarray, "
+                "dataframe, or list"
             )
 
         if not timeseries:
@@ -1227,11 +1200,11 @@ class Vtk:
         # reset totim based on values read from head file
         times = hds.get_times()
         kstpkpers = hds.get_kstpkper()
-        self._totim = {ki: time for (ki, time) in zip(kstpkpers, times)}
+        self._totim = dict(zip(kstpkpers, times))
 
         text = hds.text.decode()
 
-        d = dict()
+        d = {}
         for ki in kstpkper:
             d[ki] = hds.get_data(ki)
 
@@ -1239,9 +1212,7 @@ class Vtk:
         self.add_transient_array(d, name=text, masked_values=masked_values)
         self.__transient_output_data = True
 
-    def add_cell_budget(
-        self, cbc, text=None, kstpkper=None, masked_values=None
-    ):
+    def add_cell_budget(self, cbc, text=None, kstpkper=None, masked_values=None):
         """
         Method to add cell budget data to vtk
 
@@ -1267,9 +1238,7 @@ class Vtk:
             )
 
         records = cbc.get_unique_record_names(decode=True)
-        imeth_dict = {
-            record: imeth for (record, imeth) in zip(records, cbc.imethlist)
-        }
+        imeth_dict = dict(zip(records, cbc.imethlist))
         if text is None:
             keylist = records
         else:
@@ -1289,7 +1258,7 @@ class Vtk:
         # reset totim based on values read from budget file
         times = cbc.get_times()
         kstpkpers = cbc.get_kstpkper()
-        self._totim = {ki: time for (ki, time) in zip(kstpkpers, times)}
+        self._totim = dict(zip(kstpkpers, times))
 
         for name in keylist:
             d = {}
@@ -1303,8 +1272,7 @@ class Vtk:
                     if array.size < self.nnodes:
                         if array.size < self.ncpl:
                             raise AssertionError(
-                                "Array size must be equal to "
-                                "either ncpl or nnodes"
+                                "Array size must be equal to either ncpl or nnodes"
                             )
 
                         array = np.zeros(self.nnodes) * np.nan
@@ -1365,9 +1333,7 @@ class Vtk:
             for ii in range(0, npts):
                 poly.GetPointIds().SetId(ii, i)
                 i += 1
-            self.vtk_pathlines.InsertNextCell(
-                poly.GetCellType(), poly.GetPointIds()
-            )
+            self.vtk_pathlines.InsertNextCell(poly.GetCellType(), poly.GetPointIds())
 
         # create a vtkVertex for each point
         # necessary if arrays (time & particle ID) live on points?
@@ -1470,9 +1436,7 @@ class Vtk:
             else:
                 w.SetInputData(grid)
 
-                if (
-                    self.__transient_data or self.__transient_vector
-                ) and ix == 0:
+                if (self.__transient_data or self.__transient_vector) and ix == 0:
                     if self.__transient_data:
                         cnt = 0
                         for per, d in self.__transient_data.items():
@@ -1489,7 +1453,7 @@ class Vtk:
                                 self.add_array(array, name)
 
                             if per in self.__transient_vector:
-                                d = self.__transient_vector[d]
+                                d = self.__transient_vector[per]
                                 for name, vector in d.items():
                                     self.add_vector(vector, name)
 

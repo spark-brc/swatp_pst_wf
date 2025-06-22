@@ -1,4 +1,3 @@
-# pylint: disable=too-many-instance-attributes
 """
 mfusgsms module.  This is the solver for MODFLOW-USG.
 
@@ -435,8 +434,8 @@ class MfUsgSms(Package):
 
         if model.version != "mfusg":
             print(
-                "Warning: model version was reset from '{}' to 'mfusg' "
-                "in order to load a SMS file".format(model.version)
+                f"Warning: model version was reset from '{model.version}' "
+                "to 'mfusg' in order to load a SMS file"
             )
             model.version = "mfusg"
 
@@ -464,10 +463,7 @@ class MfUsgSms(Package):
 
         # Record 1b -- line will have already been read
         if model.verbose:
-            print(
-                "   loading HCLOSE HICLOSE MXITER ITER1 "
-                "IPRSMS NONLINMETH LINMETH..."
-            )
+            print("   loading HCLOSE HICLOSE MXITER ITER1 IPRSMS NONLINMETH LINMETH...")
         ll = line_parse(line)
         hclose = float(ll.pop(0))
         hiclose = float(ll.pop(0))
@@ -534,8 +530,7 @@ class MfUsgSms(Package):
         if linmeth == 1 and nopt == 0:
             if model.verbose:
                 print(
-                    "   loading IACL NORDER LEVEL NORTH "
-                    "IREDSYS RRCTOL IDROPTOL EPSRN"
+                    "   loading IACL NORDER LEVEL NORTH IREDSYS RRCTOL IDROPTOL EPSRN"
                 )
             while True:
                 line = f.readline()
