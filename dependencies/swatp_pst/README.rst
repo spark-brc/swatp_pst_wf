@@ -60,7 +60,7 @@ To execute jupyter notebook, we need the Miniconda environment.
 1. Miniconda Python:
 --------------------
 
-- If you don't already have conda installed, please download Miniconda for your operating system from https://conda.io/en/latest/miniconda.html (choose the latest version for your operating system, 64-bit). You should not need elevated rights to install this.
+- If you don't already have conda installed, please download Miniconda for your operating system from https://www.anaconda.com/download/success (choose the latest version for your operating system, 64-bit). You should not need elevated rights to install this.
 - Run the installer and select "only my user" when prompted. This will allow you to work with your python installation directly.
 
 2. Set Environment and install libraries:
