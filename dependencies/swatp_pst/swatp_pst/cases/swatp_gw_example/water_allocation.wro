@@ -1,0 +1,438 @@
+water_allocation.wro															
+7															
+															
+name	rule_typ	src_obs	dmd_obs	cha_ob											
+Muni_1	high_right_first_serve	1	1	y											
+src_num	obj_typ	obj_num	monthly limit												
+1	cha	113	0.046	0.046	0.046	0.046	0.046	0.039	0.031	0.031	0.031	0.039	0.039	0.046	
+dmd_num	obj_typ	obj_num	withdr	amount	right	treat_typ	treatment	rcv_obj	rcv_num	rcv_dtl	num_srcs	src	frac	comp	
+1	muni	0	ave_day	416.418	sr	null	null	null	0	null	1	1	1	0	null
+															
+name	rule_typ	src_obs	dmd_obs	cha_ob											
+Muni_2	high_right_first_serve	1	1	y											
+src_num	obj_typ	obj_num	monthly limit												
+1	cha	107	0.041	0.041	0.041	0.041	0.041	0.034	0.027	0.027	0.027	0.034	0.034	0.041	
+dmd_num	obj_typ	obj_num	withdr	amount	right	treat_typ	treatment	rcv_obj	rcv_num	rcv_dtl	num_srcs	src	frac	comp	
+1	muni	0	ave_day	544.435	sr	null	null	null	0	null	1	1	1	0	null
+															
+name	rule_typ	src_obs	dmd_obs	cha_ob											
+Muni_3	high_right_first_serve	1	1	y											
+src_num	obj_typ	obj_num	monthly limit												
+1	cha	65	0.133	0.133	0.133	0.133	0.133	0.111	0.089	0.089	0.089	0.111	0.111	0.133	
+dmd_num	obj_typ	obj_num	withdr	amount	right	treat_typ	treatment	rcv_obj	rcv_num	rcv_dtl	num_srcs	src	frac	comp	
+1	muni	0	ave_day	750	sr	null	null	null	0	null	1	1	1	0	null
+															
+name	rule_typ	src_obs	dmd_obs	cha_ob											
+Irr_District_1	high_right_first_serve	1	108	y											
+src_num	obj_typ	obj_num	monthly limit												
+1	cha	10	0.053	0.053	0.053	0.053	0.053	0.044	0.035	0.035	0.035	0.044	0.044	0.053	
+dmd_num	obj_typ	obj_num	withdr	amount	right	treat_typ	treatment	rcv_obj	rcv_num	rcv_dtl	num_srcs	src	frac	comp	
+1	hru	1452	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+2	hru	1453	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+3	hru	1454	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+4	hru	1455	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+5	hru	1456	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+6	hru	1457	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+7	hru	1458	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+8	hru	1459	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+9	hru	1460	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+10	hru	1540	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+11	hru	1541	irr_furrow	25	sr	null	null	null	0	null	1	1	1	0	null
+12	hru	1542	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+13	hru	1543	irr_furrow	25	sr	null	null	null	0	null	1	1	1	0	null
+14	hru	1544	irr_furrow	25	sr	null	null	null	0	null	1	1	1	0	null
+15	hru	1545	irr_furrow	25	sr	null	null	null	0	null	1	1	1	0	null
+16	hru	1546	irr_furrow	25	sr	null	null	null	0	null	1	1	1	0	null
+17	hru	1547	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+18	hru	1548	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+19	hru	1549	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+20	hru	1550	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+21	hru	1551	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+22	hru	1552	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+23	hru	1553	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+24	hru	1554	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+25	hru	1560	irr_furrow	25	sr	null	null	null	0	null	1	1	1	0	null
+26	hru	1561	irr_furrow	25	sr	null	null	null	0	null	1	1	1	0	null
+27	hru	1562	irr_furrow	25	sr	null	null	null	0	null	1	1	1	0	null
+28	hru	1563	irr_furrow	25	sr	null	null	null	0	null	1	1	1	0	null
+29	hru	1564	irr_furrow	25	sr	null	null	null	0	null	1	1	1	0	null
+30	hru	1565	irr_furrow	25	sr	null	null	null	0	null	1	1	1	0	null
+31	hru	1566	irr_furrow	25	sr	null	null	null	0	null	1	1	1	0	null
+32	hru	1567	irr_furrow	25	sr	null	null	null	0	null	1	1	1	0	null
+33	hru	1568	irr_furrow	25	sr	null	null	null	0	null	1	1	1	0	null
+34	hru	1569	irr_furrow	25	sr	null	null	null	0	null	1	1	1	0	null
+35	hru	1570	irr_furrow	25	sr	null	null	null	0	null	1	1	1	0	null
+36	hru	1571	irr_furrow	25	sr	null	null	null	0	null	1	1	1	0	null
+37	hru	1572	irr_furrow	25	sr	null	null	null	0	null	1	1	1	0	null
+38	hru	1573	irr_furrow	25	sr	null	null	null	0	null	1	1	1	0	null
+39	hru	1618	irr_furrow	25	sr	null	null	null	0	null	1	1	1	0	null
+40	hru	1619	irr_furrow	25	sr	null	null	null	0	null	1	1	1	0	null
+41	hru	1620	irr_furrow	25	sr	null	null	null	0	null	1	1	1	0	null
+42	hru	1621	irr_furrow	25	sr	null	null	null	0	null	1	1	1	0	null
+43	hru	1702	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+44	hru	1703	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+45	hru	1704	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+46	hru	1705	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+47	hru	1706	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+48	hru	1707	irr_furrow	25	sr	null	null	null	0	null	1	1	1	0	null
+49	hru	1708	irr_furrow	25	sr	null	null	null	0	null	1	1	1	0	null
+50	hru	1709	irr_furrow	25	sr	null	null	null	0	null	1	1	1	0	null
+51	hru	1797	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+52	hru	1798	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+53	hru	1799	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+54	hru	1800	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+55	hru	1801	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+56	hru	1802	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+57	hru	1803	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+58	hru	1842	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+59	hru	1843	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+60	hru	1844	irr_furrow	25	sr	null	null	null	0	null	1	1	1	0	null
+61	hru	1845	irr_furrow	25	sr	null	null	null	0	null	1	1	1	0	null
+62	hru	1846	irr_furrow	25	sr	null	null	null	0	null	1	1	1	0	null
+63	hru	1847	irr_furrow	25	sr	null	null	null	0	null	1	1	1	0	null
+64	hru	1848	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+65	hru	1849	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+66	hru	1850	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+67	hru	1851	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+68	hru	1852	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+69	hru	1853	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+70	hru	1865	irr_furrow	25	sr	null	null	null	0	null	1	1	1	0	null
+71	hru	1866	irr_furrow	25	sr	null	null	null	0	null	1	1	1	0	null
+72	hru	1867	irr_furrow	25	sr	null	null	null	0	null	1	1	1	0	null
+73	hru	1868	irr_furrow	25	sr	null	null	null	0	null	1	1	1	0	null
+74	hru	1869	irr_furrow	25	sr	null	null	null	0	null	1	1	1	0	null
+75	hru	1870	irr_furrow	25	sr	null	null	null	0	null	1	1	1	0	null
+76	hru	1871	irr_furrow	25	sr	null	null	null	0	null	1	1	1	0	null
+77	hru	1872	irr_furrow	25	sr	null	null	null	0	null	1	1	1	0	null
+78	hru	1873	irr_furrow	25	sr	null	null	null	0	null	1	1	1	0	null
+79	hru	1874	irr_furrow	25	sr	null	null	null	0	null	1	1	1	0	null
+80	hru	1875	irr_furrow	25	sr	null	null	null	0	null	1	1	1	0	null
+81	hru	1876	irr_furrow	25	sr	null	null	null	0	null	1	1	1	0	null
+82	hru	1894	irr_furrow	25	sr	null	null	null	0	null	1	1	1	0	null
+83	hru	1895	irr_furrow	25	sr	null	null	null	0	null	1	1	1	0	null
+84	hru	1896	irr_furrow	25	sr	null	null	null	0	null	1	1	1	0	null
+85	hru	1897	irr_furrow	25	sr	null	null	null	0	null	1	1	1	0	null
+86	hru	1898	irr_furrow	25	sr	null	null	null	0	null	1	1	1	0	null
+87	hru	1899	irr_furrow	25	sr	null	null	null	0	null	1	1	1	0	null
+88	hru	1911	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+89	hru	1912	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+90	hru	1913	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+91	hru	1914	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+92	hru	1915	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+93	hru	1916	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+94	hru	1917	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+95	hru	1918	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+96	hru	1919	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+97	hru	1964	irr_furrow	25	sr	null	null	null	0	null	1	1	1	0	null
+98	hru	1965	irr_furrow	25	sr	null	null	null	0	null	1	1	1	0	null
+99	hru	1966	irr_furrow	25	sr	null	null	null	0	null	1	1	1	0	null
+100	hru	1967	irr_furrow	25	sr	null	null	null	0	null	1	1	1	0	null
+101	hru	1968	irr_furrow	25	sr	null	null	null	0	null	1	1	1	0	null
+102	hru	1969	irr_furrow	25	sr	null	null	null	0	null	1	1	1	0	null
+103	hru	1970	irr_furrow	25	sr	null	null	null	0	null	1	1	1	0	null
+104	hru	1971	irr_furrow	25	sr	null	null	null	0	null	1	1	1	0	null
+105	hru	1972	irr_furrow	25	sr	null	null	null	0	null	1	1	1	0	null
+106	hru	1973	irr_furrow	25	sr	null	null	null	0	null	1	1	1	0	null
+107	hru	1974	irr_furrow	25	sr	null	null	null	0	null	1	1	1	0	null
+108	hru	1975	irr_furrow	25	sr	null	null	null	0	null	1	1	1	0	null
+															
+name	rule_typ	src_obs	dmd_obs	cha_ob											
+Irr_District_2	high_right_first_serve	1	11	y											
+src_num	obj_typ	obj_num	monthly limit												
+1	cha	40	0.327	0.327	0.327	0.327	0.327	0.272	0.218	0.218	0.218	0.272	0.272	0.327	
+dmd_num	obj_typ	obj_num	withdr	amount	right	treat_typ	treatment	rcv_obj	rcv_num	rcv_dtl	num_srcs	src	frac	comp	
+1	hru	4674	irr_furrow	25	sr	null	null	null	0	null	1	1	1	0	null
+2	hru	4675	irr_furrow	25	sr	null	null	null	0	null	1	1	1	0	null
+3	hru	4676	irr_furrow	25	sr	null	null	null	0	null	1	1	1	0	null
+4	hru	4677	irr_furrow	25	sr	null	null	null	0	null	1	1	1	0	null
+5	hru	4678	irr_furrow	25	sr	null	null	null	0	null	1	1	1	0	null
+6	hru	4699	irr_furrow	25	sr	null	null	null	0	null	1	1	1	0	null
+7	hru	4700	irr_furrow	25	sr	null	null	null	0	null	1	1	1	0	null
+8	hru	4701	irr_furrow	25	sr	null	null	null	0	null	1	1	1	0	null
+9	hru	4702	irr_furrow	25	sr	null	null	null	0	null	1	1	1	0	null
+10	hru	4703	irr_furrow	25	sr	null	null	null	0	null	1	1	1	0	null
+11	hru	4704	irr_furrow	25	sr	null	null	null	0	null	1	1	1	0	null
+															
+name	rule_typ	src_obs	dmd_obs	cha_ob											
+Irr_District_3	high_right_first_serve	1	12	y											
+src_num	obj_typ	obj_num	monthly limit												
+1	cha	118	0.146	0.146	0.146	0.189	0.189	0.146	0.116	0.116	0.116	0.146	0.146	0.146	
+dmd_num	obj_typ	obj_num	withdr	amount	right	treat_typ	treatment	rcv_obj	rcv_num	rcv_dtl	num_srcs	src	frac	comp	
+1	hru	4993	irr_furrow	25	sr	null	null	null	0	null	1	1	1	0	null
+2	hru	4994	irr_furrow	25	sr	null	null	null	0	null	1	1	1	0	null
+3	hru	4995	irr_furrow	25	sr	null	null	null	0	null	1	1	1	0	null
+4	hru	4996	irr_furrow	25	sr	null	null	null	0	null	1	1	1	0	null
+5	hru	5059	irr_furrow	25	sr	null	null	null	0	null	1	1	1	0	null
+6	hru	5060	irr_furrow	25	sr	null	null	null	0	null	1	1	1	0	null
+7	hru	5061	irr_furrow	25	sr	null	null	null	0	null	1	1	1	0	null
+8	hru	5062	irr_furrow	25	sr	null	null	null	0	null	1	1	1	0	null
+9	hru	5063	irr_furrow	25	sr	null	null	null	0	null	1	1	1	0	null
+10	hru	5064	irr_furrow	25	sr	null	null	null	0	null	1	1	1	0	null
+11	hru	5065	irr_furrow	25	sr	null	null	null	0	null	1	1	1	0	null
+12	hru	5066	irr_furrow	25	sr	null	null	null	0	null	1	1	1	0	null
+															
+name	rule_typ	src_obs	dmd_obs	cha_ob											
+Irr_District_4	high_right_first_serve	1	260	n											
+src_num	obj_typ	obj_num	monthly limit												
+1	aqu	120	100	100	100	100	100	100	100	100	100	100	100	100	
+dmd_num	obj_typ	obj_num	withdr	amount	right	treat_typ	treatment	rcv_obj	rcv_num	rcv_dtl	num_srcs	src	frac	comp	
+1	hru	15	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+2	hru	16	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+3	hru	17	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+4	hru	18	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+5	hru	19	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+6	hru	20	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+7	hru	21	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+8	hru	22	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+9	hru	23	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+10	hru	24	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+11	hru	25	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+12	hru	26	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+13	hru	27	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+14	hru	28	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+15	hru	29	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+16	hru	95	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+17	hru	96	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+18	hru	97	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+19	hru	98	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+20	hru	99	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+21	hru	100	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+22	hru	101	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+23	hru	102	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+24	hru	103	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+25	hru	104	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+26	hru	105	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+27	hru	106	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+28	hru	107	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+29	hru	108	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+30	hru	109	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+31	hru	110	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+32	hru	111	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+33	hru	112	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+34	hru	113	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+35	hru	114	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+36	hru	115	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+37	hru	116	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+38	hru	117	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+39	hru	118	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+40	hru	119	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+41	hru	120	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+42	hru	121	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+43	hru	122	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+44	hru	123	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+45	hru	124	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+46	hru	274	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+47	hru	275	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+48	hru	276	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+49	hru	277	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+50	hru	278	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+51	hru	279	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+52	hru	280	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+53	hru	281	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+54	hru	282	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+55	hru	283	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+56	hru	284	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+57	hru	285	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+58	hru	294	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+59	hru	295	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+60	hru	296	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+61	hru	297	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+62	hru	298	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+63	hru	299	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+64	hru	300	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+65	hru	301	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+66	hru	302	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+67	hru	356	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+68	hru	357	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+69	hru	358	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+70	hru	359	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+71	hru	360	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+72	hru	361	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+73	hru	362	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+74	hru	363	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+75	hru	364	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+76	hru	365	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+77	hru	366	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+78	hru	367	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+79	hru	368	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+80	hru	369	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+81	hru	370	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+82	hru	371	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+83	hru	372	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+84	hru	373	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+85	hru	466	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+86	hru	467	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+87	hru	468	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+88	hru	472	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+89	hru	473	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+90	hru	474	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+91	hru	475	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+92	hru	476	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+93	hru	477	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+94	hru	571	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+95	hru	572	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+96	hru	573	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+97	hru	574	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+98	hru	575	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+99	hru	576	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+100	hru	577	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+101	hru	578	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+102	hru	579	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+103	hru	580	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+104	hru	581	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+105	hru	582	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+106	hru	583	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+107	hru	584	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+108	hru	585	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+109	hru	615	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+110	hru	616	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+111	hru	617	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+112	hru	618	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+113	hru	619	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+114	hru	620	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+115	hru	669	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+116	hru	670	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+117	hru	671	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+118	hru	672	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+119	hru	673	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+120	hru	674	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+121	hru	675	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+122	hru	676	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+123	hru	677	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+124	hru	678	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+125	hru	679	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+126	hru	680	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+127	hru	681	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+128	hru	682	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+129	hru	683	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+130	hru	684	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+131	hru	685	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+132	hru	686	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+133	hru	687	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+134	hru	688	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+135	hru	689	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+136	hru	844	irr_furrow	25	sr	null	null	null	0	null	1	1	1	0	null
+137	hru	845	irr_furrow	25	sr	null	null	null	0	null	1	1	1	0	null
+138	hru	846	irr_furrow	25	sr	null	null	null	0	null	1	1	1	0	null
+139	hru	847	irr_furrow	25	sr	null	null	null	0	null	1	1	1	0	null
+140	hru	848	irr_furrow	25	sr	null	null	null	0	null	1	1	1	0	null
+141	hru	849	irr_furrow	25	sr	null	null	null	0	null	1	1	1	0	null
+142	hru	850	irr_furrow	25	sr	null	null	null	0	null	1	1	1	0	null
+143	hru	857	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+144	hru	858	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+145	hru	859	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+146	hru	860	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+147	hru	861	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+148	hru	862	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+149	hru	863	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+150	hru	864	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+151	hru	865	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+152	hru	866	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+153	hru	867	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+154	hru	868	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+155	hru	958	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+156	hru	959	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+157	hru	960	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+158	hru	961	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+159	hru	962	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+160	hru	963	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+161	hru	984	irr_furrow	25	sr	null	null	null	0	null	1	1	1	0	null
+162	hru	985	irr_furrow	25	sr	null	null	null	0	null	1	1	1	0	null
+163	hru	986	irr_furrow	25	sr	null	null	null	0	null	1	1	1	0	null
+164	hru	987	irr_furrow	25	sr	null	null	null	0	null	1	1	1	0	null
+165	hru	988	irr_furrow	25	sr	null	null	null	0	null	1	1	1	0	null
+166	hru	989	irr_furrow	25	sr	null	null	null	0	null	1	1	1	0	null
+167	hru	990	irr_furrow	25	sr	null	null	null	0	null	1	1	1	0	null
+168	hru	991	irr_furrow	25	sr	null	null	null	0	null	1	1	1	0	null
+169	hru	992	irr_furrow	25	sr	null	null	null	0	null	1	1	1	0	null
+170	hru	993	irr_furrow	25	sr	null	null	null	0	null	1	1	1	0	null
+171	hru	1960	irr_furrow	25	sr	null	null	null	0	null	1	1	1	0	null
+172	hru	1961	irr_furrow	25	sr	null	null	null	0	null	1	1	1	0	null
+173	hru	1962	irr_furrow	25	sr	null	null	null	0	null	1	1	1	0	null
+174	hru	1963	irr_furrow	25	sr	null	null	null	0	null	1	1	1	0	null
+175	hru	2124	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+176	hru	2125	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+177	hru	2126	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+178	hru	2127	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+179	hru	2128	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+180	hru	2138	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+181	hru	2139	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+182	hru	2140	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+183	hru	2141	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+184	hru	2142	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+185	hru	2143	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+186	hru	2211	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+187	hru	2212	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+188	hru	2213	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+189	hru	2214	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+190	hru	2215	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+191	hru	2216	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+192	hru	2217	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+193	hru	2218	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+194	hru	2219	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+195	hru	2220	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+196	hru	2221	irr_furrow	25	sr	null	null	null	0	null	1	1	1	0	null
+197	hru	2222	irr_furrow	25	sr	null	null	null	0	null	1	1	1	0	null
+198	hru	2223	irr_furrow	25	sr	null	null	null	0	null	1	1	1	0	null
+199	hru	2224	irr_furrow	25	sr	null	null	null	0	null	1	1	1	0	null
+200	hru	2225	irr_furrow	25	sr	null	null	null	0	null	1	1	1	0	null
+201	hru	2226	irr_furrow	25	sr	null	null	null	0	null	1	1	1	0	null
+202	hru	2227	irr_furrow	25	sr	null	null	null	0	null	1	1	1	0	null
+203	hru	2228	irr_furrow	25	sr	null	null	null	0	null	1	1	1	0	null
+204	hru	2298	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+205	hru	2299	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+206	hru	2300	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+207	hru	2301	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+208	hru	2373	irr_furrow	25	sr	null	null	null	0	null	1	1	1	0	null
+209	hru	2374	irr_furrow	25	sr	null	null	null	0	null	1	1	1	0	null
+210	hru	2375	irr_furrow	25	sr	null	null	null	0	null	1	1	1	0	null
+211	hru	2376	irr_furrow	25	sr	null	null	null	0	null	1	1	1	0	null
+212	hru	2377	irr_furrow	25	sr	null	null	null	0	null	1	1	1	0	null
+213	hru	2466	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+214	hru	2467	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+215	hru	2468	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+216	hru	2557	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+217	hru	2558	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+218	hru	2642	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+219	hru	2643	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+220	hru	2644	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+221	hru	2822	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+222	hru	2823	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+223	hru	2824	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+224	hru	2939	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+225	hru	2940	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+226	hru	2941	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+227	hru	2942	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+228	hru	2973	irr_furrow	25	sr	null	null	null	0	null	1	1	1	0	null
+229	hru	2974	irr_furrow	25	sr	null	null	null	0	null	1	1	1	0	null
+230	hru	2975	irr_furrow	25	sr	null	null	null	0	null	1	1	1	0	null
+231	hru	2976	irr_furrow	25	sr	null	null	null	0	null	1	1	1	0	null
+232	hru	2977	irr_furrow	25	sr	null	null	null	0	null	1	1	1	0	null
+233	hru	2978	irr_furrow	25	sr	null	null	null	0	null	1	1	1	0	null
+234	hru	2979	irr_furrow	25	sr	null	null	null	0	null	1	1	1	0	null
+235	hru	2980	irr_furrow	25	sr	null	null	null	0	null	1	1	1	0	null
+236	hru	3070	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+237	hru	3071	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+238	hru	3072	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+239	hru	3164	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+240	hru	3165	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+241	hru	3166	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+242	hru	3167	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+243	hru	3168	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+244	hru	3169	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+245	hru	3170	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+246	hru	3171	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+247	hru	3172	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+248	hru	3173	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+249	hru	3174	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+250	hru	3175	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+251	hru	3405	irr_furrow	25	sr	null	null	null	0	null	1	1	1	0	null
+252	hru	3406	irr_furrow	25	sr	null	null	null	0	null	1	1	1	0	null
+253	hru	3515	irr_furrow	25	sr	null	null	null	0	null	1	1	1	0	null
+254	hru	3516	irr_furrow	25	sr	null	null	null	0	null	1	1	1	0	null
+255	hru	3634	irr_furrow	25	sr	null	null	null	0	null	1	1	1	0	null
+256	hru	3635	irr_furrow	25	sr	null	null	null	0	null	1	1	1	0	null
+257	hru	3636	irr_furrow	25	sr	null	null	null	0	null	1	1	1	0	null
+258	hru	4856	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+259	hru	4857	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null
+260	hru	4858	irr_sprinkler	25	sr	null	null	null	0	null	1	1	1	0	null

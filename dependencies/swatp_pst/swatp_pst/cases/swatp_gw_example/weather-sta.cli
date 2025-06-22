@@ -1,0 +1,16 @@
+weather-sta.cli: written by SWAT+ editor v3.0.0 on 2024-06-21 16:07 for SWAT+ rev.61.0
+name                           wgn                        pcp                        tmp                        slr                        hmd                        wnd                        pet          atmo_dep  
+s41620n2445e              wgn10607               pDosrius.pcp               tDosrius.tmp               sDosrius.slr               hDosrius.hmd               wDosrius.wnd                       null              null  
+s41647n2757e              wgn10798               pMalgrat.pcp               tMalgrat.tmp               sMalgrat.slr               hMalgrat.hmd               wMalgrat.wnd                       null              null  
+s41680n2489e              wgn10854                pCeloni.pcp               tDosrius.tmp               sDosrius.slr               hDosrius.hmd               wDosrius.wnd                       null              null  
+s41739n2694e              wgn10954           pFogarsSelva.pcp               tMalgrat.tmp               sMalgrat.slr               hMalgrat.hmd               wMalgrat.wnd                       null              null  
+s41748n2303e              wgn11047            pTagamanent.pcp            tTagamanent.tmp              sArbucies.slr            hTagamanent.hmd            wTagamanent.wnd                       null              null  
+s41840n2419e              wgn11326              pArbucies.pcp              tArbucies.tmp              sArbucies.slr              hArbucies.hmd              wArbucies.wnd                       null              null  
+s41865n2664e              wgn11401               pFarners.pcp               tFarners.tmp               sFarners.slr               hFarners.hmd               wFarners.wnd                       null              null  
+s41875n2927e              wgn11351                 pCassa.pcp                 tCassa.tmp                 sCassa.slr                 hCassa.hmd                 wCassa.wnd                       null              null  
+s41885n2741e              wgn11386                pVilobi.pcp                tVilobi.tmp               sFarners.slr                hVilobi.hmd               wFarners.wnd                       null              null  
+s41898n2819e              wgn11532             pCampllong.pcp              tFornells.tmp                sGirona.slr              hFornells.hmd                wGirona.wnd                       null              null  
+s41915n2820e              wgn11532              pFornells.pcp              tFornells.tmp                sGirona.slr              hFornells.hmd                wGirona.wnd                       null              null  
+s41960n2632e              wgn11579                pAngles.pcp                tAngles.tmp                sAngles.slr                hAngles.hmd                wAngles.wnd                       null              null  
+s41967n2811e              wgn11700                pGirona.pcp                tGirona.tmp                sGirona.slr                hGirona.hmd                wGirona.wnd                       null              null  
+s41979n2527e              wgn11764           pEmbSusqueda.pcp                tAngles.tmp                sAngles.slr                hAngles.hmd                wAngles.wnd                       null              null  

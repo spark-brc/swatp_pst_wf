@@ -1,0 +1,11 @@
+ Hydrograph Separation (m3/sec) for each channel
+ 
+ chan_surf:     channel flow contributed from surface runoff
+ chan_lat:      channel flow contributed from soil lateral flow
+ chan_gwsw:     channel flow contributed from groundwater discharge
+ chan_swgw:     channel flow seeped from channel to aquifer
+ chan_satexgw:  channel flow contributed from groundwater saturation excess
+ chan_satexsw:  channel flow contributed from saturation excess runoff
+ chan_tile:     channel flow contributed from tile drain flow
+ 
+  year             day          channel         chan_surf       chan_lat        chan_gwsw       chan_swgw       chan_satex      chan_satex      chan_tile       

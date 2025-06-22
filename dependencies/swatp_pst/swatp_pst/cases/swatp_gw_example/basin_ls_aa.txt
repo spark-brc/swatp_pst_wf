@@ -1,0 +1,4 @@
+ Tordera                   SWAT+ Jul 2 2024        MODULAR Rev 2024.61.0.1                                
+   jday   mon   day    yr   unit  gis_id  name                 sedyld     sedorgn     sedorgp     surqno3     lat3no3    surqsolp        usle     sedminp     tileno3     lchlabp    tilelabp      satexn
+                                                                  tha        kgha        kgha        kgha        kgha        kgha        tons        kgha        kgha        kgha        kgha        kgha
+   365    12    31  2001       1       1  Tordera                0.099       1.251       0.153       0.610      28.904       0.054       0.000       0.024       0.000       1.082       0.000       0.000

@@ -1,0 +1,31 @@
+ Solute:p               
+ Groundwater watershed-wide solute loads for each year
+ 
+ Positive value: solute mass added to aquifer
+ Negative value: solute mass removed from aquifer
+ 
+ delm:     kg   change in groundwater solute mass during the year
+ rech:     kg   solute mass in recharge water
+ gwsw:     kg   solute mass loaded to streams
+ swgw:     kg   solute mass loaded from streams
+ satx:     kg   solute mass loaded to streams by saturation excess flow
+ soil:     kg   solute mass loaded to HRU soil profiles
+ advn:     kg   solute mass transported by advection
+ disp:     kg   solute mass transported by dispersion
+ rcti:      kg   solute mass produced by kinetic reaction
+ rcto:      kg   solute mass consumed by kinetic reaction
+ minl:      kg   solute mass added by mineral dissolution
+ sorb:     kg   solute mass removed by denitrification
+ ppag:     kg   solute mass removed by groundwater pumping for irrigation
+ ppex:     kg   solute mass removed by groundwater pumping specified by user
+ tile:     kg   solute mass removed by tile drains
+ resv:     kg   solute mass loaded to/from reservoirs
+ wetl:     kg   solute mass loaded to/from wetlands
+ canl:     kg   solute mass loaded to groundwater from canal seepage
+ fpln:     kg   solute mass in floodplain exchange
+ 
+  year  delm         rech         gwsw         swgw         satx         soil         advn         disp         rcti         rcto         minl         sorb         ppag         ppex         tile         resv         wetl         canl         fpln         
+    2000   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00
+    2001   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00
+    2002   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00
+    2003   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00
