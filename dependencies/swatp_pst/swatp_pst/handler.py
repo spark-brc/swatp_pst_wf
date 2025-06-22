@@ -21,7 +21,8 @@ from swatp_pst import analyzer
 
 
 def create_swatp_pst_con(
-            prj_dir, swatp_wd, cal_start, cal_end, chs, 
+            prj_dir, swatp_wd, cal_start, cal_end, chs,
+            grids=None, 
             irr_cal=None,
             time_step=None
             ):
@@ -33,6 +34,7 @@ def create_swatp_pst_con(
         'prj_dir',
         'swatp_wd', 'cal_start', 'cal_end',
         'chs',
+        'grids'
         'irr_cal',
         'time_step',
         ]
@@ -40,6 +42,7 @@ def create_swatp_pst_con(
         prj_dir,
         swatp_wd, cal_start, cal_end, 
         chs,
+        grids,
         irr_cal, 
         time_step,
         ]
@@ -64,6 +67,7 @@ def init_setup(prj_dir, swatp_wd):
         "pestpp-ies.exe",
         "pestpp-opt.exe",
         "pestpp-sen.exe",
+        "rev61.0.1_64rel.exe"
         ]
     suffix = ' passed'
     print(" Creating 'main_opt' folder in working directory ...",  end='\r', flush=True)
