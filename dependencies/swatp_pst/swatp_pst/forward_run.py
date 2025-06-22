@@ -67,11 +67,10 @@ if __name__ == '__main__':
         chs = [int(i) for i in chs]
         extract_stf_results(chs, cal_start, cal_end)
 
-    if swatp_pst_con.loc['waterlevel', 'vals'] != 'n':
-        chs = swatp_pst_con.loc['waterlevel','vals'].strip('][').split(', ')
-        chs = [int(i) for i in chs]
-        extract_sim_waterlevel(chs, cal_start, cal_end)
-
+    if swatp_pst_con.loc['grids', 'vals'] != 'n':
+        grids = swatp_pst_con.loc['grids','vals'].strip('][').split(', ')
+        grids = [int(i) for i in grids]
+        extract_sim_waterlevel(grids, cal_start, cal_end)
 
     if swatp_pst_con.loc['irr_cal', 'vals'] == 'activated':
         m1 = SWATp(wd)
