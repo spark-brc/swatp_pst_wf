@@ -40,18 +40,18 @@ def extract_stf_results(chs, cal_start, cal_end, tstep=None):
         time_stamp(des)
         m1.extract_day_stf(chs, cal_start, cal_end)
 
-def extract_sim_waterlevel(chs, cal_start, cal_end, tstep=None):
-    # get time step
-    if tstep is None:
-        time_step == 'day'
-    if time_step == 'month':
-        des = "extracting monthly simulated water level"
-        time_stamp(des)
-        m1.extract_sim_waterlevel(chs, cal_start, cal_end, tstep='month')
-    elif time_step == 'day':
-        des = "extracting daily simulated water level"
-        time_stamp(des)
-        m1.extract_sim_waterlevel(chs, cal_start, cal_end)
+# def extract_sim_waterlevel(chs, cal_start, cal_end, tstep=None):
+#     # get time step
+#     if tstep is None:
+#         time_step == 'day'
+#     if time_step == 'month':
+#         des = "extracting monthly simulated water level"
+#         time_stamp(des)
+#         m1.extract_sim_waterlevel(chs, cal_start, cal_end, tstep='month')
+#     elif time_step == 'day':
+#         des = "extracting daily simulated water level"
+#         time_stamp(des)
+#         m1.extract_sim_waterlevel(chs, cal_start, cal_end)
 
 
 if __name__ == '__main__':
@@ -60,7 +60,7 @@ if __name__ == '__main__':
     cal_start = swatp_pst_con.loc['cal_start', 'vals']
     cal_end = swatp_pst_con.loc['cal_end', 'vals']
     time_step = swatp_pst_con.loc['time_step','vals']
-    # execute_swatp()
+    execute_swatp()
 
     if swatp_pst_con.loc['chs', 'vals'] != 'n':
         chs = swatp_pst_con.loc['chs','vals'].strip('][').split(', ')
@@ -68,9 +68,8 @@ if __name__ == '__main__':
         extract_stf_results(chs, cal_start, cal_end)
 
     if swatp_pst_con.loc['grids', 'vals'] != 'n':
-        grids = swatp_pst_con.loc['grids','vals'].strip('][').split(', ')
-        grids = [int(i) for i in grids]
-        extract_sim_waterlevel(grids, cal_start, cal_end)
+        m1 = SWATp(wd)
+        m1.extract_sim_waterlevel(cal_start, cal_end)
 
     if swatp_pst_con.loc['irr_cal', 'vals'] == 'activated':
         m1 = SWATp(wd)

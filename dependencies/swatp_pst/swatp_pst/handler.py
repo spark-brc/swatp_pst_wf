@@ -14,10 +14,9 @@ from shutil import copyfile
 opt_files_path = os.path.join(
                     os.path.dirname(os.path.abspath( __file__ )),
                     'opt_files')
+
 foward_path = os.path.dirname(os.path.abspath( __file__ ))
 from swatp_pst import analyzer
-
-
 
 
 def create_swatp_pst_con(
@@ -34,9 +33,9 @@ def create_swatp_pst_con(
         'prj_dir',
         'swatp_wd', 'cal_start', 'cal_end',
         'chs',
-        'grids'
+        'grids',
         'irr_cal',
-        'time_step',
+        'time_step'
         ]
     col02 = [
         prj_dir,
@@ -84,6 +83,7 @@ def init_setup(prj_dir, swatp_wd):
         print(" Creating 'main_opt' folder ..." + colored(suffix, 'green'))
 
         # copy files from opt_files folder
+        # print(filesToCopy)
         for j in filesToCopy:
             if not os.path.isfile(os.path.join(main_opt_path, j)):
                 shutil.copy2(os.path.join(opt_files_path, j), os.path.join(main_opt_path, j))
@@ -658,42 +658,42 @@ def get_last_day_of_month(df):
     return df
 
 
-def init_setup(prj_dir, swatp_wd):
-    filesToCopy = [
-        "i64pwtadj1.exe",
-        "pestpp-glm.exe",
-        "pestpp-ies.exe",
-        "pestpp-opt.exe",
-        "pestpp-sen.exe",
-        ]
-    suffix = ' passed'
-    print(" Creating 'main_opt' folder in working directory ...",  end='\r', flush=True)
+# def init_setup(prj_dir, swatp_wd):
+#     filesToCopy = [
+#         "i64pwtadj1.exe",
+#         "pestpp-glm.exe",
+#         "pestpp-ies.exe",
+#         "pestpp-opt.exe",
+#         "pestpp-sen.exe",
+#         ]
+#     suffix = ' passed'
+#     print(" Creating 'main_opt' folder in working directory ...",  end='\r', flush=True)
 
-    main_opt_path = os.path.join(prj_dir, 'main_opt')
+#     main_opt_path = os.path.join(prj_dir, 'main_opt')
 
-    if not os.path.isdir(main_opt_path):
-        os.makedirs(main_opt_path)
-        filelist = [f for f in os.listdir(swatp_wd) if os.path.isfile(os.path.join(swatp_wd, f))]
-        for i in tqdm(filelist):
-        # print(i)
-        # if os.path.getsize(os.path.join(swatwd, i)) != 0:
-            shutil.copy2(os.path.join(swatp_wd, i), main_opt_path)
-        print(" Creating 'main_opt' folder ..." + colored(suffix, 'green'))
+#     if not os.path.isdir(main_opt_path):
+#         os.makedirs(main_opt_path)
+#         filelist = [f for f in os.listdir(swatp_wd) if os.path.isfile(os.path.join(swatp_wd, f))]
+#         for i in tqdm(filelist):
+#         # print(i)
+#         # if os.path.getsize(os.path.join(swatwd, i)) != 0:
+#             shutil.copy2(os.path.join(swatp_wd, i), main_opt_path)
+#         print(" Creating 'main_opt' folder ..." + colored(suffix, 'green'))
 
-        # copy files from opt_files folder
-        for j in filesToCopy:
-            if not os.path.isfile(os.path.join(main_opt_path, j)):
-                shutil.copy2(os.path.join(opt_files_path, j), os.path.join(main_opt_path, j))
-                print(" '{}' file copied ...".format(j) + colored(suffix, 'green'))
-        # copy forward_run.py
-        if not os.path.isfile(os.path.join(main_opt_path, 'forward_run.py')):
-            shutil.copy2(os.path.join(foward_path, 'forward_run.py'), os.path.join(main_opt_path, 'forward_run.py'))
-            print(" '{}' file copied ...".format('forward_run.py') + colored(suffix, 'green'))
-        os.chdir(main_opt_path)       
-    else:
-        print("failed to create 'main_opt' folder, folder already exists ..." )
-    os.chdir(main_opt_path)
-    print(f"path to main_opt folder: {main_opt_path}")
+#         # copy files from opt_files folder
+#         for j in filesToCopy:
+#             if not os.path.isfile(os.path.join(main_opt_path, j)):
+#                 shutil.copy2(os.path.join(opt_files_path, j), os.path.join(main_opt_path, j))
+#                 print(" '{}' file copied ...".format(j) + colored(suffix, 'green'))
+#         # copy forward_run.py
+#         if not os.path.isfile(os.path.join(main_opt_path, 'forward_run.py')):
+#             shutil.copy2(os.path.join(foward_path, 'forward_run.py'), os.path.join(main_opt_path, 'forward_run.py'))
+#             print(" '{}' file copied ...".format('forward_run.py') + colored(suffix, 'green'))
+#         os.chdir(main_opt_path)       
+#     else:
+#         print("failed to create 'main_opt' folder, folder already exists ..." )
+#     os.chdir(main_opt_path)
+#     print(f"path to main_opt folder: {main_opt_path}")
 
 
 class Paddy(object):
